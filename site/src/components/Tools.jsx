@@ -14,7 +14,7 @@ export default function Tools() {
       <div className="mt-12 space-y-12 sm:space-y-16">
         {tools.map((tool, index) => {
           const accent = accents[tool.accent];
-          const lead = tool.shots[tool.shots.length - 1];
+          const lead = [tool.lead, tool.leadCaption];
           return (
             <article
               key={tool.id}

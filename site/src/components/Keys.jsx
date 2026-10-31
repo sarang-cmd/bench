@@ -17,28 +17,46 @@ export default function Keys() {
       </Blurb>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-12">
-        <div className="overflow-x-auto border-3 border-ink shadow-brute-sm">
-          <table className="w-full min-w-[34rem] border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b-3 border-ink bg-yellow">
-                <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">Key</th>
-                <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">Where</th>
-                <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">What it does</th>
-              </tr>
-            </thead>
-            <tbody>
-              {keys.map(([key, where, what], index) => (
-                <tr
-                  key={key + where}
-                  className={"border-b border-ink/25 last:border-b-0 " + (index % 2 ? "bg-paper" : "bg-shade/40")}
-                >
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono font-bold">{key}</td>
-                  <td className="px-3 py-2.5 text-ink/70">{where}</td>
-                  <td className="px-3 py-2.5 text-ink/85">{what}</td>
+        {/* A three-column table cannot be read on a phone without sideways
+            scrolling, so the same rows become stacked cards below sm. */}
+        <div>
+          <ul className="space-y-2 sm:hidden">
+            {keys.map(([key, where, what]) => (
+              <li key={key + where} className="border-3 border-ink bg-paper px-3 py-2.5">
+                <p className="flex flex-wrap items-baseline gap-x-2">
+                  <span className="font-mono text-sm font-bold">{key}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-widest text-ink/55">
+                    {where}
+                  </span>
+                </p>
+                <p className="mt-1 text-sm text-ink/85">{what}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="hidden sm:block sm:border-3 sm:border-ink sm:shadow-brute-sm">
+            <table className="w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b-3 border-ink bg-yellow">
+                  <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">Key</th>
+                  <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">Where</th>
+                  <th scope="col" className="px-3 py-2 font-mono text-xs uppercase tracking-widest">What it does</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {keys.map(([key, where, what], index) => (
+                  <tr
+                    key={key + where}
+                    className={"border-b border-ink/25 last:border-b-0 " + (index % 2 ? "bg-paper" : "bg-shade/40")}
+                  >
+                    <td className="whitespace-nowrap px-3 py-2.5 font-mono font-bold">{key}</td>
+                    <td className="px-3 py-2.5 text-ink/70">{where}</td>
+                    <td className="px-3 py-2.5 text-ink/85">{what}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div className="space-y-5">
