@@ -7,9 +7,10 @@
   "scripts": {
     "images": "node scripts/copy-images.mjs",
     "check": "node scripts/check-images.mjs",
-    "dev": "npm run images && vite",
-    "build": "npm run check && npm run images && vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "dev": "node scripts/fetch-addin.mjs && node scripts/copy-images.mjs && vite",
+    "build": "node scripts/fetch-addin.mjs && node scripts/check-images.mjs && node scripts/copy-images.mjs && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "addin": "node scripts/fetch-addin.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

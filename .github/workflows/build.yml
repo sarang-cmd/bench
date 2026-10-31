@@ -1,19 +1,26 @@
 name: Build
 
-# This workflow is the only way Bench gets a .g3a: the fxSDK toolchain comes
-# from git.planet-casio.com, which the Arena sandbox that wrote the code could
-# not reach.  A GitHub runner can.  See docs/toolchain.md section 5.
+# The .g3a needs the fxSDK and a SuperH GCC, both built from source. Building
+# them takes the better part of an hour on a two-core runner, so the whole
+# install tree is cached and only rebuilt when the cache key changes. After the
+# first run a tag build is a couple of minutes.
 #
-#   push to main      -> native tests, host preview, Bench-<version>.g3a as an
-#                        artifact
-#   push of a tag v*  -> the same, plus the .g3a attached to the GitHub release
-#
-# The version comes from version.txt; bump it, tag the commit, push the tag.
+#   push to main   -> native tests, preview, Bench-<version>.g3a as an artifact
+#   push of a v*   -> the same, plus the .g3a on the GitHub release, plus a copy
+#                     force-pushed to the `builds` branch (site builds read the
+#                     release, not this branch; the branch is for people who
+#                     cannot fetch a release asset)
 
 on:
   push:
     branches: [main]
     tags: ["v*"]
+    # A website or docs commit cannot change the .g3a; do not spend 40 minutes
+    # proving it.
+    paths-ignore:
+      - "site/**"
+      - "docs/**"
+      - "**.md"
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -22,12 +29,16 @@ on:
         description: "Version to build, e.g. 1.0.0 (default: version.txt)"
         required: false
 
+# A newer push on the same ref makes the older run pointless; kill it so it
+# stops burning minutes.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   native-tests:
     name: Core tests (no gint)
-    # Pinned on purpose: the fxSDK toolchain is built from source by GiteaPC,
-    # and that build is only tested by its author on the older LTS.  The g3a
-    # job uses the same image, so the two jobs cannot disagree about the host.
+    # Pinned: the toolchain is built on 22.04, and both jobs should agree.
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +67,7 @@ jobs:
   g3a:
     name: Build the add-in
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
     needs: native-tests
     steps:
       - uses: actions/checkout@v4
@@ -74,10 +85,9 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          sudo apt-get update
           # fxSDK's CMakeLists asks pkg-config for libpng16, libusb-1.0,
-          # ncurses and SDL2 (udisks2 is switched off by the :noudisks2
-          # config).  The rest is what the SuperH binutils and GCC need.
+          # ncurses and SDL2 (udisks2 is off via the :noudisks2 config).
+          sudo apt-get update
           sudo apt-get install -y ca-certificates curl git python3 python3-pil \
             build-essential cmake pkg-config \
             libpng-dev libusb-1.0-0-dev libudev-dev libncurses-dev \
@@ -85,47 +95,42 @@ jobs:
             libgmp-dev libmpfr-dev libmpc-dev libisl-dev \
             flex bison gawk texinfo gperf libtool-bin autoconf
 
-      - name: Probe the toolchain host
-        # git.planet-casio.com answered 403 to this job's last four attempts.
-        # Before paying for another fifteen minutes, find out whether the whole
-        # host is closed to us or only the installer's raw file, and whether a
-        # git clone still works. The answers come back as annotations.
-        continue-on-error: true
+      # The expensive part. Restored as a tarball when the key matches, which is
+      # what turns a 40-minute job into a two-minute one. Bump the key to force
+      # a rebuild (new toolchain or gint version).
+      - name: Restore fxSDK, the toolchain and gint
+        id: toolchain
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local
+            ~/.giteapc
+          key: fxsdk-sh3eb-elf-gcc12-${{ runner.os }}-v1
+
+      - name: Add the toolchain to PATH
         shell: bash
-        run: |
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-          url="https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh"
-          code=$(curl -s -o /dev/null -m 25 -w '%{http_code}' "$url" || echo "curl-failed")
-          echo "::notice title=probe curl default UA::install.sh -> $code"
-          code=$(curl -s -o /dev/null -m 25 -A "$UA" -w '%{http_code}' "$url" || echo "curl-failed")
-          echo "::notice title=probe curl browser UA::install.sh -> $code"
-          code=$(curl -s -o /dev/null -m 25 -w '%{http_code}' "https://git.planet-casio.com/" || echo "curl-failed")
-          echo "::notice title=probe host root::/ -> $code"
-          if git ls-remote --exit-code https://git.planet-casio.com/Lephenixnoir/GiteaPC.git HEAD >/dev/null 2>&1; then
-            echo "::notice title=probe git clone::https clone works"
-          else
-            echo "::notice title=probe git clone::https clone FAILED"
-          fi
-          if git ls-remote --exit-code https://github.com/Insoft-UK/gint.git HEAD >/dev/null 2>&1; then
-            echo "::notice title=probe git clone::github clone works"
-          else
-            echo "::notice title=probe git clone::github clone FAILED"
-          fi
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install GiteaPC
+        if: steps.toolchain.outputs.cache-hit != 'true'
+        shell: bash
         run: |
-          curl -fsSL "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
+          # Browser UA: the host answers 403 to the default curl agent.
+          ua="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+          curl -fsSL -A "$ua" -m 60 \
+            "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
             -o /tmp/giteapc-install.sh
           printf '\n' | bash /tmp/giteapc-install.sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install fxSDK, the SuperH toolchain and gint
+        if: steps.toolchain.outputs.cache-hit != 'true'
         shell: bash
         run: |
           # Every install is logged, and a failure is reported as an annotation
-          # carrying the tail of the log: the raw job log lives on blob storage,
-          # which some clients (including the one that wrote this) cannot read,
-          # while annotations come back through the API.
+          # carrying the useful error lines: the raw job log lives on blob
+          # storage, which some clients cannot read, while annotations come back
+          # through the API.
           set -uo pipefail
           export PATH="$HOME/.local/bin:$PATH"
           log=/tmp/toolchain.log
@@ -133,13 +138,8 @@ jobs:
 
           say() { printf '\n=== %s ===\n' "$*" | tee -a "$log"; }
 
-          # Annotate the tail of the log, one line per annotation (GitHub keeps
-          # ten per step), with the characters that would break the syntax out.
           annotate() {
             local line
-            # The interesting line is usually a few above the end ("No package
-            # 'sdl2' found"), so match on the error words first and fall back to
-            # a plain tail when nothing matches.
             {
               tail -n 60 "$log" | grep -iE "no package|not found|cannot find|error:|failed" | tail -n 8
               tail -n 2 "$log"
@@ -148,13 +148,9 @@ jobs:
             done
           }
 
-          # giteapc asks before it installs a dependency, and a runner has no
-          # stdin: without an answer it dies with "EOFError: EOF when reading a
-          # line".  That is what killed the first four attempts of this job.
-          #
-          # The answers come from printf, not from yes: yes dies of SIGPIPE as
-          # soon as giteapc exits, and under pipefail that would report a
-          # successful install as a failure (141).
+          # giteapc asks before installing a dependency, and a runner has no
+          # stdin. printf, not yes: yes dies of SIGPIPE, which pipefail would
+          # report as a failure (141).
           step() {
             say "$*"
             local rc=0
@@ -172,18 +168,25 @@ jobs:
           step giteapc install Lephenixnoir/OpenLibm Vhex-Kernel-Core/fxlibc
           step giteapc install Lephenixnoir/gint
 
-          { fxsdk --version || true; sh-elf-gcc --version | head -n 1; } | tee -a "$log"
+          { fxsdk --version || true; sh3eb-elf-gcc --version | head -n 1; } | tee -a "$log"
+
+      - name: Check the toolchain
+        run: |
+          fxsdk --version
+          fxsdk path sysroot
+          # The giteapc package is called sh-elf-gcc but installs the sh3eb-elf
+          # toolchain the fxSDK expects; accept either prefix.
+          cc=$(command -v sh3eb-elf-gcc || command -v sh-elf-gcc)
+          "$cc" --version | head -n 1
 
       - name: Build Bench
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           fxsdk build-cg
           test -f "Bench-$(cat version.txt).g3a"
           ls -lh Bench-*.g3a
 
       - name: Build the M1 spike add-in
         run: |
-          export PATH="$HOME/.local/bin:$PATH"
           if [ -f spike/CMakeLists.txt ]; then
             (cd spike && fxsdk build-cg)
             ls -lh spike/Bench-spike-*.g3a || true
@@ -206,3 +209,19 @@ jobs:
             Bench-*.g3a
             spike/Bench-spike-*.g3a
           generate_release_notes: true
+
+      # Artifact and release downloads go through blob storage, which some
+      # networks cannot reach. A branch is plain git, so the same bytes are also
+      # force-pushed to `builds`: `git fetch origin builds` is enough to get
+      # them. Runs last, because it rewrites the working tree.
+      - name: Publish the .g3a to the builds branch
+        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan builds-tmp
+          git rm -rf --cached . >/dev/null
+          git add -f Bench-*.g3a
+          git commit -m "Bench $(cat version.txt) from ${GITHUB_SHA}"
+          git push --force origin HEAD:builds
