@@ -1,21 +1,21 @@
 name: Build
 
-# The .g3a needs the fxSDK and a SuperH GCC, both built from source. Building
-# them takes the better part of an hour on a two-core runner, so the whole
-# install tree is cached and only rebuilt when the cache key changes. After the
-# first run a tag build is a couple of minutes.
+# The .g3a needs the fxSDK and a SuperH GCC, both built from source. That build
+# takes the better part of an hour on a two-core runner, so it lives in its own
+# job whose only success criterion is the install tree; the tree is cached and
+# later runs restore it in seconds. Splitting it matters: a cache is only saved
+# by a job that finishes green, and a compile error in the add-in must not throw
+# the toolchain away.
 #
 #   push to main   -> native tests, preview, Bench-<version>.g3a as an artifact
-#   push of a v*   -> the same, plus the .g3a on the GitHub release, plus a copy
-#                     force-pushed to the `builds` branch (site builds read the
-#                     release, not this branch; the branch is for people who
-#                     cannot fetch a release asset)
+#   push of a v*   -> the same, plus the .g3a on the GitHub release and a copy
+#                     force-pushed to the `builds` branch
 
 on:
   push:
     branches: [main]
     tags: ["v*"]
-    # A website or docs commit cannot change the .g3a; do not spend 40 minutes
+    # A website or docs commit cannot change the .g3a; do not spend an hour
     # proving it.
     paths-ignore:
       - "site/**"
@@ -35,10 +35,14 @@ concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  # The toolchain install tree. One key for both jobs; bump it to force a
+  # rebuild after a toolchain or gint upgrade.
+  TOOLCHAIN_CACHE_KEY: fxsdk-sh3eb-elf-gcc14-v1
+
 jobs:
   native-tests:
     name: Core tests (no gint)
-    # Pinned: the toolchain is built on 22.04, and both jobs should agree.
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -64,29 +68,18 @@ jobs:
           path: docs/images/*.png
           if-no-files-found: warn
 
-  g3a:
-    name: Build the add-in
+  toolchain:
+    name: fxSDK and the SuperH toolchain
     runs-on: ubuntu-22.04
-    timeout-minutes: 120
-    needs: native-tests
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
-
-      - name: Pick the version
-        shell: bash
-        run: |
-          # A tag wins, then a workflow_dispatch input, then version.txt.
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            printf '%s\n' "${GITHUB_REF#refs/tags/v}" > version.txt
-          elif [ -n "${{ inputs.version }}" ]; then
-            printf '%s\n' "${{ inputs.version }}" > version.txt
-          fi
-          echo "building version $(cat version.txt)"
 
       - name: Install build dependencies
         run: |
           # fxSDK's CMakeLists asks pkg-config for libpng16, libusb-1.0,
-          # ncurses and SDL2 (udisks2 is off via the :noudisks2 config).
+          # ncurses and SDL2 (udisks2 is off via the :noudisks2 config). The
+          # rest is what binutils and GCC want.
           sudo apt-get update
           sudo apt-get install -y ca-certificates curl git python3 python3-pil \
             build-essential cmake pkg-config \
@@ -95,34 +88,25 @@ jobs:
             libgmp-dev libmpfr-dev libmpc-dev libisl-dev \
             flex bison gawk texinfo gperf libtool-bin autoconf
 
-      # The expensive part. Restored as a tarball when the key matches, which is
-      # what turns a 40-minute job into a two-minute one. Bump the key to force
-      # a rebuild (new toolchain or gint version).
-      - name: Restore fxSDK, the toolchain and gint
+      - name: Restore the toolchain
         id: toolchain
         uses: actions/cache@v4
         with:
           path: |
             ~/.local
             ~/.giteapc
-          key: fxsdk-sh3eb-elf-gcc12-${{ runner.os }}-v1
-
-      - name: Add the toolchain to PATH
-        shell: bash
-        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          key: ${{ env.TOOLCHAIN_CACHE_KEY }}-${{ runner.os }}
 
       - name: Install GiteaPC
         if: steps.toolchain.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          # Default curl UA on purpose: this host rejects a browser User-Agent
-          # (curl exit 22) and serves the script to plain curl. Retries because
-          # the first attempt after a cold start sometimes 502s.
+          # Default curl UA on purpose: this host refuses a browser User-Agent
+          # (curl exit 22) and serves the script to plain curl.
           curl -fsSL --retry 4 --retry-all-errors --retry-delay 3 -m 60 \
             "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
             -o /tmp/giteapc-install.sh
           printf '\n' | bash /tmp/giteapc-install.sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install fxSDK, the SuperH toolchain and gint
         if: steps.toolchain.outputs.cache-hit != 'true'
@@ -169,19 +153,53 @@ jobs:
           step giteapc install Lephenixnoir/OpenLibm Vhex-Kernel-Core/fxlibc
           step giteapc install Lephenixnoir/gint
 
-          { fxsdk --version || true; sh3eb-elf-gcc --version | head -n 1; } | tee -a "$log"
-
       - name: Check the toolchain
         run: |
+          export PATH="$HOME/.local/bin:$PATH"
           fxsdk --version
           fxsdk path sysroot
-          # The giteapc package is called sh-elf-gcc but installs the sh3eb-elf
-          # toolchain the fxSDK expects; accept either prefix.
           cc=$(command -v sh3eb-elf-gcc || command -v sh-elf-gcc)
           "$cc" --version | head -n 1
 
+  g3a:
+    name: Build the add-in
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    needs: [native-tests, toolchain]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick the version
+        shell: bash
+        run: |
+          # A tag wins, then a workflow_dispatch input, then version.txt.
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            printf '%s\n' "${GITHUB_REF#refs/tags/v}" > version.txt
+          elif [ -n "${{ inputs.version }}" ]; then
+            printf '%s\n' "${{ inputs.version }}" > version.txt
+          fi
+          echo "building version $(cat version.txt)"
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake python3 python3-pil
+
+      - name: Restore the toolchain
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.local
+            ~/.giteapc
+          key: ${{ env.TOOLCHAIN_CACHE_KEY }}-${{ runner.os }}
+
+      - name: Add the toolchain to PATH
+        shell: bash
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: Build Bench
         run: |
+          fxsdk --version
           fxsdk build-cg
           test -f "Bench-$(cat version.txt).g3a"
           ls -lh Bench-*.g3a
@@ -213,8 +231,8 @@ jobs:
 
       # Artifact and release downloads go through blob storage, which some
       # networks cannot reach. A branch is plain git, so the same bytes are also
-      # force-pushed to `builds`: `git fetch origin builds` is enough to get
-      # them. Runs last, because it rewrites the working tree.
+      # force-pushed to `builds`: `git fetch origin builds` is enough. Runs last,
+      # because it rewrites the working tree.
       - name: Publish the .g3a to the builds branch
         if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
         shell: bash
