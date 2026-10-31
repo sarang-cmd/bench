@@ -5,6 +5,10 @@
       "date": "unreleased",
       "entries": [
         {
+          "title": "Browser widths in CI (V2, workstream B)",
+          "body": "`site/scripts/check-widths.mjs` loads all eight routes at 320, 390, 768, 1024 and 1440 px and fails on a horizontal scrollbar, an element that crosses the right edge or one wider than the viewport. Chromium could not be downloaded here, so the sweep has only run in CI; the result of that first run is in the pull request."
+        },
+        {
           "title": "Demo content (V2, workstream D)",
           "body": "`demo/` holds three notes, three decks and a fortnight study log so a fresh install is not three empty screens. The text is written from scratch, not copied from a booklet or a past paper, and `demo/README.md` says in its first section that it needs human proofreading. `tests/test_demo_files.c` reads every demo file with the add-in's own parsers (108 checks) and fails on a single skipped line, so the sample cannot rot into something the calculator refuses to read."
         },
