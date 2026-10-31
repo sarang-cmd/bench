@@ -37,6 +37,16 @@ next one.
   code is ink on shade.
 
 ### Added
+- **The .g3a lives in the repository**, at `dist/Bench-<version>.g3a`, with
+  `BUILD.txt` recording the commit, size and SHA-256. Release assets and
+  artifacts both come from blob storage, which some networks cannot reach; a git
+  remote is plain git. CI refreshes `dist/` for tagged and automatic builds with
+  a `[skip ci]` commit, so the copy does not go stale.
+- **The M1 spike as one patch**: `spike/spike.diff` holds the whole diagnostic
+  add-in, generated from `spike/` by `tools/gen_spike_patch.py`
+  (`make spike-patch`). `git apply spike/spike.diff` on a tree without `spike/`
+  reproduces it byte for byte; CI fails if the patch and the sources disagree.
+  The spike still is not on any release.
 - **Home screen v2**: four categories on F1..F4, a 3 x 2 page of tiles, page
   dots when a category has more than one page, and a dashboard strip on Study
   that counts the decks and notes on the card. The selected tile keeps the

@@ -195,7 +195,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | H website v2 | **not started** |
 | I README and metadata | **not started** |
 | J spike docs | **done**: `docs/spike.md` says what it is and why it is not released |
-| K CI and release | **partly**: the screen checks run in `make test`; version stays 1.0.0 until 1.1.0 is cut |
+| K CI and release | **partly**: the screen checks run in `make test`; the rolling `auto` release is rebuilt every three days; the add-in is committed in `dist/`; version stays 1.0.0 until 1.1.0 is cut |
 
 ### Decisions taken without asking
 

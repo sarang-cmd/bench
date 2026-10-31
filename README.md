@@ -245,14 +245,18 @@ notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 
 ## Install
 
-`Bench-1.0.0.g3a` is in three places. Take whichever works from where you are:
+`Bench-1.0.0.g3a` is in five places. Take whichever works from where you are:
 
 | Where | How |
 |---|---|
 | This site | <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a> - one click, no account |
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
+| `dist/` in the repo | [`dist/Bench-1.0.0.g3a`](dist/Bench-1.0.0.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
 | `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
+
+The copy in `dist/` is the one to use when GitHub's release assets and artifacts
+are unreachable: it is a normal file in a normal clone.
 
 1. Download the file.
 2. Connect the calculator in **USB Flash** mode and copy the file to the
@@ -305,6 +309,8 @@ tests/          native tests, one program per core module
 tools/sim/      host preview: a gint stand-in, key scripts, screenshot tour
 tools/brand/    the icons and the wordmark
 tools/md2bench.py  clean a Markdown file before copying it over
+spike/          the M1 diagnostic add-in, and spike.diff: the same thing as one patch
+dist/           the built .g3a, committed, with BUILD.txt naming the commit
 docs/           plan, task specs, toolchain notes, spike answers, status
 site/           the landing page: React + Vite + Tailwind (see site/README.md)
 ```
