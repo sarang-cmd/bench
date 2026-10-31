@@ -85,6 +85,33 @@ jobs:
             libgmp-dev libmpfr-dev libmpc-dev libisl-dev \
             flex bison gawk texinfo gperf libtool-bin autoconf
 
+      - name: Probe the toolchain host
+        # git.planet-casio.com answered 403 to this job's last four attempts.
+        # Before paying for another fifteen minutes, find out whether the whole
+        # host is closed to us or only the installer's raw file, and whether a
+        # git clone still works. The answers come back as annotations.
+        continue-on-error: true
+        shell: bash
+        run: |
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+          url="https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh"
+          code=$(curl -s -o /dev/null -m 25 -w '%{http_code}' "$url" || echo "curl-failed")
+          echo "::notice title=probe curl default UA::install.sh -> $code"
+          code=$(curl -s -o /dev/null -m 25 -A "$UA" -w '%{http_code}' "$url" || echo "curl-failed")
+          echo "::notice title=probe curl browser UA::install.sh -> $code"
+          code=$(curl -s -o /dev/null -m 25 -w '%{http_code}' "https://git.planet-casio.com/" || echo "curl-failed")
+          echo "::notice title=probe host root::/ -> $code"
+          if git ls-remote --exit-code https://git.planet-casio.com/Lephenixnoir/GiteaPC.git HEAD >/dev/null 2>&1; then
+            echo "::notice title=probe git clone::https clone works"
+          else
+            echo "::notice title=probe git clone::https clone FAILED"
+          fi
+          if git ls-remote --exit-code https://github.com/Insoft-UK/gint.git HEAD >/dev/null 2>&1; then
+            echo "::notice title=probe git clone::github clone works"
+          else
+            echo "::notice title=probe git clone::github clone FAILED"
+          fi
+
       - name: Install GiteaPC
         run: |
           curl -fsSL "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
