@@ -1,0 +1,10 @@
+# tour step: 20_notes_scrolled
+# run with tools/sim/run_tour.sh, which draws every step
+down
+down
+right
+exe
+exe
+down
+down
+down

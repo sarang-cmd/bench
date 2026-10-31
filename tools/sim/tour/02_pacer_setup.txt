@@ -1,0 +1,3 @@
+# tour step: 02_pacer_setup
+# run with tools/sim/run_tour.sh, which draws every step
+exe

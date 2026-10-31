@@ -1,0 +1,6 @@
+# tour step: 23_numtheory_form
+# run with tools/sim/run_tour.sh, which draws every step
+down
+down
+exe
+exe

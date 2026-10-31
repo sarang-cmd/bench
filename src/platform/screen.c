@@ -1,0 +1,254 @@
+/* screen.c - display helpers.  Every gint display call in the add-in is here.
+ *
+ * gint 2.10.0 (headers checked):
+ *   dclear(color_t), drect(x1,y1,x2,y2,color), drect_border(...), dpixel,
+ *   dline, dtext(x,y,fg,str), dtext_opt(x,y,fg,bg,halign,valign,str,size),
+ *   dsize(str,font,&w,&h), drsize(str,font,width,&w), dupdate().
+ * The framebuffer is DWIDTH x DHEIGHT (396x224); the OS shows a centred
+ * 384x216 window, hence SCR_X/SCR_Y below. */
+
+#include "screen.h"
+
+#include <gint/display.h>
+
+#include "theme.h"
+
+static int line_h = 8;
+
+/* Width in pixels of the first `n` bytes of `s`. */
+static int text_w_prefix(char const *s, int n)
+{
+    char tmp[80];
+    int copy = n < (int)sizeof tmp - 1 ? n : (int)sizeof tmp - 1;
+
+    if (n <= 0 || !s)
+        return 0;
+    for (int i = 0; i < copy; i++)
+        tmp[i] = s[i];
+    tmp[copy] = 0;
+    return scr_text_w(tmp);
+}
+
+static int clip_lo(int v, int lo)
+{
+    return v < lo ? lo : v;
+}
+
+static int clip_hi(int v, int hi)
+{
+    return v > hi ? hi : v;
+}
+
+void scr_init(void)
+{
+    int w = 0;
+    int h = 0;
+
+    dsize("Ag", NULL, &w, &h);
+    line_h = (h > 0) ? h : 8;
+}
+
+int scr_text_h(void)
+{
+    return line_h;
+}
+
+int scr_text_w(char const *s)
+{
+    int w = 0;
+    int h = 0;
+
+    if (!s)
+        return 0;
+    dsize(s, NULL, &w, &h);
+    return w;
+}
+
+int scr_text_fit(char const *s, int max_w)
+{
+    int w = 0;
+    char const *cut;
+
+    if (!s || max_w <= 0)
+        return 0;
+    cut = drsize(s, NULL, max_w, &w);
+    return (int)(cut - s);
+}
+
+void scr_present(void)
+{
+    dupdate();
+}
+
+void scr_clear(int color)
+{
+    dclear(color);
+}
+
+void scr_fill(int x, int y, int w, int h, int color)
+{
+    int x0 = clip_lo(x, 0);
+    int y0 = clip_lo(y, 0);
+    int x1 = clip_hi(x + w, SCR_W) - 1;
+    int y1 = clip_hi(y + h, SCR_H) - 1;
+
+    if (w <= 0 || h <= 0 || x1 < x0 || y1 < y0)
+        return;
+    /* The clip above can only shrink; when the rectangle starts outside the
+     * window on the right/bottom there is nothing to draw. */
+    if (x >= SCR_W || y >= SCR_H)
+        return;
+    drect(x0 + SCR_X, y0 + SCR_Y, x1 + SCR_X, y1 + SCR_Y, color);
+}
+
+void scr_frame(int x, int y, int w, int h, int color, int thickness)
+{
+    int t = thickness < 1 ? 1 : thickness;
+
+    if (w <= 0 || h <= 0)
+        return;
+    scr_fill(x, y, w, t, color);
+    scr_fill(x, y + h - t, w, t, color);
+    scr_fill(x, y, t, h, color);
+    scr_fill(x + w - t, y, t, h, color);
+}
+
+void scr_hline(int x, int y, int w, int color)
+{
+    scr_fill(x, y, w, 1, color);
+}
+
+void scr_vline(int x, int y, int h, int color)
+{
+    scr_fill(x, y, 1, h, color);
+}
+
+void scr_line(int x1, int y1, int x2, int y2, int color)
+{
+    if (x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0 || x1 >= SCR_W ||
+        y1 >= SCR_H || x2 >= SCR_W || y2 >= SCR_H)
+    {
+        /* Fall back to a clipped rectangle for the axis-aligned cases only. */
+        if (y1 == y2)
+            scr_hline(clip_lo(x1, 0), y1, clip_hi(x2, SCR_W) - clip_lo(x1, 0),
+                      color);
+        else if (x1 == x2)
+            scr_vline(x1, clip_lo(y1, 0),
+                      clip_hi(y2, SCR_H) - clip_lo(y1, 0), color);
+        return;
+    }
+    dline(x1 + SCR_X, y1 + SCR_Y, x2 + SCR_X, y2 + SCR_Y, color);
+}
+
+void scr_pixel(int x, int y, int color)
+{
+    if (x < 0 || y < 0 || x >= SCR_W || y >= SCR_H)
+        return;
+    dpixel(x + SCR_X, y + SCR_Y, color);
+}
+
+void scr_text(int x, int y, char const *s, int color)
+{
+    if (!s || !*s)
+        return;
+    if (y < -line_h || y >= SCR_H)
+        return;
+    dtext(x + SCR_X, y + SCR_Y, color, s);
+}
+
+void scr_text_bg(int x, int y, char const *s, int fg, int bg)
+{
+    if (!s || !*s)
+        return;
+    if (y < -line_h || y >= SCR_H)
+        return;
+    dtext_opt(x + SCR_X, y + SCR_Y, fg, bg, DTEXT_LEFT, DTEXT_TOP, s, -1);
+}
+
+void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w)
+{
+    int fit;
+
+    if (!s || !*s || max_w <= 0)
+        return;
+    if (scr_text_w(s) <= max_w)
+    {
+        scr_text(x, y, s, color);
+        return;
+    }
+    fit = scr_text_fit(s, max_w - scr_text_w("..."));
+    if (fit < 0)
+        fit = 0;
+    dtext_opt(x + SCR_X, y + SCR_Y, color, C_NONE, DTEXT_LEFT, DTEXT_TOP, s,
+              fit);
+    scr_text(x + text_w_prefix(s, fit), y, "...", color);
+}
+
+void scr_text_right(int x_right, int y, char const *s, int color)
+{
+    scr_text(x_right - scr_text_w(s), y, s, color);
+}
+
+void scr_text_center(int x_left, int w, int y, char const *s, int color)
+{
+    scr_text(x_left + (w - scr_text_w(s)) / 2, y, s, color);
+}
+
+int scr_utf8_encode(unsigned int cp, char *buf)
+{
+    if (cp < 0x80)
+    {
+        buf[0] = (char)cp;
+        buf[1] = 0;
+        return 1;
+    }
+    if (cp < 0x800)
+    {
+        buf[0] = (char)(0xC0 | (cp >> 6));
+        buf[1] = (char)(0x80 | (cp & 0x3F));
+        buf[2] = 0;
+        return 2;
+    }
+    if (cp < 0x10000)
+    {
+        buf[0] = (char)(0xE0 | (cp >> 12));
+        buf[1] = (char)(0x80 | ((cp >> 6) & 0x3F));
+        buf[2] = (char)(0x80 | (cp & 0x3F));
+        buf[3] = 0;
+        return 3;
+    }
+    buf[0] = (char)(0xF0 | (cp >> 18));
+    buf[1] = (char)(0x80 | ((cp >> 12) & 0x3F));
+    buf[2] = (char)(0x80 | ((cp >> 6) & 0x3F));
+    buf[3] = (char)(0x80 | (cp & 0x3F));
+    buf[4] = 0;
+    return 4;
+}
+
+int scr_glyph_w(unsigned int codepoint)
+{
+    char buf[5];
+    int w = 0;
+    int h = 0;
+
+    if (codepoint == 0)
+        return 0;
+    scr_utf8_encode(codepoint, buf);
+    dsize(buf, NULL, &w, &h);
+    return w;
+}
+
+bool scr_has_glyph(unsigned int codepoint)
+{
+    char buf[5];
+
+    /* The default gint font covers printable ASCII.  Anything above is drawn as
+     * '?' until the M1 font test (docs/spike.md question 4) says otherwise;
+     * md2bench.py maps the common symbols to ASCII for this reason. */
+    if (codepoint < 0x20)
+        return false;
+    if (codepoint > 0x7E)
+        return false;
+    scr_utf8_encode(codepoint, buf);
+    return scr_glyph_w(codepoint) > 0;
+}

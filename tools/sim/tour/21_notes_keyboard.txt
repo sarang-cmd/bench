@@ -1,0 +1,8 @@
+# tour step: 21_notes_keyboard
+# run with tools/sim/run_tour.sh, which draws every step
+down
+down
+right
+exe
+exe
+f1

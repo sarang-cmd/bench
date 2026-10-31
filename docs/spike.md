@@ -10,8 +10,9 @@ is a guess.
 * Copy: USB Flash mode, drag the file to the calculator drive, run it from the
   main menu
 
-The build has **not** been run: this container has no SuperH toolchain (see
-docs/toolchain.md section 5). The source is type-checked against the real gint
+The build has **not** been run here: the sandbox that wrote this had no SuperH
+toolchain (see docs/toolchain.md section 5). The CI workflow builds it, or
+`fxsdk build-cg` in `spike/` does. The source is type-checked against the real gint
 2.10.0 headers with the host compiler and `-Wall -Wextra`, which proves the
 call names and signatures, not the SuperH code generation.
 
@@ -248,3 +249,25 @@ Your result:
 2. List every plan assumption the results change and update docs/plan.md and
    CHANGELOG.md (Stage 4).
 3. Then TASK-M2 (shell), version 0.0.3.
+
+## Status of these answers
+
+Nothing in the result column has been filled in, and it will not be filled in by
+an agent: every line needs the real calculator. When the answers arrive, the
+files to update are `docs/plan.md` (the assumptions table in section 2 and the
+loader rules in section 6.4), `docs/STATUS.md` (the "Assumptions that still need
+the calculator" table) and `CHANGELOG.md` (a short note under the next version).
+
+Until then the code takes the safe side of each question:
+
+| # | Question | What the code does without the answer |
+|---|----------|----------------------------------------|
+| 1, 2 | file calls and paths | one place, `src/platform/store.c`; every call inside `gint_world_switch()`; paths as `u"\\\\fls0\\Bench\\..."` |
+| 3 | float printf | never used; `src/core/numfmt.c` formats every number |
+| 4 | font coverage | ASCII only; anything above 0x7E draws as `?` and is counted in the Notes footer |
+| 5 | ALPHA letters | not used; text entry is the on-screen keyboard in `src/ui/widgets.c` |
+| 6 | 1 Hz RTC | `rtc_periodic_enable` is only used by the spike; the add-in uses `rtc_ticks()` |
+| 7 | heap | three buffers, allocated once per screen, freed on the way out |
+| 8 | geometry | 396x224 framebuffer, 384x216 window, offset added in `src/platform/screen.c` |
+| 9 | redraw time | Pacer redraws at 4 Hz, everything else only on a key |
+| 10 | `.g3a` size | gint dominates it; CI reports the number on every build |

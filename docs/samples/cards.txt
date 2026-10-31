@@ -1,0 +1,16 @@
+# Bench sample deck. One card per line: question | answer
+# Lines starting with # and blank lines are skipped.
+# Copy this file to Bench/cards on the calculator.
+
+What is the unit of impulse? | N s
+What is the unit of power? | W (J/s)
+Ohm's law | V = I R
+What does a capacitor store? | charge, Q = C V
+Kinetic energy | 1/2 m v^2
+What is the gradient of a distance-time graph? | speed
+What is the area under a velocity-time graph? | displacement
+Hooke's law | F = k x
+Speed of light in a vacuum | 3.00 x 10^8 m/s
+What is the charge on an electron? | -1.60 x 10^-19 C
+# A deliberately bad line follows, so the deck screen has something to report
+No pipe on this line

@@ -1,0 +1,13 @@
+# tour step: 16_cards_boxes
+# run with tools/sim/run_tour.sh, which draws every step
+down
+exe
+exe
+f1
+exe
+f1
+exe
+f2
+exe
+f1
+f2

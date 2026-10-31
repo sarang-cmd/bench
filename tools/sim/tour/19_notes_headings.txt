@@ -1,0 +1,8 @@
+# tour step: 19_notes_headings
+# run with tools/sim/run_tour.sh, which draws every step
+down
+down
+right
+exe
+exe
+f3
