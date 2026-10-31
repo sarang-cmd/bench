@@ -70,7 +70,11 @@ int log_parse_all(char const *text, log_entry_t *out, int max, int *skipped)
 {
     int count = 0;
     int bad = 0;
-    char line[LOG_LINE_MAX * 2];
+    /* Roomier than a real line (LOG_LINE_MAX is 32), so a long comment is
+     * still one line: the old buffer split a 70-character comment into a
+     * comment plus a broken line, and the totals gained a phantom skip. */
+    char line[128];
+    bool too_long;
 
     if (!text) {
         if (skipped) *skipped = 0;
@@ -80,13 +84,25 @@ int log_parse_all(char const *text, log_entry_t *out, int max, int *skipped)
     while (*text) {
         int n = 0;
 
-        while (*text && *text != '\n' && n < (int)sizeof line - 1)
-            line[n++] = *text++;
+        too_long = false;
+        while (*text && *text != '\n')
+        {
+            if (n < (int)sizeof line - 1)
+                line[n++] = *text;
+            else
+                too_long = true;               /* swallow the rest of the line */
+            text++;
+        }
         line[n] = 0;
         if (*text == '\n') text++;
 
-        if (!n) continue;                      /* blank line */
-        if (line[0] == '#') continue;          /* a note to self */
+        if (!n && !too_long) continue;         /* blank line */
+        if (!too_long && line[0] == '#') continue;  /* a note to self */
+        if (too_long)
+        {
+            bad++;
+            continue;
+        }
         {
             log_entry_t e;
 

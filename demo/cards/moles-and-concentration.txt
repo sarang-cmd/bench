@@ -1,0 +1,9 @@
+# Amount of substance.  Sample content for the demo folder.
+How many particles are in one mole? | 6.02 x 10^23, the Avogadro constant.
+What is the molar mass? | The mass of one mole of a substance, in g/mol.
+How do you find the number of moles from a mass? | Divide the mass in grams by the molar mass.
+What is the concentration of a solution? | The amount of solute in moles divided by the volume in dm cubed.
+How many cm cubed are in one dm cubed? | One thousand.
+What is the molar gas volume at room temperature and pressure? | About 24 dm cubed per mole.
+How do you dilute a solution without changing the amount of solute? | Add solvent: c1 V1 equals c2 V2.
+Why is the percentage yield never more than 100 percent? | Some product is always lost in handling, filtering or side reactions.

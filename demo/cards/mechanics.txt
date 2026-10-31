@@ -1,0 +1,12 @@
+# Mechanics: quantities and units.  One card per line: question | answer
+# Sample content for the demo folder - read it before you trust it.
+What is the SI unit of force? | The newton, N. One N accelerates 1 kg at 1 m/s squared.
+What does a newton second measure? | Impulse, and it equals the change in momentum.
+Define momentum. | Mass times velocity, in kg m/s.
+State the principle of conservation of momentum. | In a closed system the total momentum before a collision equals the total after.
+What is the difference between mass and weight? | Mass is the amount of matter in kg; weight is the force of gravity on it in N.
+What does the area under a velocity-time graph give? | The displacement.
+What does the gradient of a velocity-time graph give? | The acceleration.
+When is work done on an object? | When a force moves it through a distance in the direction of the force.
+What is the unit of power? | The watt, W: one joule per second.
+Why does a skydiver stop accelerating? | Air resistance grows with speed until it balances the weight, and the resultant force is zero.

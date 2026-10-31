@@ -409,6 +409,16 @@ tour_done 0           # 1 once the first-run line on the home screen is gone
 notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 ```
 
+## Demo content
+
+`demo/` has something to look at before you have written a single note: three
+Markdown notes, three decks of cards and a fortnight of study log, ready to copy
+into `Bench/notes`, `Bench/cards` and `Bench/study`.
+
+**The text needs human proofreading.** It is written for the demo, in my own
+words, and has not been checked by a teacher; treat it as revision notes and
+check anything before you rely on it in an exam.
+
 ## Install
 
 `Bench-1.0.0.g3a` is in five places. Take whichever works from where you are:

@@ -16,6 +16,14 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **Demo content (V2, workstream D)**: `demo/` holds three notes, three decks
+  and a fortnight study log so a fresh install is not three empty screens. The
+  text is written from scratch, not copied from a booklet or a past paper, and
+  `demo/README.md` says in its first section that it needs human proofreading.
+  `tests/test_demo_files.c` reads every demo file with the add-in's own parsers
+  (108 checks) and fails on a single skipped line, so the sample cannot rot into
+  something the calculator refuses to read.
+
 - **The site is eight pages, not one (V2)**: `/features`, `/simulator`,
   `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the
   landing page, which keeps its layout. `src/router.jsx` is a 120-line path
