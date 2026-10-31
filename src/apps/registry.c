@@ -195,9 +195,12 @@ static char const help_numtheory[] =
 
 static char const help_settings[] =
     "Settings\n"
-    "Uncertainty figures, the Pacer\n"
-    "checkpoint size and the Notes wrap\n"
-    "width.\n"
+    "Five rows: uncertainty figures, the\n"
+    "Pacer checkpoint size, the Notes\n"
+    "wrap width, the unit the Triangle\n"
+    "tool opens in, and whether the\n"
+    "first-run line on the home screen\n"
+    "has been read.\n"
     "\n"
     "Every value is also a line in\n"
     "Bench/state/settings.cfg, one per\n"

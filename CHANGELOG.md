@@ -16,6 +16,19 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **Settings, five rows (V2)**: `src/core/settings.c` gains two keys,
+  `angle_unit` (0 degrees, 1 radians) and `tour_done` (0 or 1). The screen now
+  lists the unit the Triangle tool opens in and whether the first-run line on
+  the home screen has been read; `app_triangle_init()` takes its starting unit
+  from the setting, and F3/F4 still switch for that session only, without
+  writing the file. A settings file from 1.0.0 still loads: the new keys fall
+  back to their defaults. 687 native checks in `tests/test_settings.c`.
+  Unverified on device.
+
+- **First-run hint (V2)**: with `tour_done 0` the home screen prints one line
+  above the softkeys - "F1-F4 categories, F5 explains a tile, EXE opens it" -
+  and opening help with F5 sets `tour_done` and writes the file once.
+
 - **Complex numbers (F6)**: `src/core/cplx.c` adds, subtracts, multiplies,
   divides (division by zero is a NaN, not a wrong number), raises to an integer
   power and reports the modulus, the argument (with `bm_atan2`, new in

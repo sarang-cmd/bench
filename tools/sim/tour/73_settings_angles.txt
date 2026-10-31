@@ -1,0 +1,9 @@
+# tour step: 73_settings_angles
+# Angles default = radians, then the Triangle tool opens in radians too.
+# (LEFT/RIGHT change a row; EXE is the same as RIGHT, so it is not pressed here.)
+tool:settings
+down
+down
+down
+right
+tool:triangle

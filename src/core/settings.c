@@ -81,6 +81,21 @@ uint8_t settings_clamp_wrap(int v)
     return (uint8_t)v;
 }
 
+uint8_t settings_clamp_angle(int v)
+{
+    return v == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_RAD : SETTINGS_ANGLE_DEG;
+}
+
+uint8_t settings_clamp_flag(int v)
+{
+    return v ? 1 : 0;
+}
+
+char const *settings_angle_text(uint8_t v)
+{
+    return v == SETTINGS_ANGLE_RAD ? "radians" : "degrees";
+}
+
 /* ---- defaults, compare -------------------------------------------------- */
 
 void settings_defaults(bench_settings_t *s)
@@ -90,7 +105,9 @@ void settings_defaults(bench_settings_t *s)
     s->uncert_sig = 1;
     s->pacer_checkpoint = 10;
     s->notes_wrap = 0;
-    s->reserved = 0;
+    s->angle_unit = SETTINGS_ANGLE_DEG;
+    s->tour_done = 0;
+    s->reserved[0] = s->reserved[1] = s->reserved[2] = 0;
 }
 
 bool settings_equal(bench_settings_t const *a, bench_settings_t const *b)
@@ -99,7 +116,9 @@ bool settings_equal(bench_settings_t const *a, bench_settings_t const *b)
         return false;
     return a->uncert_sig == b->uncert_sig &&
            a->pacer_checkpoint == b->pacer_checkpoint &&
-           a->notes_wrap == b->notes_wrap;
+           a->notes_wrap == b->notes_wrap &&
+           a->angle_unit == b->angle_unit &&
+           a->tour_done == b->tour_done;
 }
 
 /* ---- parse -------------------------------------------------------------- */
@@ -165,6 +184,16 @@ int settings_parse(char const *text, int len, bench_settings_t *s, int *ignored)
         else if (key_is(text + start, klen, "notes_wrap"))
         {
             s->notes_wrap = settings_clamp_wrap(value);
+            applied++;
+        }
+        else if (key_is(text + start, klen, "angle_unit"))
+        {
+            s->angle_unit = settings_clamp_angle(value);
+            applied++;
+        }
+        else if (key_is(text + start, klen, "tour_done"))
+        {
+            s->tour_done = settings_clamp_flag(value);
             applied++;
         }
         else if (key_is(text + start, klen, "version"))
@@ -241,6 +270,16 @@ int settings_format(bench_settings_t const *s, char *buf, int size)
         buf[n++] = '\n';
     }
 
+    /* Literal by literal: PUT() takes sizeof, and a ?: of two string literals
+     * is a pointer, so sizeof would be the width of a pointer. */
+    if (s->angle_unit == SETTINGS_ANGLE_RAD)
+        PUT("angle_unit 1\n");
+    else
+        PUT("angle_unit 0\n");
+    if (s->tour_done)
+        PUT("tour_done 1\n");
+    else
+        PUT("tour_done 0\n");
     if (s->notes_wrap == 0)
         PUT("notes_wrap 0\n");
     else if (s->notes_wrap == 100)

@@ -168,7 +168,7 @@
     "category": "Tools",
     "screen": 6,
     "needs_file": false,
-    "help": "Settings\nUncertainty figures, the Pacer\ncheckpoint size and the Notes wrap\nwidth.\n\nEvery value is also a line in\nBench/state/settings.cfg, one per\nline, safe to edit by hand.\n\nThe file is written only when a\nvalue changes.\n\nKeys: UP/DOWN choose, LEFT/RIGHT\nchange, EXIT back."
+    "help": "Settings\nFive rows: uncertainty figures, the\nPacer checkpoint size, the Notes\nwrap width, the unit the Triangle\ntool opens in, and whether the\nfirst-run line on the home screen\nhas been read.\n\nEvery value is also a line in\nBench/state/settings.cfg, one per\nline, safe to edit by hand.\n\nThe file is written only when a\nvalue changes.\n\nKeys: UP/DOWN choose, LEFT/RIGHT\nchange, EXIT back."
   },
   {
     "id": "about",

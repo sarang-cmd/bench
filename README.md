@@ -367,6 +367,10 @@ you leave the screen, never in a loop.
 | F2 | Polynomials, roots | one more coefficient |
 | UP/DOWN | Sig figs | pick one of the six modes |
 | F4 / F3 | Sig figs | next / previous mode |
+| UP/DOWN | Settings | pick a row |
+| LEFT/RIGHT | Settings | change the selected row |
+| EXE | Home screen | open the selected tile |
+| F5 | Home screen | explain the selected tile; the hint line goes away |
 | LEFT/RIGHT | Sig figs | the n of the rounding modes |
 | F6 | home | About |
 | F1 / F2 / F3 / F4 | Function table | table / row count / clear slot / degrees-radians |
@@ -400,6 +404,8 @@ end of a session, save settings only when a value changes.
 # Bench settings v1
 uncert_sig 1          # 1 figure, or 2 when the first digit is 1
 pacer_checkpoint 10   # marks between checkpoints, 1..200
+angle_unit 0          # 0 = degrees, 1 = radians; the unit Triangle opens in
+tour_done 0           # 1 once the first-run line on the home screen is gone
 notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 ```
 
