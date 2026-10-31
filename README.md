@@ -39,6 +39,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Polynomials](docs/images/37_poly_quad.png) | ![Expand](docs/images/38_poly_expand.png) |
 | ![Triangle](docs/images/40_triangle_sss.png) | ![Two triangles](docs/images/41_triangle_ssa.png) |
 | ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
+| ![Complex numbers](docs/images/44_cplx_mul.png) | ![Complex power](docs/images/46_cplx_pow.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -165,6 +166,21 @@ and the ALPHA mapping is one of the things only the device can settle. The
 rational root theorem does the searching, so `2x^2 - 3x + 1` finds `1/2` and
 `1`, while `x^2 + 1` honestly reports none.
 
+### Complex numbers
+`a` and `b`, one operation at a time, and the answer in all three forms at once
+so a student can see that they are the same number.
+
+| Shown | For `a = 3 + 4i`, `b = 1 - 2i` |
+|---|---|
+| rectangular | `a x b` -> `11 - 2i`, `a / b` -> `-1 + 2i` |
+| modulus and argument | `|z| 2.236`, `arg 116.57 deg` |
+| polar | the same pair as `2.236 angle 116.57 deg` |
+
+`a ^ n` takes n from the real part of `b` and goes up to 64 either way, so
+`(1 + i)^4` is `-4` and `(1 + i)^-1` is `0.5 - 0.5i`. Dividing by `0 + 0i` says
+`not a number` instead of printing an infinity, and F3/F4 put the argument in
+degrees or radians, the unit in the title bar.
+
 ### Sig figs
 Count them, round them, write them in standard form or with an SI prefix, then
 practise. Significant figures are counted on the **text**, not on the value, so
@@ -204,6 +220,8 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F3 / F4 | Triangle | degrees / radians (re-solves) |
 | F2 | Triangle | the other triangle, when SSA has two |
 | F3 / F4 | Polynomials | previous / next screen |
+| F2 | Complex numbers | the operation: +, -, x, /, ^ |
+| F3 / F4 | Complex numbers | argument in degrees / radians |
 | F2 | Polynomials, roots | one more coefficient |
 | UP/DOWN | Sig figs | pick one of the six modes |
 | F4 / F3 | Sig figs | next / previous mode |

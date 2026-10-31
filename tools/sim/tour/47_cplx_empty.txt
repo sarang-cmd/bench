@@ -1,0 +1,6 @@
+# tour step: 47_cplx_empty
+# F1 clears the four boxes; the empty state says what to do.
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:cplx
+f1
+exe

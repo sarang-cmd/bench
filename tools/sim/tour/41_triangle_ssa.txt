@@ -1,10 +1,7 @@
 # tour step: 41_triangle_ssa
 # a = 10, b = 15, A = 30 degrees: two triangles, and F2 offers the other one.
-f2
-right
-right
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:triangle
 1
 0
 right

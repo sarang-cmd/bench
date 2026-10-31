@@ -33,6 +33,7 @@ set(SOURCES
 
   src/core/cards_parse.c
   src/core/color.c
+  src/core/cplx.c
   src/core/expr.c
   src/core/exprs.c
   src/core/help.c
@@ -63,6 +64,7 @@ set(SOURCES
 
   src/apps/app_about.c
   src/apps/app_cards.c
+  src/apps/app_cplx.c
   src/apps/app_function.c
   src/apps/app_help.c
   src/apps/app_menu.c

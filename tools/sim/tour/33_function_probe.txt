@@ -1,7 +1,6 @@
 # tour step: 33_function_probe
-# starts at the home screen; see tools/sim/run_tour.sh
-f2
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:function
 f1
 down
 down

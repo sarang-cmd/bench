@@ -440,3 +440,17 @@ double bm_ceil(double x)
         t++;
     return (double)t;
 }
+
+double bm_atan2(double y, double x)
+{
+    if (x > 0.0)
+        return bm_atan(y / x);
+    if (x < 0.0)
+        return y >= 0.0 ? bm_atan(y / x) + BM_PI : bm_atan(y / x) - BM_PI;
+    /* x == 0: straight up or down, and (0, 0) has no angle. */
+    if (y > 0.0)
+        return BM_HALF_PI;
+    if (y < 0.0)
+        return -BM_HALF_PI;
+    return 0.0;
+}

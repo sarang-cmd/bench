@@ -1,4 +1,3 @@
 # tour step: 22_numtheory_list
-# starts at the home screen; see tools/sim/run_tour.sh
-f2
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:numtheory

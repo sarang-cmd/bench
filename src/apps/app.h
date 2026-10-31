@@ -30,6 +30,7 @@ typedef enum {
     APP_SCREEN_SETTINGS,
     APP_SCREEN_ABOUT,
     APP_SCREEN_HELP,
+    APP_SCREEN_CPLX,
     APP_SCREEN_FUNCTION,
     APP_SCREEN_POLY,
     APP_SCREEN_TRIANGLE,
@@ -66,6 +67,7 @@ DECLARE_APP(numtheory);
 DECLARE_APP(settings);
 DECLARE_APP(about);
 DECLARE_APP(help);
+DECLARE_APP(cplx);
 DECLARE_APP(function);
 DECLARE_APP(poly);
 DECLARE_APP(triangle);

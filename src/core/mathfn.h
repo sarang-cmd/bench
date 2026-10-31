@@ -46,6 +46,8 @@ void bm_sincos(double x, double *s, double *c);
 /* Inverse trigonometric functions, in radians.  Outside their domain they
  * return NaN (asin and acos beyond 1) rather than a wrong number. */
 double bm_atan(double x);
+/* Angle of (x, y): atan(y/x) in the right quadrant, in [-pi, pi]. */
+double bm_atan2(double y, double x);
 double bm_asin(double x);
 double bm_acos(double x);
 

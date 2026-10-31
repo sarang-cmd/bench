@@ -30,6 +30,7 @@ typedef enum {
     VIEW_SETTINGS,
     VIEW_ABOUT,
     VIEW_HELP,
+    VIEW_CPLX,
     VIEW_FUNCTION,
     VIEW_POLY,
     VIEW_TRIANGLE,
@@ -70,6 +71,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                      app_about_timeout },
     [VIEW_HELP] = { app_help_init, app_help_draw, app_help_key,
                     app_help_timeout },
+    [VIEW_CPLX] = { app_cplx_init, app_cplx_draw, app_cplx_key,
+                    app_cplx_timeout },
     [VIEW_FUNCTION] = { app_function_init, app_function_draw, app_function_key,
                         app_function_timeout },
     [VIEW_POLY] = { app_poly_init, app_poly_draw, app_poly_key,
@@ -107,6 +110,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_SETTINGS: set_view(VIEW_SETTINGS); break;
     case APP_SCREEN_ABOUT: set_view(VIEW_ABOUT); break;
     case APP_SCREEN_HELP: set_view(VIEW_HELP); break;
+    case APP_SCREEN_CPLX: set_view(VIEW_CPLX); break;
     case APP_SCREEN_FUNCTION: set_view(VIEW_FUNCTION); break;
     case APP_SCREEN_POLY: set_view(VIEW_POLY); break;
     case APP_SCREEN_TRIANGLE: set_view(VIEW_TRIANGLE); break;

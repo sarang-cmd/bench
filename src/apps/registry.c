@@ -90,6 +90,17 @@ static void icon_steps_up(int x, int y, int fill, int edge)
     (void)edge;
 }
 
+/* An "i" in dots: two squares, the dot over the stem. */
+static void icon_i(int x, int y, int fill, int edge)
+{
+    /* The dot: a square outlined, then filled. */
+    scr_fill(x + 7, y + 1, 6, 6, edge);
+    scr_fill(x + 8, y + 2, 4, 4, fill);
+    /* The stem, twice as tall as it is wide. */
+    scr_fill(x + 7, y + 9, 6, 10, edge);
+    scr_fill(x + 8, y + 10, 4, 8, fill);
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -315,6 +326,26 @@ static char const help_seq[] =
     "Keys: arrows move, digits type,\n"
     "EXE solves, F1 clears.";
 
+
+static char const help_cplx[] =
+    "Complex numbers\n"
+    "Two numbers a and b, one operation\n"
+    "at a time.\n"
+    "\n"
+    "F2 picks the operation: a + b,\n"
+    "a - b, a x b, a / b and a ^ n, where\n"
+    "n is the real part of b.\n"
+    "\n"
+    "The result is written three ways:\n"
+    "rectangular (-1 + 2i), its modulus\n"
+    "and argument, and polar form.\n"
+    "\n"
+    "F3 shows the argument in degrees,\n"
+    "F4 in radians.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "DEL deletes, F1 clears, EXIT home.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -350,6 +381,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NOTES,
         .needs_file = true,
         .help = help_notes,
+    },
+    {
+        .id = "cplx",
+        .title = "Complex",
+        .subtitle = "a + bi",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_i,
+        .screen = APP_SCREEN_CPLX,
+        .needs_file = false,
+        .help = help_cplx,
     },
     {
         .id = "function",

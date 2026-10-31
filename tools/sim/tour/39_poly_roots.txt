@@ -1,7 +1,6 @@
 # tour step: 39_poly_roots
 # x^3 - 6x^2 + 11x - 6 as coefficients: three whole roots, nothing left over.
-f2
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:poly
 f4
 f4

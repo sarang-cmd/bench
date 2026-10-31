@@ -187,7 +187,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy |
 | A5 shared services | **partly**: help is done (screen, key, paging, tests) and `core/mathfn.c` gives core sqrt, exp, ln, log10, pow and the trigonometric functions without libm (the expression engine's ground); expression engine, number entry, working lines, history and settings v2 are not started |
 | B overlap hunt | **done for every existing screen**: 43 scripts, 0 findings; worst cases added |
-| C fifteen tools | **F1, F2, F3, F5 and F9 done** (Function table; triangle solver; polynomials; sequences; sig figs); F6 is next |
+| C fifteen tools | **F1, F2, F3, F5, F6 and F9 done** (Function table; triangle solver; polynomials; sequences; complex numbers; sig figs); F4 (root finder) is next |
 | D demo content | **not started** |
 | E settings v2 | **not started** |
 | F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run tour, empty states and `docs/TUTORIAL.md` are not written |

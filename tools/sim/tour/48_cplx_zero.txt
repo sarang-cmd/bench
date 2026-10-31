@@ -1,0 +1,14 @@
+# tour step: 48_cplx_zero
+# Dividing by zero: b is set to 0 + 0i and the result says so.
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:cplx
+down
+down
+del
+0
+right
+del
+del
+0
+f2
+exe

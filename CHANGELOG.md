@@ -16,6 +16,13 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **Complex numbers (F6)**: `src/core/cplx.c` adds, subtracts, multiplies,
+  divides (division by zero is a NaN, not a wrong number), raises to an integer
+  power and reports the modulus, the argument (with `bm_atan2`, new in
+  `src/core/mathfn.c`) and the polar form. `src/apps/app_cplx.c` shows all three
+  at once, F2 cycles the operation, F3/F4 pick degrees or radians in the title
+  bar. 37 native checks. Unverified on device.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every
