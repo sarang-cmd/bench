@@ -124,7 +124,7 @@ void sh_half_circle_icon(int cx, int cy, int r, int fill_h, int fill, int edge,
 void sh_triangle_icon(int x, int y, int w, int h, int fill, int edge, int ol)
 {
     if (ol > 0)
-        sh_triangle(x - 2 * ol, y - ol, w + 4 * ol, h + 2 * ol, edge);
+        sh_triangle(x - ol, y - ol, w + 2 * ol, h + 2 * ol, edge);
     sh_triangle(x, y, w, h, fill);
 }
 
