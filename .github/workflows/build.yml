@@ -10,6 +10,10 @@ name: Build
 #   push to main   -> native tests, preview, Bench-<version>.g3a as an artifact
 #   push of a v*   -> the same, plus the .g3a on the GitHub release and a copy
 #                     force-pushed to the `builds` branch
+#   called         -> the same pipeline for another workflow (see
+#                     auto-build.yml, which calls this every few days with
+#                     release_tag: auto; the release is deleted and recreated,
+#                     so there is always exactly one automatic build)
 
 on:
   push:
@@ -28,11 +32,30 @@ on:
       version:
         description: "Version to build, e.g. 1.0.0 (default: version.txt)"
         required: false
+      release_tag:
+        description: "Also publish a release under this tag (e.g. auto). Empty: no release."
+        required: false
+  workflow_call:
+    inputs:
+      version:
+        description: "Version to build (default: version.txt)"
+        type: string
+        required: false
+      release_tag:
+        description: "Publish a release under this tag; an existing one is replaced."
+        type: string
+        required: false
+      release_name:
+        description: "Title for that release."
+        type: string
+        required: false
 
 # A newer push on the same ref makes the older run pointless; kill it so it
 # stops burning minutes.
+# github.workflow is the caller's name when this file is called, so a scheduled
+# build and a push build of the same ref do not cancel each other.
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 # Creating the release needs a token that can write; without this the release
@@ -174,12 +197,18 @@ jobs:
     timeout-minutes: 60
     needs: [native-tests, toolchain]
     steps:
+      # Full history, shallow enough to be free: the automatic build lists the
+      # recent commits in its release notes.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Pick the version
         shell: bash
         run: |
-          # A tag wins, then a workflow_dispatch input, then version.txt.
+          # A tag wins, then an input (workflow_dispatch or the caller), then
+          # version.txt. An automatic build keeps the release number and is
+          # identified by its build date, so the download keeps its file name.
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             printf '%s\n' "${GITHUB_REF#refs/tags/v}" > version.txt
           elif [ -n "${{ inputs.version }}" ]; then
@@ -229,15 +258,41 @@ jobs:
 
       # The release notes are the CHANGELOG section for this version, written by
       # hand and committed: generate_release_notes calls a second API that the
-      # token in this repository cannot reach.
+      # token in this repository cannot reach. An automatic build has no
+      # CHANGELOG section, so it lists what went in since the last one.
       - name: Collect the release notes
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
         shell: bash
         run: |
           version=$(cat version.txt)
-          python3 - "$version" <<'EOF' > /tmp/release-notes.md
-          import re, sys
-          version = sys.argv[1]
+          python3 - "$version" "${{ inputs.release_tag }}" <<'EOF' > /tmp/release-notes.md
+          import os, re, subprocess, sys
+
+          version, tag = sys.argv[1], sys.argv[2]
+          if tag:
+              # Automatic build: say what is in it and nothing else. The commit
+              # count is honest about "this is 1.0.0 plus later work".
+              head = subprocess.run(["git", "rev-parse", "--short", "HEAD"],
+                                    capture_output=True, text=True).stdout.strip()
+              date = subprocess.run(["git", "show", "-s", "--format=%cs", "HEAD"],
+                                    capture_output=True, text=True).stdout.strip()
+              # This repository lands work through merge commits, so a
+              # --no-merges list would be nearly empty; show the recent history
+              # as it is.
+              log = subprocess.run(["git", "log", "-10", "--format=- %s"],
+                                   capture_output=True, text=True).stdout.strip()
+              print("## Automatic build")
+              print()
+              print(f"Bench {version}, built from the tip of `main` on {date} (commit `{head}`).")
+              print()
+              print("Replaces the previous automatic build. For the released version, use the")
+              print("tagged release instead.")
+              print()
+              print("### What is in it")
+              print()
+              print(log or "- no commits")
+              sys.exit(0)
+
           text = open("CHANGELOG.md", encoding="utf-8").read()
           # The section runs from "## <version>" to the next "## " heading.
           match = re.search(rf"^## {re.escape(version)}.*?(?=^## |\Z)", text, re.S | re.M)
@@ -248,13 +303,30 @@ jobs:
           EOF
           cat /tmp/release-notes.md
 
+      # An automatic build replaces the previous one instead of piling up: the
+      # release and its tag are deleted, then recreated at the commit just
+      # built, so `releases/tag/auto` always points at the newest green build.
+      - name: Replace the previous automatic release
+        if: inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.release_tag }}
+        run: |
+          gh release delete "$TAG" --yes --cleanup-tag --repo "$GITHUB_REPOSITORY" \
+            && echo "removed the old $TAG release and tag" \
+            || echo "no $TAG release to remove yet"
+
+      # Only the add-in itself goes on a release. The M1 spike is a diagnostic
+      # add-in for the hardware session; it stays in the artifact, where it can
+      # be fetched when it is actually needed.
       - name: Put the .g3a on the release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            Bench-*.g3a
-            spike/Bench-spike-*.g3a
+          tag_name: ${{ inputs.release_tag != '' && inputs.release_tag || github.ref_name }}
+          name: ${{ inputs.release_name != '' && inputs.release_name || (github.ref_type == 'tag' && github.ref_name || 'Bench build') }}
+          target_commitish: ${{ github.sha }}
+          files: Bench-*.g3a
           body_path: /tmp/release-notes.md
 
       # Artifact and release downloads go through blob storage, which some

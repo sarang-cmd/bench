@@ -1,0 +1,118 @@
+name: Automatic build
+
+# A rolling build from the tip of `main`, refreshed every few days, so the
+# newest code is always downloadable without anybody cutting a version.
+#
+# Why this exists, in one paragraph: the SuperH toolchain is a 1.5 GB cache
+# entry, and GitHub throws a cache away after seven days without a hit. That
+# cache took about 50 minutes to build once. A build every few days keeps it
+# warm, proves that `main` still compiles, and leaves a fresh .g3a on the
+# releases page. On a public repository those minutes do not count against a
+# quota, but the run still skips itself when there is nothing to build.
+#
+# How it decides:
+#   - daily at 03:30 UTC, so "every three days" is three days, not 72h ± jitter
+#   - build only if the last automatic build is at least 3 days old
+#   - and only if `main` has moved since that build (same code = same file)
+#
+# The release is rebuilt, not added to: build.yml deletes the `auto` release and
+# its tag, then recreates them at the commit it just built. There is always
+# exactly one automatic build, and it always matches `main`.
+
+on:
+  schedule:
+    - cron: "30 3 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Build now, even if the last automatic build is recent or nothing changed"
+        type: boolean
+        default: true
+
+# Never run two at once; never cancel one that is halfway through a release.
+concurrency:
+  group: auto-build
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  due:
+    name: Is a build due?
+    runs-on: ubuntu-latest
+    outputs:
+      due: ${{ steps.check.outputs.due }}
+      why: ${{ steps.check.outputs.why }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the last automatic build
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ inputs.force && 'true' || 'false' }}
+          MIN_DAYS: "3"
+        shell: bash
+        run: |
+          # Prints two lines into $GITHUB_OUTPUT: due=true|false and a reason,
+          # so the run itself says why it did or did not build.
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import datetime, json, os, subprocess, sys
+
+          tag = "auto"
+          min_days = int(os.environ["MIN_DAYS"])
+          force = os.environ.get("FORCE") == "true"
+          repo = os.environ["GITHUB_REPOSITORY"]
+          head = os.environ["GITHUB_SHA"]
+
+          def api(path):
+              out = subprocess.run(["gh", "api", f"repos/{repo}/{path}"],
+                                   capture_output=True, text=True)
+              return json.loads(out.stdout) if out.returncode == 0 else None
+
+          def decide(due, why):
+              # GitHub takes a literal newline out of a step output badly, so
+              # keep the reason to one line.
+              print(f"due={'true' if due else 'false'}")
+              print(f"why={' '.join(why.split())}")
+              print(f"::notice title=Automatic build::{'due' if due else 'not due'} - {' '.join(why.split())}",
+                    file=sys.stderr)
+              sys.exit(0)
+
+          if force:
+              decide(True, "forced by hand")
+
+          release = api(f"releases/tags/{tag}")
+          if release is None:
+              decide(True, "no automatic build has been made yet")
+
+          published = datetime.datetime.fromisoformat(
+              release["published_at"].replace("Z", "+00:00"))
+          age = (datetime.datetime.now(datetime.timezone.utc) - published).total_seconds()
+          days = age / 86400
+
+          ref = api(f"git/ref/tags/{tag}")
+          built = ref["object"]["sha"] if ref else None
+
+          if days < min_days:
+              decide(False, f"the last automatic build is {days:.1f} days old, "
+                            f"under the {min_days}-day interval")
+          if built == head:
+              decide(False, f"main has not moved since the build at {built[:10]}")
+          decide(True, f"the last automatic build is {days:.1f} days old and main "
+                       f"moved ({built[:10] if built else 'unknown'} -> {head[:10]})")
+          EOF
+
+  build:
+    name: Build and release
+    needs: due
+    if: needs.due.outputs.due == 'true'
+    permissions:
+      contents: write
+      actions: read
+    uses: ./.github/workflows/build.yml
+    with:
+      release_tag: auto
+      release_name: "Bench - automatic build from main"
