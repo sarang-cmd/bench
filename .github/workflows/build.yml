@@ -109,9 +109,12 @@ jobs:
             done
           }
 
+          # giteapc asks before it installs a dependency, and a runner has no
+          # stdin: without an answer it dies with "EOFError: EOF when reading a
+          # line".  That is what killed the first four attempts of this job.
           step() {
             say "$*"
-            if ! "$@" >>"$log" 2>&1; then
+            if ! yes | "$@" >>"$log" 2>&1; then
               say "FAILED: $*"
               annotate
               exit 1
