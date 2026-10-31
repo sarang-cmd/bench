@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         paper: "#f4f3ee",
-        ink: "#1a1818",
+        ink: "#2f2d2e",
         red: "#d92d27",
         yellow: "#f2c230",
         blue: "#2f5fd0",
@@ -18,9 +18,9 @@ export default {
         mono: ["DejaVu Sans Mono", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       boxShadow: {
-        brute: "8px 8px 0 #1a1818",
-        "brute-sm": "5px 5px 0 #1a1818",
-        "brute-lg": "12px 12px 0 #1a1818",
+        brute: "8px 8px 0 #2f2d2e",
+        "brute-sm": "5px 5px 0 #2f2d2e",
+        "brute-lg": "12px 12px 0 #2f2d2e",
       },
       borderWidth: { 3: "3px" },
     },

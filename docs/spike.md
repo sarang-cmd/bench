@@ -9,8 +9,9 @@ it and does not need it at runtime.
 
 It is still built by CI, so it stays compiled and available when a hardware
 session needs it, but it travels in its own `bench-spike` artifact. The
-`bench-g3a` artifact holds the add-in and nothing else, so downloading "the
-build" cannot hand anyone the wrong file:
+`bench-g3a` artifact, the `builds` branch, `dist/` and every release hold the
+add-in and nothing else, so downloading "the build" cannot hand anyone the
+wrong file:
 
 ```sh
 gh run download --name bench-g3a   --dir dist   # Bench-<version>.g3a
@@ -21,6 +22,15 @@ Keeping it off the release page is deliberate: two `.g3a` files with similar
 names, one of which prints debug numbers, is a trap for anyone who just wants
 the add-in. `dist/` in this repository holds Bench's `.g3a` and only that, for
 the same reason.
+
+## Where the files are
+
+| File | What it is |
+|---|---|
+| `spike/main.c`, `spike/CMakeLists.txt` | the source, kept so the patch can be regenerated |
+| `spike/spike.diff` | the same two files as one patch, checked by CI |
+| `Bench-spike-0.0.2.g3a` | the built add-in: `bench-spike` artifact only, never a release |
+| `dist/Bench-<version>.g3a` | Bench itself, committed; no spike |
 
 ## The patch
 

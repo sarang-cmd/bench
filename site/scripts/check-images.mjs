@@ -41,8 +41,7 @@ if (missing.length) {
 // The download button points at a file on this site, so that file has to be in
 // public/. It is the release build, copied in here by hand (see README), not
 // something a visitor should have to fetch from GitHub.
-const data = readFileSync(join(root, "src/data.js"), "utf8");
-const version = data.match(/VERSION = "([^"]+)"/)?.[1];
+const version = readFileSync(join(root, "..", "version.txt"), "utf8").trim();
 const addin = join(root, "public", `Bench-${version}.g3a`);
 if (!existsSync(addin)) {
   console.error(`missing add-in for the download button: public/Bench-${version}.g3a`);

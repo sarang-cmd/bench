@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { tools } from "../data.js";
+import { SCREEN_COUNT, tools } from "../data.js";
 import { Eyebrow, Screen, Section, Heading, Blurb, accents } from "../ui.jsx";
 
 function Thumb({ shot, active, accent, onSelect }) {
@@ -53,7 +53,9 @@ export default function Tour() {
     <Section id="tour" className="py-14 sm:py-20">
       <Eyebrow accent={tool.accent}>The tour</Eyebrow>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <Heading>Twenty-six screens, every one of them real.</Heading>
+        <Heading>
+          {SCREEN_COUNT} screens, every one of them real.
+        </Heading>
         <Blurb className="max-w-md text-base sm:text-base">
           Every picture here was drawn by the add-in&rsquo;s own code, rendered on
           a PC by <code className="font-mono">make sim</code>. No mock-ups.
