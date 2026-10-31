@@ -67,6 +67,14 @@ next one.
   device.
 
 
+- **Lab graph (F8)**: `src/core/graph.c` fits a line to measured points and
+  quotes the standard error of the gradient and the intercept from the
+  residuals, plus a round axis range for the plot (42 native checks).
+  `src/apps/app_graph.c` takes x, y and an error per point, lists them with the
+  fit, and draws the graph with a bar through each point and the line of best
+  fit. Unverified on device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

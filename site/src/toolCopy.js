@@ -427,6 +427,32 @@ export const toolCopy = {
     ],
   },
 
+  graph: {
+    rank: 5,
+    accent: "blue",
+    tag: "error bars",
+    summary:
+      "Plot measured points with their uncertainties and read the gradient, its standard error and r squared.",
+    body:
+      "A lab graph is a scatter with bars, a line of best fit and the two " +
+      "numbers for the conclusion. Type x, y and the error for each point, then " +
+      "F2 draws the whole thing: the axes hold the full bar, so a measurement " +
+      "can never run off the top.",
+    points: [
+      "The gradient comes with its standard error, from the residuals, not a guess.",
+      "Fewer than three points leave nothing to check the fit against, so no error is quoted.",
+      "Rounded axes: the range is a whole number of 1, 2, 2.5 or 5 steps.",
+      "Up to twelve points, and the fit updates as each one is added.",
+    ],
+    lead: "66_graph_plot.png",
+    leadCaption: "Five spring readings with bars and the line of best fit",
+    shots: [
+      ["65_graph_points.png", "The points, with the fit underneath them"],
+      ["66_graph_plot.png", "Five spring readings with bars and the line of best fit"],
+      ["67_graph_typed.png", "Typing a point by hand"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

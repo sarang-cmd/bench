@@ -40,6 +40,7 @@ typedef enum {
     VIEW_SUVAT,
     VIEW_MOLES,
     VIEW_BASE,
+    VIEW_GRAPH,
     VIEW_SIGFIG,
     VIEW_COUNT,
 } view_t;
@@ -95,6 +96,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                      app_moles_timeout },
     [VIEW_BASE] = { app_base_init, app_base_draw, app_base_key,
                     app_base_timeout },
+    [VIEW_GRAPH] = { app_graph_init, app_graph_draw, app_graph_key,
+                     app_graph_timeout },
     [VIEW_SIGFIG] = { app_sigfig_init, app_sigfig_draw, app_sigfig_key,
                       app_sigfig_timeout },
 };
@@ -135,6 +138,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_SUVAT: set_view(VIEW_SUVAT); break;
     case APP_SCREEN_MOLES: set_view(VIEW_MOLES); break;
     case APP_SCREEN_BASE: set_view(VIEW_BASE); break;
+    case APP_SCREEN_GRAPH: set_view(VIEW_GRAPH); break;
     case APP_SCREEN_SIGFIG: set_view(VIEW_SIGFIG); break;
     default: set_view(VIEW_MENU); break;
     }

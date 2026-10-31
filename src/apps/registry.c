@@ -466,6 +466,32 @@ static char const help_base[] =
     "Keys: digits type, DEL takes one\n"
     "back, F4 swaps a and b.";
 
+static char const help_graph[] =
+    "Lab graph\n"
+    "Type a measured pair and its error,\n"
+    "press EXE, and repeat. F2 draws\n"
+    "the graph with a bar up and down\n"
+    "through every point and the line of\n"
+    "best fit.\n"
+    "\n"
+    "The gradient comes with its standard\n"
+    "error, from the residuals, and r\n"
+    "squared says how well the line\n"
+    "fits. Fewer than three points leave\n"
+    "nothing to measure the error against,\n"
+    "so it is left off.\n"
+    "\n"
+    "The axes hold the whole bar, not\n"
+    "just the centre, so a measurement\n"
+    "never runs off the top.\n"
+    "\n"
+    "Up to twelve points. F1 clears,\n"
+    "F3 puts the example back, DEL on an\n"
+    "empty field drops the last point.\n"
+    "\n"
+    "Keys: digits type, LEFT/RIGHT pick\n"
+    "a field, EXE adds the point.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -600,6 +626,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_STATS,
         .needs_file = false,
         .help = help_stats,
+    },
+    {
+        .id = "graph",
+        .title = "Lab graph",
+        .subtitle = "error bars",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_BLUE,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_GRAPH,
+        .needs_file = false,
+        .help = help_graph,
     },
     {
         .id = "uncert",

@@ -1,0 +1,4 @@
+# tour step: 66_graph_plot
+# F2 draws the same five points with their bars and the line of best fit.
+tool:graph
+f2

@@ -40,6 +40,7 @@ typedef enum {
     APP_SCREEN_SUVAT,
     APP_SCREEN_MOLES,
     APP_SCREEN_BASE,
+    APP_SCREEN_GRAPH,
     APP_SCREEN_SIGFIG,
 } app_screen_t;
 
@@ -82,6 +83,7 @@ DECLARE_APP(stats);
 DECLARE_APP(suvat);
 DECLARE_APP(moles);
 DECLARE_APP(base);
+DECLARE_APP(graph);
 DECLARE_APP(sigfig);
 
 #endif /* BENCH_APP_H */

@@ -2,7 +2,7 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Seventeen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+**Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
@@ -288,6 +288,20 @@ the count in `b`, shown in binary, decimal and hex with the bits set. A shift of
 10, 16, 36) or the operator; F2 opens the letter keyboard, because the keypad
 has no A-F keys this add-in may count on.
 
+### Lab graph
+Type a measured pair and its uncertainty, then look at the picture rather than
+the numbers.
+
+| Points (x, y, +-err) | Fit |
+|---|---|
+| (1, 0.52, 0.1) (2, 0.98, 0.1) (3, 1.51, 0.1) (4, 2.03, 0.1) (5, 2.47, 0.1) | gradient 0.495 +- 0.009, intercept 0.017, r^2 0.999 |
+
+The gradient carries its standard error, worked out from the residuals:
+`s = sqrt(sum of residuals^2 / (n - 2))`, `dm = s / sqrt(Sxx)`. Fewer than
+three points leave nothing to measure the error against, so it is left off
+rather than faked. The axes hold the whole error bar, not just the centre, so a
+measurement can never run off the top of the graph.
+
 ## Keys
 
 | Key | Where | What |
@@ -314,6 +328,9 @@ has no A-F keys this add-in may count on.
 | F2 | Base and bits | the letter keyboard for A-F |
 | F3 | Base and bits | entry base / the operator |
 | F4 | Base and bits | swap a and b |
+| EXE | Lab graph | add the point |
+| F2 | Lab graph | the graph |
+| F3 | Lab graph | the example data |
 | F3 / F4 | Statistics | quartile method / the working |
 | F2 | SUVAT | the flight path |
 | F3 | SUVAT | g = 9.81 or 10 |
