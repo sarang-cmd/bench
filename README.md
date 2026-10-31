@@ -472,6 +472,19 @@ answer (file API behaviour, float printing, font coverage, redraw time, heap).
 push the tag; the workflow runs the tests, builds `Bench-X.Y.Z.g3a` with the
 real fxSDK and attaches it to the release.
 
+There is a second, rolling release, tagged `auto`. Once a day at 03:30 UTC
+`auto-build.yml` asks whether the last automatic build is at least three days
+old; if it is, it builds the tip of `main` and **replaces** that release - same
+tag, same file name - so the releases page never grows a pile of nightly
+builds. It also keeps the 1.5 GB toolchain cache alive (GitHub evicts a cache
+after seven days, and rebuilding it takes about fifty minutes) and proves that
+`main` still compiles. To run one by hand: Actions -> Automatic build -> Run
+workflow.
+
+The `bench-spike` artifact in CI is the M1 diagnostic add-in, not Bench: it
+answers the hardware questions in `docs/spike.md` and has never been a release
+asset.
+
 ## Credits
 
 - [gint](https://gitea.planet-casio.com/Lephenixnoir/gint) and the
