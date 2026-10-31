@@ -32,11 +32,11 @@ static void test_format_round_trip(void)
     n = settings_format(&s, buf, sizeof buf);
     T_TRUE(n > 0);
     T_STR(buf, "# Bench settings v1\nuncert_sig 1\npacer_checkpoint 10\n"
-               "notes_wrap 0\n");
+               "angle_unit 0\ntour_done 0\nnotes_wrap 0\n");
 
     settings_defaults(&out);
     out.uncert_sig = 2;
-    T_TRUE(settings_parse(buf, n, &out, &ignored) == 3);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 5);
     T_INT(ignored, 0);
     T_INT(out.uncert_sig, 1);
     T_TRUE(settings_equal(&s, &out));
@@ -48,7 +48,7 @@ static void test_format_round_trip(void)
     n = settings_format(&s, buf, sizeof buf);
     T_TRUE(n > 0);
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, NULL) == 3);
+    T_TRUE(settings_parse(buf, n, &out, NULL) == 5);
     T_TRUE(settings_equal(&s, &out));
 
     /* Every checkpoint value in range formats and parses back. */
@@ -158,6 +158,63 @@ static void test_clamps(void)
     T_INT(settings_clamp_wrap(49), 50);
     T_INT(settings_clamp_wrap(100), 100);
     T_INT(settings_clamp_wrap(200), 150);
+
+    /* Angles are an either/or: anything that is not 1 means degrees. */
+    T_INT(settings_clamp_angle(-3), SETTINGS_ANGLE_DEG);
+    T_INT(settings_clamp_angle(0), SETTINGS_ANGLE_DEG);
+    T_INT(settings_clamp_angle(1), SETTINGS_ANGLE_RAD);
+    T_INT(settings_clamp_angle(2), SETTINGS_ANGLE_DEG);
+
+    T_INT(settings_clamp_flag(0), 0);
+    T_INT(settings_clamp_flag(1), 1);
+    T_INT(settings_clamp_flag(9), 1);
+    T_INT(settings_clamp_flag(-1), 1);
+}
+
+static void test_angles_and_hint(void)
+{
+    bench_settings_t s, out;
+    char buf[SETTINGS_BUFSIZE];
+    int ignored = -1;
+    int n;
+
+    T_SECTION("angle unit and first-run hint");
+
+    T_SECTION("defaults");
+    settings_defaults(&s);
+    T_INT(s.angle_unit, SETTINGS_ANGLE_DEG);
+    T_INT(s.tour_done, 0);
+    T_STR(settings_angle_text(SETTINGS_ANGLE_DEG), "degrees");
+    T_STR(settings_angle_text(SETTINGS_ANGLE_RAD), "radians");
+
+    T_SECTION("round trip");
+    s.angle_unit = SETTINGS_ANGLE_RAD;
+    s.tour_done = 1;
+    n = settings_format(&s, buf, sizeof buf);
+    T_TRUE(n > 0);
+    T_TRUE(strstr(buf, "angle_unit 1\n") != NULL);
+    T_TRUE(strstr(buf, "tour_done 1\n") != NULL);
+    settings_defaults(&out);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 5);
+    T_INT(ignored, 0);
+    T_INT(out.angle_unit, SETTINGS_ANGLE_RAD);
+    T_INT(out.tour_done, 1);
+    T_TRUE(settings_equal(&s, &out));
+
+    T_SECTION("out-of-range values fall back");
+    settings_defaults(&out);
+    T_TRUE(settings_parse("angle_unit 7\ntour_done 42\n", 26, &out, &ignored) == 2);
+    T_INT(ignored, 0);
+    T_INT(out.angle_unit, SETTINGS_ANGLE_DEG);
+    T_INT(out.tour_done, 1);
+
+    T_SECTION("a file with only the old three keys still loads");
+    settings_defaults(&out);
+    T_TRUE(settings_parse("uncert_sig 2\npacer_checkpoint 20\nnotes_wrap 100\n",
+                          48, &out, &ignored) == 3);
+    T_INT(out.angle_unit, SETTINGS_ANGLE_DEG);
+    T_INT(out.tour_done, 0);
+    T_INT(out.pacer_checkpoint, 20);
 }
 
 static void test_equality(void)
@@ -188,6 +245,7 @@ static void run_tests(void)
     test_format_small_buffer();
     test_parse_tolerance();
     test_clamps();
+    test_angles_and_hint();
     test_equality();
     test_text();
 }

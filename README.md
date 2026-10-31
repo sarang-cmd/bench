@@ -2,12 +2,21 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
+<!-- BADGES:BEGIN -->
+[![version](https://img.shields.io/badge/version-1.0.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.0.0)
+[![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
+[![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
+[![tools](https://img.shields.io/badge/tools-18-d92d27)](docs/tools.json)
+[![screens](https://img.shields.io/badge/screens-75-1f9c8a)](docs/images)
+<!-- BADGES:END -->
+
 **Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
-statistics, SUVAT and projectiles, moles, bases and bits, uncertainty and
-significant figures. One
+statistics, lab graphs with error bars, SUVAT and projectiles, moles, bases and
+bits, uncertainty and significant figures, plus a study log that adds up the
+minutes you actually spent. One
 `.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
@@ -27,6 +36,17 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | Built with | fxSDK + gint 2.10, C11 |
 | Version | 1.0.0 |
 | Licence | MIT (see `LICENSE`) |
+
+<!-- STATS:BEGIN -->
+| | |
+|---|---|
+| Tools | 18 in 3 categories |
+| Screens captured | 75 |
+| Tour scripts | 75 |
+| Native test programs | 29 |
+| C source | 21,580 lines in 100 files |
+| Version | 1.0.0 |
+<!-- STATS:END -->
 
 ## Screens
 
@@ -302,6 +322,23 @@ three points leave nothing to measure the error against, so it is left off
 rather than faked. The axes hold the whole error bar, not just the centre, so a
 measurement can never run off the top of the graph.
 
+### Study log
+A plain text file, `Bench/study/log.txt`, one line a session:
+
+```
+2026-10-31 25 pacer
+2026-11-01 40 cards
+```
+
+The screen reads it and shows the totals, the days logged and the longest run
+of consecutive days. F1 adds an entry: type the minutes, UP/DOWN picks the tool,
+EXE saves. A line it cannot read is skipped and counted, never added up wrongly.
+
+Bench cannot read the calendar - gint's date fields were never checked on the
+hardware, see `docs/spike.md` - so a new entry takes the day after the newest
+one in the log, and UP/DOWN on the day moves it. The file is written once, when
+you leave the screen, never in a loop.
+
 ## Keys
 
 | Key | Where | What |
@@ -331,6 +368,10 @@ measurement can never run off the top of the graph.
 | EXE | Lab graph | add the point |
 | F2 | Lab graph | the graph |
 | F3 | Lab graph | the example data |
+| F1 | Study log | add a session |
+| F2 | Study log | delete the last entry |
+| LEFT / RIGHT | Study log | minutes / tool / day |
+| F2 | Cards, on a deck | mixed order inside each box |
 | F3 / F4 | Statistics | quartile method / the working |
 | F2 | SUVAT | the flight path |
 | F3 | SUVAT | g = 9.81 or 10 |
@@ -346,6 +387,10 @@ measurement can never run off the top of the graph.
 | F2 | Polynomials, roots | one more coefficient |
 | UP/DOWN | Sig figs | pick one of the six modes |
 | F4 / F3 | Sig figs | next / previous mode |
+| UP/DOWN | Settings | pick a row |
+| LEFT/RIGHT | Settings | change the selected row |
+| EXE | Home screen | open the selected tile |
+| F5 | Home screen | explain the selected tile; the hint line goes away |
 | LEFT/RIGHT | Sig figs | the n of the rounding modes |
 | F6 | home | About |
 | F1 / F2 / F3 / F4 | Function table | table / row count / clear slot / degrees-radians |
@@ -379,8 +424,20 @@ end of a session, save settings only when a value changes.
 # Bench settings v1
 uncert_sig 1          # 1 figure, or 2 when the first digit is 1
 pacer_checkpoint 10   # marks between checkpoints, 1..200
+angle_unit 0          # 0 = degrees, 1 = radians; the unit Triangle opens in
+tour_done 0           # 1 once the first-run line on the home screen is gone
 notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 ```
+
+## Demo content
+
+`demo/` has something to look at before you have written a single note: three
+Markdown notes, three decks of cards and a fortnight of study log, ready to copy
+into `Bench/notes`, `Bench/cards` and `Bench/study`.
+
+**The text needs human proofreading.** It is written for the demo, in my own
+words, and has not been checked by a teacher; treat it as revision notes and
+check anything before you rely on it in an exam.
 
 ## Install
 

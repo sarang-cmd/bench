@@ -1,0 +1,9 @@
+# Quadratics.  Sample content for the demo folder.
+What shape is the graph of a quadratic? | A parabola: a U shape, or an upside-down U when the leading coefficient is negative.
+How do you find the roots of a quadratic from its graph? | Where the curve crosses the x axis.
+What does the discriminant tell you? | b squared minus 4ac: positive gives two roots, zero gives one, negative gives none on the real line.
+State the quadratic formula. | x equals minus b plus or minus the square root of b squared minus 4ac, all over 2a.
+What is the axis of symmetry of y = ax^2 + bx + c? | The vertical line x = -b / 2a.
+How do you complete the square for x^2 + 6x + 5? | Halve the 6 to get 3, square it to get 9, so (x + 3)^2 - 4.
+What does completing the square show you? | The turning point of the parabola, read straight off the bracket.
+If a quadratic has no real roots, what else is true? | Its graph never crosses the x axis and the discriminant is negative.

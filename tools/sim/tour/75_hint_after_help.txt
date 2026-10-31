@@ -1,0 +1,4 @@
+# tour step: 75_hint_after_help
+# F5 opens help once and the hint is gone for good (tour_done is saved).
+f5
+exe

@@ -13,6 +13,7 @@ Outputs
     assets-cg/icon-sel.png   92x64, selected tile
     docs/images/brand-wordmark.svg   the wordmark, for the README and the site
     docs/images/brand-card.png       a 1200x630 card, for release notes
+    docs/images/og*.png              one 1200x630 card per site route
 
     python3 tools/brand/make_brand.py
 
@@ -182,6 +183,60 @@ stroke-width="4"/>
 """
 
 
+# One Open Graph card per route.  Same rules as the rest of the brand: flat
+# blocks, heavy ink outline, one accent, no gradient, DejaVu Sans Bold for text.
+OG_CARDS = [
+    ("og", "18 tools", "one .g3a for the Casio fx-CG 50", RED),
+    ("og-features", "Features", "every tool, one screen away", BLUE),
+    ("og-simulator", "Simulator", "the real frame buffer, in a browser", VIOLET),
+    ("og-tutorial", "Tutorial", "ten minutes to a study session", TEAL),
+    ("og-install", "Install", "one file, USB Flash mode, MENU", YELLOW),
+    ("og-downloads", "Downloads", "four doors, one file, one hash", BLUE),
+    ("og-changelog", "Changelog", "what changed, newest first", RED),
+    ("og-about", "About", "what it is, and what it is not", VIOLET),
+]
+
+
+def og_card(title, subtitle, accent):
+    """1200x630: ink bar, accent block, the title in heavy type, a red square."""
+    from PIL import ImageFont
+
+    font_path = None
+    for path in WORDMARK_FONTS:
+        if Path(path).exists():
+            font_path = path
+            break
+    if font_path is None:
+        raise SystemExit("DejaVu Sans Bold not found; install fonts-dejavu")
+
+    big = ImageFont.truetype(font_path, 96)
+    small = ImageFont.truetype(font_path, 40)
+    mark = ImageFont.truetype(font_path, 44)
+
+    w, h = 1200, 630
+    img = Image.new("RGB", (w, h), PAPER)
+    d = ImageDraw.Draw(img)
+
+    d.rectangle([0, 0, w, 104], fill=INK)
+    d.text((48, 26), "BENCH", font=mark, fill=PAPER)
+    d.rectangle([w - 72, 40, w - 40, 72], fill=RED)
+
+    # The accent band carries the title; the paper below carries the subtitle.
+    d.rectangle([0, 104, w, 392], fill=accent)
+    d.rectangle([0, 104, w, 392], outline=INK, width=6)
+    d.text((48, 176), title, font=big, fill=INK if accent == YELLOW else PAPER)
+
+    d.text((48, 440), subtitle, font=small, fill=INK)
+
+    # The badge is sized to its text: a fixed box clipped "fx-CG 50" short.
+    label = "fx-CG 50"
+    tw = d.textlength(label, font=mark)
+    d.rectangle([48, 520, 48 + tw + 32, 566], fill=PAPER)
+    d.rectangle([48, 520, 48 + tw + 32, 566], outline=INK, width=4)
+    d.text((64, 526), label, font=mark, fill=INK)
+    return img
+
+
 def main() -> int:
     (ROOT / "assets-cg").mkdir(exist_ok=True)
     (ROOT / "docs" / "images").mkdir(parents=True, exist_ok=True)
@@ -191,8 +246,11 @@ def main() -> int:
     card().save(ROOT / "docs" / "images" / "brand-card.png")
     wordmark().save(ROOT / "docs" / "images" / "brand-wordmark.png")
     (ROOT / "docs" / "images" / "brand-wordmark.svg").write_text(wordmark_svg())
+    for name, title, subtitle, accent in OG_CARDS:
+        og_card(title, subtitle, accent).save(ROOT / "docs" / "images" / f"{name}.png")
     print("wrote assets-cg/icon-uns.png, assets-cg/icon-sel.png,")
     print("      docs/images/brand-card.png, brand-wordmark.png/.svg")
+    print(f"      docs/images/og*.png ({len(OG_CARDS)} route cards)")
     return 0
 
 

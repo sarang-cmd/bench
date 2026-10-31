@@ -453,6 +453,32 @@ export const toolCopy = {
     ],
   },
 
+  log: {
+    rank: 4,
+    accent: "yellow",
+    tag: "minutes per day",
+    summary:
+      "A plain text log of what you studied and for how long, with totals, days logged and the longest streak.",
+    body:
+      "One line a session, in a file you can also write by hand. The screen adds " +
+      "up the minutes, counts the days and finds the longest run of consecutive " +
+      "days; a line it cannot read is skipped and counted rather than silently " +
+      "binned.",
+    points: [
+      "\u201c2026-10-31 25 pacer\u201d is a whole entry.",
+      "F1 adds one: minutes, then UP/DOWN for the tool, EXE to save.",
+      "The file is written once, when you leave the screen.",
+      "Bench cannot read the calendar, so an entry takes the day after the newest.",
+    ],
+    lead: "70_log_entries.png",
+    leadCaption: "Two sessions, with the totals above them",
+    shots: [
+      ["70_log_entries.png", "Two sessions, with the totals above them"],
+      ["69_log_add.png", "Adding a session: minutes, tool, day"],
+      ["68_log_empty.png", "The empty state says where the file lives"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

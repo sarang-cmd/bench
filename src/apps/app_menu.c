@@ -253,6 +253,13 @@ void app_menu_draw(void)
     if (pages > 1)
         draw_dots(pages, page, dots_y);
 
+    /* First run: say what the four category keys and F5 do, once.  The line
+     * goes away for good the first time help is opened (app_cfg()->tour_done). */
+    if (!app_cfg()->tour_done)
+        scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
+                        "F1-F4 categories, F5 explains a tile, EXE opens it",
+                        TH_INK);
+
     w_softkeys(soft, category);
     scr_present();
 }
@@ -304,6 +311,12 @@ app_result_t app_menu_key(bench_event_t ev)
     case BK_MENU:
         return APP_QUIT;
     case BK_F5:
+        /* Opening help once is the whole first-run tour. */
+        if (!app_cfg()->tour_done)
+        {
+            app_cfg()->tour_done = 1;
+            app_cfg_save();
+        }
         app_help_open(tool_category_at(category, sel));
         break;
     case BK_F6:

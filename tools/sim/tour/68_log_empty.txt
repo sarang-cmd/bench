@@ -1,0 +1,3 @@
+# tour step: 68_log_empty
+# No file yet: the empty state says what to do next.
+tool:log

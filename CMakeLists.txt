@@ -41,6 +41,7 @@ set(SOURCES
   src/core/graph.c
   src/core/help.c
   src/core/leitner.c
+  src/core/logbook.c
   src/core/mathfn.c
   src/core/md_layout.c
   src/core/md_parse.c
@@ -75,6 +76,7 @@ set(SOURCES
   src/apps/app_graph.c
   src/apps/app_help.c
   src/apps/app_base.c
+  src/apps/app_log.c
   src/apps/app_menu.c
   src/apps/app_moles.c
   src/apps/app_notes.c

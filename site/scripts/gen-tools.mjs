@@ -64,7 +64,12 @@ for (const id of Object.keys(toolCopy)) {
 }
 
 // Unsplash-style counting for the stats strip: every PNG the add-in produced.
-const screens = [...shots].filter((name) => name.endsWith(".png")).length;
+// Only the tour's captures count as screens: the brand and Open Graph cards are
+// pictures of the project, not pictures of the add-in, and counting them made
+// the number move whenever a social card was regenerated.
+const screens = [...shots].filter(
+  (name) => name.endsWith(".png") && !name.startsWith("brand-") && !name.startsWith("og")
+).length;
 
 if (problems.length) {
   console.error("site data does not match the add-in:\n  " + problems.join("\n  "));

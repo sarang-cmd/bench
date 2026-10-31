@@ -132,6 +132,40 @@
       ]
     },
     {
+      "id": "log",
+      "name": "Study log",
+      "subtitle": "minutes per day",
+      "category": "Study",
+      "help": "Study log\nWhat you did, for how long, and\non which day, in a text file you\ncan also edit by hand:\n\n  2026-10-31 25 pacer\n\nA broken line is skipped and\ncounted, never added up wrongly.\n\nF1 adds a session: type the\nminutes, UP/DOWN picks the tool,\nLEFT/RIGHT moves between the three\nfields, EXE saves it. F2 deletes\nthe last one, which is the mistake\nyou will make.\n\nBench cannot read the calendar, so\na new entry takes the day after the\nnewest one in the log; UP/DOWN on\nthe day moves it. The file is\nwritten once, when you leave.",
+      "rank": 4,
+      "accent": "yellow",
+      "tag": "minutes per day",
+      "summary": "A plain text log of what you studied and for how long, with totals, days logged and the longest streak.",
+      "body": "One line a session, in a file you can also write by hand. The screen adds up the minutes, counts the days and finds the longest run of consecutive days; a line it cannot read is skipped and counted rather than silently binned.",
+      "points": [
+        "“2026-10-31 25 pacer” is a whole entry.",
+        "F1 adds one: minutes, then UP/DOWN for the tool, EXE to save.",
+        "The file is written once, when you leave the screen.",
+        "Bench cannot read the calendar, so an entry takes the day after the newest."
+      ],
+      "lead": "70_log_entries.png",
+      "leadCaption": "Two sessions, with the totals above them",
+      "shots": [
+        [
+          "70_log_entries.png",
+          "Two sessions, with the totals above them"
+        ],
+        [
+          "69_log_add.png",
+          "Adding a session: minutes, tool, day"
+        ],
+        [
+          "68_log_empty.png",
+          "The empty state says where the file lives"
+        ]
+      ]
+    },
+    {
       "id": "function",
       "name": "Function",
       "subtitle": "x and f(x)",
@@ -611,7 +645,8 @@
       "tools": [
         "pacer",
         "cards",
-        "notes"
+        "notes",
+        "log"
       ]
     },
     {
@@ -640,7 +675,7 @@
     }
   ],
   "counts": {
-    "tools": 17,
-    "screens": 69
+    "tools": 18,
+    "screens": 75
   }
 }

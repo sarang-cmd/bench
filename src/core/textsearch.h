@@ -27,6 +27,10 @@ int textsearch_find(char const *hay, int hlen, int from, char const *needle,
 int textsearch_find_back(char const *hay, int hlen, int before,
                          char const *needle, int nlen);
 
+/* Words: runs of bytes that are not spaces, tabs or newlines.  A hyphen
+ * separates, which is what a reading-time estimate wants (Notes v2). */
+int textsearch_words(char const *text, int len);
+
 /* Number of non-overlapping matches, left to right. */
 int textsearch_count(char const *hay, int hlen, char const *needle, int nlen);
 

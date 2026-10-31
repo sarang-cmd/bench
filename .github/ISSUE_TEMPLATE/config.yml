@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Install help
+    url: https://bench-sarang-dev.vercel.app/install
+    about: The three things that stop an add-in from launching.

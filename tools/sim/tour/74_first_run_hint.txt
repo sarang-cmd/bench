@@ -1,0 +1,2 @@
+# tour step: 74_first_run_hint
+# A fresh state/ folder: the home screen explains the keys once.

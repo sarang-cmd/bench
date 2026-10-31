@@ -5,6 +5,8 @@
 #include "test_util.h"
 #include "textsearch.h"
 
+static void test_words(void);
+
 /* Small helper so a test reads like the call it is checking. */
 static int find(char const *hay, char const *needle)
 {
@@ -188,6 +190,8 @@ static void line_of_position(void)
 
 static void empty_and_short(void)
 {
+    T_SECTION("words");
+    test_words();
     T_SECTION("empty and one byte texts");
 
     T_INT(textsearch_find("", 0, 0, "a", 1), -1);
@@ -196,6 +200,24 @@ static void empty_and_short(void)
     T_INT(textsearch_line_of("", 0, 0), 0);
     T_INT(textsearch_line_start("", 0, 0), 0);
     T_INT(textsearch_line_end("", 0, 0), -1);
+}
+
+
+static void test_words(void)
+{
+    char const text[] = "Two  words,\nthree-words and a tab\there.";
+
+    /* Runs of non-space bytes: "Two", "words,", "three-words", "and", "a",
+     * "tab", "here." - a hyphen does not split, a space, tab or newline does. */
+    T_INT(textsearch_words(text, (int)sizeof text - 1), 7);
+    T_INT(textsearch_words("", 0), 0);
+    T_INT(textsearch_words("   \n\t ", 6), 0);
+    T_INT(textsearch_words("one", 3), 1);
+    T_INT(textsearch_words("lead and trail ", 15), 3);
+
+    /* The same text twice is twice the words: no state is kept between calls. */
+    T_INT(textsearch_words(text, (int)sizeof text - 1),
+          textsearch_words(text, (int)sizeof text - 1));
 }
 
 static void run_tests(void)
