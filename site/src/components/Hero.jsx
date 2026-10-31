@@ -1,4 +1,4 @@
-import { TOOL_COUNT, TOOL_COUNT_WORD } from "../data.js";
+import { BUILD, TOOL_COUNT, TOOL_COUNT_WORD } from "../data.js";
 import { BruteButton, Chip, Screen } from "../ui.jsx";
 
 // Counted from the registry, never typed: adding a tool changes this number.
@@ -56,6 +56,14 @@ export default function Hero({ version }) {
               See every screen &rarr;
             </BruteButton>
           </div>
+
+          {/* Which build this page is handing out: the file is rebuilt by CI, so
+              "version" alone does not say which bytes are behind the button. */}
+          <p className="mt-4 break-words font-mono text-[11px] uppercase tracking-widest text-ink/55">
+            {BUILD.commit ? `commit ${BUILD.commit.slice(0, 7)}` : "local build"}
+            {BUILD.date ? ` \u00b7 ${BUILD.date}` : ""}
+            {` \u00b7 ${Math.round(BUILD.size / 1024)} KiB`}
+          </p>
 
           <dl className="mt-8 grid max-w-lg gap-x-6 gap-y-3 border-t-3 border-ink pt-5 sm:grid-cols-3">
             {stats().map(([value, label]) => (

@@ -182,20 +182,20 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | Workstream | State |
 |---|---|
 | A1 tile colour bug | **done**: every foreground measured against its fill, icon outlined, check in `make test` |
-| A2 tool registry | **done**: `src/apps/registry.c` is the only list (12 rows); `docs/tools.json` is generated from it and CI diffs it |
+| A2 tool registry | **done**: `src/apps/registry.c` is the only list (14 rows: 12 tools plus Settings and About); `docs/tools.json` is generated from it and CI diffs it; the site reads it too, through `site/scripts/gen-tools.mjs` |
 | A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
-| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy |
-| A5 shared services | **partly**: help is done (screen, key, paging, tests) and `core/mathfn.c` gives core sqrt, exp, ln, log10, pow and the trigonometric functions without libm (the expression engine's ground); expression engine, number entry, working lines, history and settings v2 are not started |
-| B overlap hunt | **done for every existing screen**: 43 scripts, 0 findings; worst cases added |
-| C fifteen tools | **F1, F2, F3, F4, F5, F6 and F9 done** (Function table; triangle solver; polynomials; root finder; sequences; complex numbers; sig figs); F7 (statistics) is next |
+| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy; the site's ink was brought back to `#2f2d2e` to match |
+| A5 shared services | **partly**: help screen and paging done; `core/expr.c` is the expression engine (123 checks, shunting-yard, column-numbered errors); `core/mathfn.c` gives core sqrt, exp, ln and trigonometry without libm. Number entry as a shared widget, working lines, result history and settings v2 are **not** started |
+| B overlap hunt | **done for every existing screen**: 51 tour scripts, 0 findings, worst cases included; the browser-width checks (320..1440 px) are **not** done |
+| C fifteen tools | **7 of 15**: F1 Function table, F2 Triangle, F3 Polynomials, F4 Root finder, F5 Sequences, F6 Complex numbers, F9 Sig figs. F7 Statistics is next |
 | D demo content | **not started** |
-| E settings v2 | **not started** |
-| F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run tour, empty states and `docs/TUTORIAL.md` are not written |
-| G WebAssembly simulator | **not started** |
-| H website v2 | **not started** |
-| I README and metadata | **not started** |
-| J spike docs | **done**: `docs/spike.md` says what it is and why it is not released |
-| K CI and release | **partly**: the screen checks run in `make test`; the rolling `auto` release is rebuilt every three days; the add-in is committed in `dist/`; version stays 1.0.0 until 1.1.0 is cut |
+| E settings v2 | **not started** (Settings is still the three-value v1 screen) |
+| F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`, one page per tool); the first-run tour, `tour_done`, empty states and `docs/TUTORIAL.md` are **not** written |
+| G WebAssembly simulator | **not started** (the PC simulator exists; there is no `bench.wasm`) |
+| H website v2 | **partly**: the single page was reworked this session — tool list generated from the registry, hero highlight fixed, 12 tools and 53 screens, correct domain, canonical/robots/sitemap. The seven routes (`/features`, `/simulator`, `/tutorial`, `/install`, `/about`, `/changelog`, `/downloads`), the Open Graph images, the About statistics and the SHA-256 display are **not** done |
+| I README and metadata | **not started**: no badges, no `<!-- STATS -->` block, no CONTRIBUTING / SECURITY / CODE_OF_CONDUCT / CITATION, no issue templates |
+| J spike docs | **done**: `docs/spike.md` says what the spike is and why it is not released, `spike/spike.diff` rebuilds it, CI ships it in its own `bench-spike` artifact. A hardware report template and the Settings "Hardware report" screen are **not** done |
+| K CI and release | **partly**: screen checks run in `make test`; the rolling `auto` release rebuilds every three days and replaces itself; the add-in is committed in `dist/`; the spike is out of the release. No badge JSON, no size report, `docs/plan.md` has no V2 section, `AGENTS.md` is unchanged. Version stays 1.0.0 until 1.1.0 is cut |
 
 ### Decisions taken without asking
 

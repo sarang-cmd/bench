@@ -6,9 +6,13 @@
 // docs/tools.json (generated from src/apps/registry.c) and joins it to the copy
 // in src/toolCopy.js, writing src/tools.generated.json before Vite runs. Adding
 // a tool to the add-in therefore either appears here or fails the build.
+import buildInfo from "./build-info.generated.json";
 import generated from "./tools.generated.json";
 
-export const VERSION = "1.0.0";
+// Both of these are generated: the tool list from the add-in's registry, the
+// build from the .g3a the build step put in public/ (see scripts/fetch-addin.mjs).
+export const VERSION = buildInfo.version;
+export const BUILD = buildInfo;
 
 export const REPO = "https://github.com/sarang-cmd/bench";
 
@@ -16,8 +20,9 @@ export const REPO = "https://github.com/sarang-cmd/bench";
 // build refuses to pass without it, so the button can only point at a file
 // that is really there. The release carries the same bytes for anyone who
 // wants them.
-export const ADDIN_FILE = `Bench-${VERSION}.g3a`;
+export const ADDIN_FILE = buildInfo.file;
 export const DOWNLOAD = `./${ADDIN_FILE}`;
+export const SHA256 = buildInfo.sha256;
 
 export const tools = generated.tools;
 export const toolGroups = generated.groups;
