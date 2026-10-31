@@ -449,6 +449,10 @@ jobs:
 
       - name: Install the site's dependencies
         working-directory: site
+        env:
+          # playwright's postinstall downloads a browser; the width check
+          # installs exactly the one it needs, below, so skip the download here.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: npm ci
 
       # Same rule as docs/tools.json for the add-in: the generated data must
