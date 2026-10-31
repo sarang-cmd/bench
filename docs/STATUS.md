@@ -1,7 +1,7 @@
 # Status
 
-Last updated: 31 October 2026, end of the build session that took the project
-from the first line of the core to version 1.0.0 in the source tree.
+Last updated: 31 October 2026, after the V2 tool push: Statistics, SUVAT,
+Moles, Base and bits and the Lab graph landed on top of the 1.0.0 tree.
 A fresh session should read this file first, then `AGENTS.md`, `docs/plan.md`
 and the task file for the milestone it is about to start.
 
@@ -13,8 +13,8 @@ what is not, is in the table at the end of this file.
 
 ## One sentence
 
-Bench is finished, tested on a PC, documented **and built**: `v1.0.0` carries
-`Bench-1.0.0.g3a` (128 976 bytes) as a release asset, on the `builds` branch and
+Bench 1.0.0 is tested on a PC, documented **and built**: `v1.0.0` carries
+`Bench-1.0.0.g3a` (174 172 bytes) as a release asset, on the `builds` branch and
 on the website. `.github/workflows/build.yml` is the only thing that can build
 it - this sandbox has no SuperH compiler and cannot reach
 `git.planet-casio.com` - and the toolchain it needs is cached, so a release
