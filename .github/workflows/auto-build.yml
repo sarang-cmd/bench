@@ -54,7 +54,7 @@ jobs:
       due: ${{ steps.check.outputs.due }}
       why: ${{ steps.check.outputs.why }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check the last automatic build
         id: check
