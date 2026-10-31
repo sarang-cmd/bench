@@ -11,7 +11,7 @@
   {
     "id": "cards",
     "title": "Cards",
-    "subtitle": "Leitner drill",
+    "subtitle": "flashcards",
     "category": "Study",
     "screen": 3,
     "needs_file": true,
@@ -20,11 +20,20 @@
   {
     "id": "notes",
     "title": "Notes",
-    "subtitle": "text, Markdown",
+    "subtitle": "Markdown",
     "category": "Study",
     "screen": 4,
     "needs_file": true,
     "help": "Notes\nReads .md and .txt from Bench/notes.\n\nMarkdown headings, lists, quotes,\nbold and code are drawn in the\npalette. Long lines wrap; the wrap\nwidth is a setting.\n\nKeys: UP/DOWN scroll, EXE page down,\nALPHA search, F2 headings, EXIT."
+  },
+  {
+    "id": "function",
+    "title": "Function",
+    "subtitle": "x and f(x)",
+    "category": "Math",
+    "screen": 9,
+    "needs_file": false,
+    "help": "Function table\nA table and a value for f(x).\n\n1. Pick a slot f, g, h, p, q, r.\n2. EXE types the expression on the\n   keyboard: x, pi, e, + - * / ^,\n   sin cos tan ln log sqrt abs.\n3. F1 opens the table.\n\nIn the table: LEFT/RIGHT move the\nstart, F1 changes the step, F2 the\nrow count, EXE probes one value.\nF4 switches degrees and radians;\nthe mode shows in the title bar.\n\nSlots are written to\nBench/state/exprs.txt when you\nleave the tool.\n\nKeys: EXE edit, F1 table, F3 clear."
   },
   {
     "id": "numtheory",
@@ -47,7 +56,7 @@
   {
     "id": "settings",
     "title": "Settings",
-    "subtitle": "figures, wrap",
+    "subtitle": "options",
     "category": "Tools",
     "screen": 6,
     "needs_file": false,

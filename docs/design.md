@@ -38,14 +38,39 @@ converted by hand and was wrong by one step in six of the eight colours.
   outline grows the shape by `TH_ICON_OL` on every side, not just horizontally,
   so an icon stays inside its nominal 20x20 box and never touches a border.
 
-## 3. Type
+## 3. A tile
+
+The home screen shows six tiles a page, three across and two down. Each tile is
+a 20x20 icon with two lines under it, both left aligned to the same 7 px margin:
+
+```
++-------------------+
+|  [icon]           |   icon at 7,7 in the tile's foreground colour,
+|                   |   outlined in the other one
+|  Title            |   title: the 3:1 floor
+|  subtitle         |   subtitle: the 4.5:1 floor
++-------------------+
+```
+
+- Unselected: paper fill, 2 px ink border, no shadow, icon in the tool's accent
+  (ink when the accent is too close to paper - shade is 1.31:1).
+- Selected: the tool's accent as the fill, 3 px ink border and the 3 px hard
+  shadow, icon in whichever of ink and paper reads better on that accent,
+  outlined in the other.
+- Text on an accent is ink or paper, whichever measures better. Where even the
+  better one misses its floor (red 4.46, teal 4.09, violet 3.79) the subtitle
+  sits on a paper plate that hugs the words. That plate is the only decoration
+  the selected tile gets, and it is why the selected tile reads at 12:1
+  whatever the accent is.
+
+## 4. Type
 
 One font, one size, `TH_LINE` of leading. Hierarchy comes from colour, weight
 and position, not from size. Tile titles are the largest thing on the home
 screen by position, not by pixels — which is why they are held to the
 large-text contrast floor and body text is not.
 
-## 4. Contrast
+## 5. Contrast
 
 Measured, not chosen. `col_contrast()` implements WCAG relative luminance with a
 generated sRGB table (`lin_table.h`), because the calculator build has no `pow`.
@@ -94,7 +119,7 @@ So the rule is not "ink, or paper on blue and violet". It is:
 That is the whole contrast story: one measured choice for the icon, one invert
 for selection, and a checker that reads the finished framebuffer.
 
-## 5. The checks
+## 6. The checks
 
 `make test` builds `tools/sim` and runs every key script in `tools/sim/tour`
 through two checks. They are the acceptance test for this document.
@@ -119,7 +144,7 @@ say *and* what actually got drawn — the first version of this check found that
 it had been sampling raw framebuffer coordinates instead of the add-in's window
 coordinates, and had been "measuring" the 6,4 px OS border.
 
-## 6. Applying the system
+## 7. Applying the system
 
 - Home screen: `src/apps/app_menu.c`
 - Tiles and icons: `src/apps/registry.c`

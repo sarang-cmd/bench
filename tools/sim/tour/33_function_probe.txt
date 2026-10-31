@@ -1,0 +1,8 @@
+# tour step: 33_function_probe
+# starts at the home screen; see tools/sim/run_tour.sh
+f2
+exe
+f1
+down
+down
+exe

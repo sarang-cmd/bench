@@ -37,7 +37,7 @@
 #define TH_GAP 4
 #define TH_LINE (scr_text_h() + 3)
 
-/* Neobrutalist rules from docs/design.md section 3: flat fills, square
+/* Neobrutalist rules from docs/design.md sections 2 and 3: flat fills, square
  * corners, hard offset shadows.  These are the only border widths and shadow
  * offsets the add-in may use. */
 #define TH_BORDER 2       /* panel outline */

@@ -1,0 +1,5 @@
+# tour step: 32_function_table
+# starts at the home screen; see tools/sim/run_tour.sh
+f2
+exe
+f1

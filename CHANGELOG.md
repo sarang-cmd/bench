@@ -37,6 +37,17 @@ next one.
   code is ink on shade.
 
 ### Added
+- **Home screen v2**: four categories on F1..F4, a 3 x 2 page of tiles, page
+  dots when a category has more than one page, and a dashboard strip on Study
+  that counts the decks and notes on the card. The selected tile keeps the
+  tool's accent as its fill, a 3 px border and a hard shadow; everything on it
+  is coloured by measurement, and a subtitle the palette cannot carry gets a
+  paper plate hugging the words. Unverified on device.
+- **Function table (F1)**, the first of the fifteen: `src/core/expr.c` is a
+  shunting-yard parser (fixed 32-entry stack, implicit multiplication, column
+  numbers on every error), `src/core/exprs.c` reads and writes the six slots,
+  and `src/apps/app_function.c` is the slot list, the table and the probe.
+  Unverified on device.
 - `src/core/mathfn.{c,h}`: sqrt, exp, ln, log10, pow, sin, cos, tan and the
   degree conversion in plain C — no libm, no gint, so the calculator build and
   the host tests run the same code. 85 native checks against the textbook

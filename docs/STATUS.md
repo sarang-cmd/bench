@@ -181,13 +181,13 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 
 | Workstream | State |
 |---|---|
-| A1 tile colour bug | **done**: measured foregrounds, 2 px icon outline, check in `make test` |
-| A2 tool registry | **done**: `src/apps/registry.c` is the only list; `docs/tools.json` is generated from it |
-| A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard; selection inverts the tile |
-| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons |
+| A1 tile colour bug | **done**: every foreground measured against its fill, icon outlined, check in `make test` |
+| A2 tool registry | **done**: `src/apps/registry.c` is the only list (8 rows); `docs/tools.json` is generated from it and CI diffs it |
+| A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
+| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy |
 | A5 shared services | **partly**: help is done (screen, key, paging, tests) and `core/mathfn.c` gives core sqrt, exp, ln, log10, pow and the trigonometric functions without libm (the expression engine's ground); expression engine, number entry, working lines, history and settings v2 are not started |
 | B overlap hunt | **done for every existing screen**: 30 scripts, 0 findings; worst cases added |
-| C fifteen tools | **not started** (F1..F15) |
+| C fifteen tools | **F1 done** (expression engine and Function table); F9 is next |
 | D demo content | **not started** |
 | E settings v2 | **not started** |
 | F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run tour, empty states and `docs/TUTORIAL.md` are not written |

@@ -33,6 +33,8 @@ set(SOURCES
 
   src/core/cards_parse.c
   src/core/color.c
+  src/core/expr.c
+  src/core/exprs.c
   src/core/help.c
   src/core/leitner.c
   src/core/mathfn.c
@@ -57,6 +59,7 @@ set(SOURCES
 
   src/apps/app_about.c
   src/apps/app_cards.c
+  src/apps/app_function.c
   src/apps/app_help.c
   src/apps/app_menu.c
   src/apps/app_notes.c

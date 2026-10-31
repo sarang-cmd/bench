@@ -30,6 +30,7 @@ typedef enum {
     VIEW_SETTINGS,
     VIEW_ABOUT,
     VIEW_HELP,
+    VIEW_FUNCTION,
     VIEW_COUNT,
 } view_t;
 
@@ -65,6 +66,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                      app_about_timeout },
     [VIEW_HELP] = { app_help_init, app_help_draw, app_help_key,
                     app_help_timeout },
+    [VIEW_FUNCTION] = { app_function_init, app_function_draw, app_function_key,
+                        app_function_timeout },
 };
 
 bench_settings_t *app_cfg(void)
@@ -93,6 +96,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_SETTINGS: set_view(VIEW_SETTINGS); break;
     case APP_SCREEN_ABOUT: set_view(VIEW_ABOUT); break;
     case APP_SCREEN_HELP: set_view(VIEW_HELP); break;
+    case APP_SCREEN_FUNCTION: set_view(VIEW_FUNCTION); break;
     default: set_view(VIEW_MENU); break;
     }
 }

@@ -70,7 +70,7 @@ void app_about_draw(void)
     y += TH_LINE + 4;
 
     /* A red mark, ink text: red on paper is 4.46:1, short of AA for a
-     * sentence (docs/design.md section 4). */
+     * sentence (docs/design.md section 5). */
     scr_fill(TH_PAD, y + 1, 4, 4, TH_RED);
     scr_text(TH_PAD + 8, y, "Exam Mode blocks add-ins. Bench never touches it.",
              TH_INK);

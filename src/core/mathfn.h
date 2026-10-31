@@ -43,6 +43,22 @@ double bm_tan(double x);    /* NaN at an odd multiple of pi/2 */
 /* Both at once: one range reduction instead of two. */
 void bm_sincos(double x, double *s, double *c);
 
+/* Inverse trigonometric functions, in radians.  Outside their domain they
+ * return NaN (asin and acos beyond 1) rather than a wrong number. */
+double bm_atan(double x);
+double bm_asin(double x);
+double bm_acos(double x);
+
+/* Hyperbolics, for the expression engine's sinh, cosh and tanh. */
+double bm_sinh(double x);
+double bm_cosh(double x);
+double bm_tanh(double x);
+
+/* Rounding to whole numbers; values beyond 2^62 are returned unchanged,
+ * because every double that large is already whole. */
+double bm_floor(double x);
+double bm_ceil(double x);
+
 /* Degrees and radians are both the add-in's business: the expression engine
  * converts with these so every tool agrees on the definition of a degree. */
 double bm_deg_to_rad(double deg);
