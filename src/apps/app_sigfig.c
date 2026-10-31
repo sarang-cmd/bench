@@ -34,7 +34,7 @@ typedef enum {
     M_SI,
     M_PRACTICE,
     M_COUNT_
-} mode_t;
+} app_mode_t;
 
 static char const *const mode_name[M_COUNT_] = {
     "Count the figures", "Round to n sf", "Round to n decimals",
@@ -47,7 +47,7 @@ static char const *const practice[] = {
 };
 #define PRACTICE_COUNT ((int)(sizeof practice / sizeof practice[0]))
 
-static mode_t mode;
+static app_mode_t mode;
 static char value[24];
 static int figures;          /* n for the rounding modes, 1..10 */
 static double parsed;
@@ -319,10 +319,10 @@ app_result_t app_sigfig_key(bench_event_t ev)
     switch (ev.key)
     {
     case BK_UP:
-        mode = (mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
         break;
     case BK_DOWN:
-        mode = (mode_t)((mode + 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + 1) % M_COUNT_);
         break;
     case BK_LEFT:
         if (figures > 1)

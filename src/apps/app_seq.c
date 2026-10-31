@@ -28,7 +28,7 @@
 #include "ui/numtext.h"
 #include "ui/widgets.h"
 
-typedef enum { M_ARITH = 0, M_GEOM, M_BINOM, M_COUNT_ } mode_t;
+typedef enum { M_ARITH = 0, M_GEOM, M_BINOM, M_COUNT_ } app_mode_t;
 
 static char const *const mode_name[M_COUNT_] = {
     "Arithmetic", "Geometric", "Binomial",
@@ -37,7 +37,7 @@ static char const *const mode_name[M_COUNT_] = {
 #define NFIELDS 3
 #define FLEN 14
 
-static mode_t mode;
+static app_mode_t mode;
 static int sel;
 static char field[NFIELDS][FLEN];
 
@@ -331,11 +331,11 @@ app_result_t app_seq_key(bench_event_t ev)
             field[i][0] = 0;
         break;
     case BK_F3:
-        mode = (mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
         sel = 0;
         break;
     case BK_F4:
-        mode = (mode_t)((mode + 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + 1) % M_COUNT_);
         sel = 0;
         break;
     case BK_EXIT:

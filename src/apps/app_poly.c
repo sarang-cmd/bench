@@ -37,7 +37,7 @@
 #include "ui/numtext.h"
 #include "ui/widgets.h"
 
-typedef enum { M_QUAD = 0, M_EXPAND, M_ROOTS, M_COUNT_ } mode_t;
+typedef enum { M_QUAD = 0, M_EXPAND, M_ROOTS, M_COUNT_ } app_mode_t;
 
 static char const *const mode_name[M_COUNT_] = {
     "Quadratic", "Expand", "Roots",
@@ -46,7 +46,7 @@ static char const *const mode_name[M_COUNT_] = {
 #define MAX_COEF 9          /* c0..c8 */
 #define COEF_LEN 14
 
-static mode_t mode;
+static app_mode_t mode;
 static int sel;             /* the field under the cursor */
 
 /* Quadratic and expand share three fields: a, b, c and a, b, n. */
@@ -498,11 +498,11 @@ app_result_t app_poly_key(bench_event_t ev)
         }
         break;
     case BK_F3:
-        mode = (mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + M_COUNT_ - 1) % M_COUNT_);
         sel = 0;
         break;
     case BK_F4:
-        mode = (mode_t)((mode + 1) % M_COUNT_);
+        mode = (app_mode_t)((mode + 1) % M_COUNT_);
         sel = 0;
         break;
     case BK_EXIT:
