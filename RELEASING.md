@@ -19,12 +19,33 @@ What happens then, in `.github/workflows/build.yml`:
 1. `native-tests`: `make test`, `make py-test`, then `make sim` and `make shots`
    so the screenshots are regenerated with the code that is being released. The
    PNGs are kept as an artifact.
-2. `g3a`: installs fxSDK, `sh-elf-binutils`, `sh-elf-gcc`, OpenLibm, fxlibc and
-   gint with GiteaPC, reads the version from the tag, runs `fxsdk build-cg`,
-   builds the M1 spike add-in too if `spike/` is still present, and uploads the
-   files.
-3. On a `v*` tag it also creates the GitHub release and attaches
-   `Bench-<version>.g3a` (and `Bench-spike-<version>.g3a` when it exists).
+2. `toolchain`: builds fxSDK, `sh-elf-binutils`, `sh-elf-gcc`, OpenLibm, fxlibc
+   and gint with GiteaPC — roughly 45 minutes — and caches the whole install
+   tree (`~/.local`, `~/.giteapc`, key `fxsdk-sh3eb-elf-gcc14-v1`). This job is
+   separate on purpose: a cache is only saved by a job that finishes green, so
+   a compile error in the add-in must not be able to throw the tree away. After
+   the first run it is a cache restore of about 80 seconds.
+3. `g3a`: restores that tree, reads the version from the tag, runs
+   `fxsdk build-cg`, builds the M1 spike add-in too if `spike/` is still there,
+   uploads the files, force-pushes `Bench-<version>.g3a` to the `builds` branch,
+   and on a `v*` tag creates the GitHub release with the notes from the matching
+   `CHANGELOG.md` section.
+
+A whole tagged release therefore takes about two and a half minutes once the
+toolchain cache exists (measured: 78 s for the toolchain job, 68 s for the
+build job), instead of the ~50 minutes the first one took.
+
+Bump `TOOLCHAIN_CACHE_KEY` in the workflow when a new gint or GCC is wanted;
+otherwise the cached one is reused forever.
+
+## Where the .g3a ends up
+
+- Release asset: `Bench-<version>.g3a` on the `v*` release.
+- A copy is force-pushed to the `builds` branch, so
+  `git fetch origin builds` gets it without touching release download hosts.
+- The website fetches the release asset at deploy time
+  (`site/scripts/fetch-addin.mjs`) and serves it from its own domain, so the
+  Download button on the page never sends anyone to GitHub.
 
 ## If the tag push does not start a run
 

@@ -10,7 +10,8 @@ CRT. One `.g3a`, one menu, no second add-in to install.
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
-Live page: <https://bench-gdc.vercel.app> (source in `site/`).
+Live page: <https://bench-sarang-dev.vercel.app> (source in `site/`). The page
+serves the add-in itself: <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a>.
 
 ```
 Bench-1.0.0.g3a     <- copy this to the calculator's storage root
@@ -158,7 +159,15 @@ notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 
 ## Install
 
-1. Download `Bench-1.0.0.g3a` from the [releases page](../../releases).
+`Bench-1.0.0.g3a` is in three places. Take whichever works from where you are:
+
+| Where | How |
+|---|---|
+| This site | <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a> - one click, no account |
+| Release | [releases page](../../releases) - the same bytes, attached by CI |
+| `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
+
+1. Download the file.
 2. Connect the calculator in **USB Flash** mode and copy the file to the
    storage root (next to the `@MainMem` folder).
 3. Press **MENU** on the calculator; Bench appears as a new add-in.

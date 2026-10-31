@@ -7,21 +7,27 @@ and the task file for the milestone it is about to start.
 
 ## One sentence
 
-All of Bench is written, tested on a PC and documented; **no `.g3a` exists yet**,
-because this sandbox has no SuperH compiler and cannot reach
-`git.planet-casio.com`. `.github/workflows/build.yml` builds the file on a
-GitHub runner, which is where the release asset comes from.
+Bench is finished, tested on a PC, documented **and built**: `v1.0.0` carries
+`Bench-1.0.0.g3a` (128 976 bytes) as a release asset, on the `builds` branch and
+on the website. `.github/workflows/build.yml` is the only thing that can build
+it - this sandbox has no SuperH compiler and cannot reach
+`git.planet-casio.com` - and the toolchain it needs is cached, so a release
+takes about two and a half minutes.
+
+The one thing still open is hardware: nobody has run the add-in on a real
+fx-CG 50 yet. That is the user's step (USB Flash mode, copy to the storage
+root); see `docs/STATUS.md` "What needs the calculator".
 
 ## Where the project is
 
 | Stage | Task | State |
 |-------|------|-------|
-| 1 | M0 toolchain + blank add-in | source done, `.g3a` built by CI |
+| 1 | M0 toolchain + blank add-in | **done**: `.g3a` built by CI, release v1.0.0 |
 | 2 | M1 spike add-in | source done; `docs/spike.md` still has an empty result column |
 | 3 | core logic, no hardware | **done**, 11 modules, 2 791 checks |
 | 4 | M2 shell + settings | **done** (`src/platform`, `src/ui`, `src/apps/app_menu.c`) |
 | 5 | M3..M8 wiring | **done**, all five tools and About |
-| 6 | M9 polish and release | **done in source**: icons, About screen, README, changelog, tags |
+| 6 | M9 polish and release | **done**: icons, About screen, README, changelog, tag v1.0.0 + release asset |
 
 The milestone gate in the task files ("start only after the user confirms the
 previous milestone passed on the calculator") was waived by the user's
@@ -117,8 +123,8 @@ once at start-up. Nothing else, ever.
 
 ## What needs the calculator
 
-1. Build (or let CI build) `Bench-1.0.0.g3a`; report its size and whether the
-   icon and the name sit correctly in the main menu.
+1. Install `Bench-1.0.0.g3a` (release asset, `builds` branch or the website) and
+   report whether the icon and the name sit correctly in the main menu.
 2. Run the M0 check: full window in paper colour, centred red square, any key
    back to the menu.
 3. Run the spike (`spike/`, `docs/spike.md`) and fill in the ten answers.
