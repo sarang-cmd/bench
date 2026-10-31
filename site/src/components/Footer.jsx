@@ -1,4 +1,5 @@
 import { REPO, TOOL_COUNT, VERSION } from "../data.js";
+import { Link, ROUTES } from "../router.jsx";
 
 export default function Footer() {
   return (
@@ -15,10 +16,11 @@ export default function Footer() {
 
         <nav aria-label="Footer" className="space-y-2 text-sm font-bold">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/50">Bench {VERSION}</p>
-          <a className="block hover:text-red" href="#tour">Screen tour</a>
-          <a className="block hover:text-red" href="#tools">The tools</a>
-          <a className="block hover:text-red" href="#install">Install</a>
-          <a className="block hover:text-red" href="#keys">Keys</a>
+          {ROUTES.map((route) => (
+            <Link key={route.path} className="block hover:text-red" to={route.path}>
+              {route.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="space-y-2 text-sm">

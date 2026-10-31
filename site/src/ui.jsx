@@ -1,3 +1,5 @@
+import { Link } from "./router.jsx";
+
 // Small building blocks. Tailwind only keeps classes it can see in the source,
 // so every accent colour is spelled out here instead of being built from a
 // string at runtime.
@@ -103,14 +105,29 @@ const tones = {
   teal: "bg-teal text-paper",
 };
 
-export function BruteButton({ href, children, tone = "yellow", onClick, extra = "", type = "a", download = false }) {
-  const className =
+// The same shape as BruteButton, as an in-app link: a button that keeps the
+// router awake instead of reloading the page.
+export function BruteLink({ to, children, tone = "yellow", extra = "", onClick }) {
+  return (
+    <Link to={to} className={buttonClass(tone, extra)} onClick={onClick}>
+      {children}
+    </Link>
+  );
+}
+
+function buttonClass(tone, extra) {
+  return (
     "inline-flex items-center justify-center gap-2 border-3 border-ink px-5 py-3 text-base " +
     "font-black shadow-brute-sm transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 " +
     "hover:shadow-brute active:translate-x-0 active:translate-y-0 active:shadow-none " +
     (tones[tone] || tones.yellow) +
     " " +
-    extra;
+    extra
+  );
+}
+
+export function BruteButton({ href, children, tone = "yellow", onClick, extra = "", type = "a", download = false }) {
+  const className = buttonClass(tone, extra);
 
   if (type === "button") {
     return (

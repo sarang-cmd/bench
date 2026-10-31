@@ -101,6 +101,15 @@ jobs:
           make shots
           ls -l docs/images/*.png | head
 
+      - name: The site's generated files match their sources
+        run: |
+          node site/scripts/gen-tools.mjs
+          node site/scripts/gen-stats.mjs
+          node site/scripts/gen-changelog.mjs
+          git diff --exit-code site/src/tools.generated.json \
+                             site/src/stats.generated.json \
+                             site/src/changelog.generated.json
+
       - name: Keep the screenshots
         uses: actions/upload-artifact@v4
         with:
@@ -422,3 +431,37 @@ jobs:
           git add -f "${files[@]}"
           git commit -m "Bench $(cat version.txt) from ${GITHUB_SHA}"
           git push --force origin HEAD:builds
+
+  site:
+    name: Site build and page checks
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install the site's dependencies
+        working-directory: site
+        run: npm ci
+
+      # Same rule as docs/tools.json for the add-in: the generated data must
+      # match the files it is built from, or the build fails here.
+      - name: The generated data matches its sources
+        working-directory: site
+        run: |
+          npm run gen-tools
+          npm run gen-stats
+          npm run gen-changelog
+          git diff --exit-code src/tools.generated.json src/stats.generated.json src/changelog.generated.json
+
+      - name: Every route renders
+        working-directory: site
+        run: node scripts/check-pages.mjs
+
+      - name: Build the site
+        working-directory: site
+        run: npm run build

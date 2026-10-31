@@ -1,0 +1,243 @@
+{
+  "releases": [
+    {
+      "version": "1.1.0",
+      "date": "unreleased",
+      "entries": [
+        {
+          "title": "Settings, five rows (V2)",
+          "body": "`src/core/settings.c` gains two keys, `angle_unit` (0 degrees, 1 radians) and `tour_done` (0 or 1). The screen now lists the unit the Triangle tool opens in and whether the first-run line on the home screen has been read; `app_triangle_init()` takes its starting unit from the setting, and F3/F4 still switch for that session only, without writing the file. A settings file from 1.0.0 still loads: the new keys fall back to their defaults. 687 native checks in `tests/test_settings.c`. Unverified on device."
+        },
+        {
+          "title": "First-run hint (V2)",
+          "body": "with `tour_done 0` the home screen prints one line above the softkeys - \"F1-F4 categories, F5 explains a tile, EXE opens it\" - and opening help with F5 sets `tour_done` and writes the file once."
+        },
+        {
+          "title": "Complex numbers (F6)",
+          "body": "`src/core/cplx.c` adds, subtracts, multiplies, divides (division by zero is a NaN, not a wrong number), raises to an integer power and reports the modulus, the argument (with `bm_atan2`, new in `src/core/mathfn.c`) and the polar form. `src/apps/app_cplx.c` shows all three at once, F2 cycles the operation, F3/F4 pick degrees or radians in the title bar. 37 native checks. Unverified on device."
+        },
+        {
+          "title": "The M1 spike has its own artifact.",
+          "body": "It used to ride inside `bench-g3a`, next to the add-in, so the thing you download to get Bench offered two `.g3a` files and one of them printed diagnostics. `bench-g3a` now holds `Bench-<version>.g3a` and nothing else; the spike is in `bench-spike`. It was never a release asset and still is not."
+        },
+        {
+          "title": "Root finder (F4)",
+          "body": "`src/core/roots.c` does bisection, Newton (numeric derivative, step 1e-6) and the secant method, keeping every iterate so the screen can show n, x, f(x) and the step size. `src/apps/app_roots.c` solves from the shared expression engine, F2 cycles the method, F3 solves, and a small plot marks each iterate on the curve. A bracket with no sign change, a zero slope and a parse error each get their own sentence and column. 40 native checks. Unverified on device."
+        },
+        {
+          "title": "Statistics with working (F7)",
+          "body": "`src/core/stats.c` gives n, sum, mean, median, mode, range, both quartile methods, the outlier fences and the population and sample standard deviations (53 native checks). Paired data gets the least squares line, r and r squared. `src/apps/app_stats.c` adds values as you type them, shows the summary and a box plot, has a screen for the working and a screen for the regression. Unverified on device."
+        },
+        {
+          "title": "SUVAT and projectiles (F10)",
+          "body": "`src/core/suvat.c` solves any three of s, u, v, a and t, one table entry per triple, and reports the equation each answer came from; when a quadratic gives two sensible times it keeps the first and names the second (73 native checks). `src/apps/app_suvat.c` fills the grid as you type, marks worked-out values with a dot, and draws the flight path for a launch speed, angle and height. Unverified on device."
+        },
+        {
+          "title": "Moles and solutions (F11)",
+          "body": "`src/core/chem.c` covers n = m / Mr, c = n / V, pV = nRT with R in kPa dm3, dilution and the two percentages, refusing a zero where a formula divides (47 native checks). `src/apps/app_moles.c` has one mode per family, opens each on a worked example, and writes the substitution out under the answer. Unverified on device."
+        },
+        {
+          "title": "Base and bits (F12)",
+          "body": "`src/core/base.c` parses and prints any base from 2 to 36, writes two's complement at 8, 16 and 32 bits (hex padded to the width, binary grouped in fours), and does AND, OR, XOR and logical shifts, refusing a shift of 63 or more (78 native checks). `src/apps/app_base.c` shows one value in five bases with all three widths, and a second tab for the operators; F2 opens the letter keyboard because the keypad has no A-F keys. Unverified on device."
+        },
+        {
+          "title": "Lab graph (F8)",
+          "body": "`src/core/graph.c` fits a line to measured points and quotes the standard error of the gradient and the intercept from the residuals, plus a round axis range for the plot (42 native checks). `src/apps/app_graph.c` takes x, y and an error per point, lists them with the fit, and draws the graph with a bar through each point and the line of best fit. Unverified on device."
+        },
+        {
+          "title": "Study log (F13)",
+          "body": ", **Notes v2 (F14)** and **Cards v2 (F15)**: a plain text log of what you studied and for how long, with totals, days logged and the longest streak (`src/core/logbook.c`, 56 native checks); the Notes footer now counts words as well as lines (`textsearch_words`, 6 more checks); and a Cards deck can be drilled in a mixed order inside each box (`leitner_shuffle`, deterministic for a session, 8 more checks). Bench cannot read the calendar - gint's date fields were never checked on the hardware - so a log entry takes the day after the newest one and UP/DOWN moves it. Unverified on device."
+        },
+        {
+          "title": "Home tiles: the icon vanished on the selected tile.",
+          "body": "The icon was painted in the tool's accent colour on a tile filled with that same colour. Every foreground is now chosen by measurement (`col_better_on`), the icon is drawn with a 2 px outline, and a check samples the pixels afterwards. This is unverified on device: nobody has looked at the new screen on a calculator yet."
+        },
+        {
+          "title": "Labels drawn in a colour too close to their background.",
+          "body": "Ink on red is 2.75:1, paper on teal 3.00:1, a red cursor on the yellow field 2.91:1. Text is now ink or blue on paper, and a selected tile is ink with paper text instead of a tinted tile with a paper plate under the label."
+        },
+        {
+          "title": "The keyboard covered half of the note behind it.",
+          "body": "The modal now clears the content area first, and the space key is marked instead of being drawn as an empty cell."
+        },
+        {
+          "title": "A 57-character file name ran across the whole title bar.",
+          "body": "`w_title()` now cuts the title to the room it has, and `STORE_NAME_MAX` went from 48 to 72 so such a file is listed at all."
+        },
+        {
+          "title": "Markdown code spans painted over the character before them",
+          "body": ", and code was teal on shade (2.28:1). The background starts after the previous span, and code is ink on shade."
+        },
+        {
+          "title": "The .g3a lives in the repository",
+          "body": ", at `dist/Bench-<version>.g3a`, with `BUILD.txt` recording the commit, size and SHA-256. Release assets and artifacts both come from blob storage, which some networks cannot reach; a git remote is plain git. CI refreshes `dist/` for tagged and automatic builds with a `[skip ci]` commit, so the copy does not go stale."
+        },
+        {
+          "title": "The M1 spike as one patch",
+          "body": "`spike/spike.diff` holds the whole diagnostic add-in, generated from `spike/` by `tools/gen_spike_patch.py` (`make spike-patch`). `git apply spike/spike.diff` on a tree without `spike/` reproduces it byte for byte; CI fails if the patch and the sources disagree. The spike still is not on any release."
+        },
+        {
+          "title": "Home screen v2",
+          "body": "four categories on F1..F4, a 3 x 2 page of tiles, page dots when a category has more than one page, and a dashboard strip on Study that counts the decks and notes on the card. The selected tile keeps the tool's accent as its fill, a 3 px border and a hard shadow; everything on it is coloured by measurement, and a subtitle the palette cannot carry gets a paper plate hugging the words. Unverified on device."
+        },
+        {
+          "title": "Sequences and binomials (F5)",
+          "body": "`src/core/seq.c` does arithmetic and geometric terms and sums, the sum to infinity, exact `C(n,k)` (cancelling before multiplying, so it can answer up to n = 62 instead of wrapping) and Pascal's rows. `src/apps/app_seq.c` is three screens with the first few terms listed under the answers. 41 native checks. Unverified on device."
+        },
+        {
+          "title": "Triangle solver (F2)",
+          "body": "`src/core/triangle.c` solves SSS, SAS, ASA/AAS and SSA from whatever is given, with the ambiguous SSA case reporting two triangles rather than silently picking one. `src/apps/app_triangle.c` is six fields, the answers written back into them, area and perimeter underneath, and F2 to swap between the two SSA triangles. 42 native checks. Unverified on device."
+        },
+        {
+          "title": "Polynomials (F3)",
+          "body": ", quadratics and the arithmetic behind them: `src/core/poly.c` parses and prints polynomials, adds, subtracts, multiplies, expands `(ax + b)^n`, divides with quotient and remainder, solves a quadratic with real or complex roots, and factors over the rationals with the rational root theorem. `src/apps/app_poly.c` is three screens - quadratic (disc, roots, vertex, factor pair), expand, and roots from typed coefficients. 83 native checks. Unverified on device."
+        },
+        {
+          "title": "Sig figs and standard form (F9)",
+          "body": ", the second of the fifteen: `src/core/sigfig.c` counts figures on the text (so `1200` is 2 and `1200.` is 4), rounds half-up on the decimal digits, and writes standard form and SI prefixes without a unit of its own. `src/apps/app_sigfig.c` has six modes - count, round to n figures, round to n decimals, standard form, SI prefix and a practice question with a score. 41 native checks. Unverified on device."
+        },
+        {
+          "title": "Home screen: one clean block.",
+          "body": "A page shows only the rows it needs, the grid is centred in what is left, and the softkey strip reads Study, Math, Science, Tools, Help, About - F5 is help for the selected tile here as it is on every other screen, so Settings is a tile and not a second meaning for F5. Unverified on device."
+        },
+        {
+          "title": "Function table (F1)",
+          "body": ", the first of the fifteen: `src/core/expr.c` is a shunting-yard parser (fixed 32-entry stack, implicit multiplication, column numbers on every error), `src/core/exprs.c` reads and writes the six slots, and `src/apps/app_function.c` is the slot list, the table and the probe. Unverified on device. degree conversion in plain C — no libm, no gint, so the calculator build and the host tests run the same code. 85 native checks against the textbook values. This is the ground the expression engine (A5) stands on. `lin_table.h` is generated by `tools/gen_lin_table.py`. 80 native checks. category, accent, icon, screen, help). The home screen reads it, and `tools/gen_tools_json.py` writes `docs/tools.json` from it via the host build. a dashboard strip on Study, and the selected tile's hard shadow. This is unverified on device."
+        },
+        {
+          "title": "Help on every screen (F5).",
+          "body": "One page per tool, rendered from the tool's registry row: no second copy to drift. Paging (count, copy, clamp) is `src/core/help.c`, 37 native checks. On the home screen F5 shows the help for the tile under the cursor; in a tool it shows that tool's help; EXE or EXIT returns to the screen that asked. Unverified on device. empty divider cells, and an empty F5 slot advertises F5 as help. overlapping labels, labels off-screen, labels in the title bar or softkey strip, labels painted over, text under WCAG AA, softkey labels too wide, and icons that match their tile. 30 scripts, 0 findings. 89-character table cells. the checks that enforce them."
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-10-31",
+      "entries": [
+        {
+          "title": "Shell",
+          "body": "home screen with six tiles in the Bauhaus palette, title bar, softkey bar, lists, fields, modals, a progress bar and an on-screen keyboard. `src/platform/{screen,input,store,mem}` are the only files that call gint; `src/apps/app_menu.c` routes, `src/main.c` runs the loop."
+        },
+        {
+          "title": "Pacer",
+          "body": "(`src/apps/app_pacer.c`): setup, plan with the checkpoint table, run with clock, marks, target, gap line and next checkpoint, done screen with the final gap."
+        },
+        {
+          "title": "Uncertainty",
+          "body": "(`src/apps/app_uncert.c`): six operations, chain mode, value and absolute and percentage uncertainty on the result screen."
+        },
+        {
+          "title": "Cards",
+          "body": "(`src/apps/app_cards.c`): deck list, deck report with problem lines, session with reveal, summary, box statistics; progress file written once at the end of a session."
+        },
+        {
+          "title": "Notes",
+          "body": "(`src/apps/app_notes.c`): file list, Markdown and plain text rendering, scroll by line and page, search with wrap, heading list, per-line span drawing with the Phase A style (colour and underline)."
+        },
+        {
+          "title": "Number theory",
+          "body": "(`src/apps/app_numtheory.c`): nine functions, forms, results with steps for gcd and ext gcd, a progress bar for factorisation that EXIT cancels."
+        },
+        {
+          "title": "Settings",
+          "body": "(`src/apps/app_settings.c`, `src/core/settings.c`): uncertainty figures, pacer checkpoint size, note width; the file is written only when a value changes."
+        },
+        {
+          "title": "About",
+          "body": "(`src/apps/app_about.c`): version, build date, target, framebuffer and window sizes, largest free block, limits, and the Exam Mode note."
+        },
+        {
+          "title": "Brand",
+          "body": "`assets-cg/icon-uns.png` and `icon-sel.png` (92x64, neobrutalist B with a red square and three bars), a wordmark SVG and a 1200x630 card, all drawn by `tools/brand/make_brand.py`. No bitmap fonts, no external assets."
+        },
+        {
+          "title": "Host preview",
+          "body": "`tools/sim/` (a gint stand-in, key scripts and a tour) and `make sim`, `make shots`, which render every screen to `docs/images`."
+        },
+        {
+          "title": "CI",
+          "body": "`.github/workflows/build.yml` runs the native tests, the Python tests, the preview, and builds `Bench-<version>.g3a` with the real fxSDK, attaching it to the release on a `v*` tag."
+        },
+        {
+          "title": "Docs",
+          "body": "`README.md`, `docs/STATUS.md`, `docs/toolchain.md`, `docs/spike.md`, `site/` (the landing page: React 18 + Vite + Tailwind, deployed on Vercel)."
+        }
+      ]
+    },
+    {
+      "version": "Milestone 0.6.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.5.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.4.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.3.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.2.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.1.0",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "Milestone 0.0.3",
+      "date": "2026-10-31 (in 1.0.0)",
+      "entries": []
+    },
+    {
+      "version": "0.0.2",
+      "date": "2026-10-31",
+      "entries": []
+    },
+    {
+      "version": "0.0.1",
+      "date": "2026-10-31",
+      "entries": []
+    },
+    {
+      "version": "Pack v1 (October 31, 2026)",
+      "date": "",
+      "entries": []
+    },
+    {
+      "version": "Site v4",
+      "date": "",
+      "entries": []
+    },
+    {
+      "version": "Site v3",
+      "date": "",
+      "entries": []
+    },
+    {
+      "version": "Site v2",
+      "date": "",
+      "entries": []
+    },
+    {
+      "version": "Site v1",
+      "date": "",
+      "entries": []
+    },
+    {
+      "version": "Plan v1",
+      "date": "",
+      "entries": []
+    }
+  ]
+}

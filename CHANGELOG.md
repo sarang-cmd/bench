@@ -16,6 +16,25 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **The site is eight pages, not one (V2)**: `/features`, `/simulator`,
+  `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the
+  landing page, which keeps its layout. `src/router.jsx` is a 120-line path
+  switch with real `<a href>`s, so back, forward, middle-click and a shared link
+  all work; `vercel.json` rewrites every path to `index.html`. Every route sets
+  its own title, description, canonical and Open Graph image.
+  `scripts/gen-stats.mjs` and `scripts/gen-changelog.mjs` write the numbers and
+  the changelog from `CHANGELOG.md`, `docs/tools.json` and `src/`, and
+  `scripts/check-pages.mjs` renders all eight routes in Node and fails the build
+  if one throws. Eight 1200x630 Open Graph cards come from
+  `tools/brand/make_brand.py`. The canonical URL is now
+  `bench-sarang-dev.vercel.app` everywhere; `sitemap.xml` lists all eight
+  routes.
+
+- **The simulator page is honest about the simulator**: the interactive
+  WebAssembly build (workstream G) is not done, and the page says so instead of
+  pretending. What it shows today is the real frame buffer: 75 captures made by
+  the add-in's own simulator.
+
 - **Settings, five rows (V2)**: `src/core/settings.c` gains two keys,
   `angle_unit` (0 degrees, 1 radians) and `tour_done` (0 or 1). The screen now
   lists the unit the Triangle tool opens in and whether the first-run line on
