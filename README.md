@@ -223,6 +223,12 @@ compiler and could not reach `git.planet-casio.com`. The workflow in
 GitHub runner; `docs/STATUS.md` lists the ten questions only a calculator can
 answer (file API behaviour, float printing, font coverage, redraw time, heap).
 
+## Releasing
+
+`RELEASING.md` has the steps. Short version: bump `version.txt`, tag `vX.Y.Z`,
+push the tag; the workflow runs the tests, builds `Bench-X.Y.Z.g3a` with the
+real fxSDK and attaches it to the release.
+
 ## Credits
 
 - [gint](https://gitea.planet-casio.com/Lephenixnoir/gint) and the
