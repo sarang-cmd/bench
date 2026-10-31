@@ -165,6 +165,7 @@ notes_wrap 0          # 0 = fit the screen, else 50..150 percent
 |---|---|
 | This site | <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a> - one click, no account |
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
+| Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
 | `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
 
 1. Download the file.

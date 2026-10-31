@@ -1,5 +1,25 @@
 # M1 spike
 
+**Not part of Bench, and not on any release.** This is a diagnostic add-in: it
+runs ten measurements on the real calculator and prints the answers on screen.
+It existed so the code in `src/` could be written against measured facts instead
+of guesses (file API, paths, float printing, font coverage, key values, tick
+rate, heap, drawable area, redraw cost, empty-add-in size). Bench does not call
+it and does not need it at runtime.
+
+It is still built by CI, so it stays compiled and available when a hardware
+session needs it, but it travels in the `bench-g3a` artifact only:
+
+```sh
+gh run download --name bench-g3a --dir dist    # Bench-spike-*.g3a is in there
+```
+
+Keeping it off the release page is deliberate: two `.g3a` files with similar
+names, one of which prints debug numbers, is a trap for anyone who just wants
+the add-in.
+
+---
+
 Throwaway add-in that answers the ten questions in docs/plan.md section 7.
 Everything it prints is a fact to be read off the real calculator; nothing here
 is a guess.
