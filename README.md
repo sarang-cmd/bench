@@ -10,6 +10,8 @@ CRT. One `.g3a`, one menu, no second add-in to install.
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
+Live page: <https://bench-blond-eight.vercel.app> (source in `site/`).
+
 ```
 Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 ```
@@ -208,7 +210,7 @@ tools/sim/      host preview: a gint stand-in, key scripts, screenshot tour
 tools/brand/    the icons and the wordmark
 tools/md2bench.py  clean a Markdown file before copying it over
 docs/           plan, task specs, toolchain notes, spike answers, status
-site/           the landing page
+site/           the landing page: React + Vite + Tailwind (see site/README.md)
 ```
 
 The split exists so maths and parsing bugs surface on a PC in seconds; only
