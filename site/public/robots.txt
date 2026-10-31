@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bench-gdc.vercel.app/sitemap.xml

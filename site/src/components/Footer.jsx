@@ -1,4 +1,4 @@
-import { REPO, VERSION } from "../data.js";
+import { REPO, TOOL_COUNT, VERSION } from "../data.js";
 
 export default function Footer() {
   return (
@@ -7,15 +7,16 @@ export default function Footer() {
         <div>
           <img src="images/brand-wordmark.png" alt="Bench" width={594} height={152} className="h-10 w-auto" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink/70">
-            Five study tools for the Casio fx-CG 50. Built with fxSDK and gint,
-            tested on a PC frame buffer and on the calculator itself.
+            {TOOL_COUNT} study and maths tools for the Casio fx-CG 50. Built with
+            fxSDK and gint, checked on a PC frame buffer, and run on a real
+            fx-CG 50 at version 1.0.0.
           </p>
         </div>
 
         <nav aria-label="Footer" className="space-y-2 text-sm font-bold">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/50">Bench {VERSION}</p>
           <a className="block hover:text-red" href="#tour">Screen tour</a>
-          <a className="block hover:text-red" href="#tools">The five tools</a>
+          <a className="block hover:text-red" href="#tools">The tools</a>
           <a className="block hover:text-red" href="#install">Install</a>
           <a className="block hover:text-red" href="#keys">Keys</a>
         </nav>

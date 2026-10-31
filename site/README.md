@@ -33,9 +33,26 @@ and with the file already there the build skips the network.
 If that script fails, the release does not exist yet: build it with a `v*` tag,
 then deploy again.
 
+## The tool list comes from the add-in
+
+`src/apps/registry.c` is the only list of tools in the project; CI turns it into
+`docs/tools.json`. `scripts/gen-tools.mjs` (first step of `npm run dev` and
+`npm run build`) joins that file to the copy and screenshots in `src/toolCopy.js`
+and writes `src/tools.generated.json`, which the page imports.
+
+It fails the build when:
+
+- a tool in the registry has no copy, so the page would quietly describe an
+  older, smaller app
+- `src/toolCopy.js` describes a tool the add-in no longer has
+- a screenshot named by the copy is not in `docs/images/`
+
+The counts on the page (tools, screenshots, the word in the headline) all come
+from that generated file, so "five tools" cannot survive a sixth tool.
+
 ## Content
 
-Copy, the version and the screenshot list live in `src/data.js`; sections are in
+Copy and the version live in `src/data.js` and `src/toolCopy.js`; sections are in
 `src/components/`. Only classes Tailwind can see in the source get emitted, so
 accent colours come from the static maps in `src/ui.jsx`, never from a template
 string.
