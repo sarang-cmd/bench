@@ -1,0 +1,101 @@
+name: Build
+
+# This workflow is the only way Bench gets a .g3a: the fxSDK toolchain comes
+# from git.planet-casio.com, which the Arena sandbox that wrote the code could
+# not reach.  A GitHub runner can.  See docs/toolchain.md section 5.
+#
+#   push to main      -> native tests, host preview, Bench-<version>.g3a as an
+#                        artifact
+#   push of a tag v*  -> the same, plus the .g3a attached to the GitHub release
+#
+# The version comes from version.txt; bump it, tag the commit, push the tag.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  native-tests:
+    name: Core tests (no gint)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and run the native test suite
+        run: make test
+
+      - name: Python tool tests
+        run: make py-test
+
+      - name: Host preview of the screens
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pil
+          make sim
+          make shots
+          ls -l docs/images/*.png | head
+
+      - name: Keep the screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-screens
+          path: docs/images/*.png
+          if-no-files-found: warn
+
+  g3a:
+    name: Build the add-in
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    needs: native-tests
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ca-certificates curl git python3 python3-pil \
+            build-essential cmake pkg-config libpng-dev libusb-1.0-0-dev \
+            libudev-dev libncurses-dev libgmp-dev libmpfr-dev libmpc-dev
+
+      - name: Install GiteaPC
+        run: |
+          curl -fsSL "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
+            -o /tmp/giteapc-install.sh
+          printf '\n' | bash /tmp/giteapc-install.sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install fxSDK, the SuperH toolchain and gint
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          printf 'y\n' | giteapc install Lephenixnoir/fxsdk:noudisks2
+          printf 'y\n' | giteapc install Lephenixnoir/sh-elf-binutils@dev
+          printf 'y\n' | giteapc install Lephenixnoir/sh-elf-gcc@dev
+          printf 'y\n' | giteapc install Lephenixnoir/OpenLibm Vhex-Kernel-Core/fxlibc
+          printf 'y\n' | giteapc install Lephenixnoir/gint
+          fxsdk --version || true
+          sh-elf-gcc --version | head -n 1
+
+      - name: Build Bench
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          fxsdk build-cg
+          test -f "Bench-$(cat version.txt).g3a"
+          ls -lh Bench-*.g3a
+
+      - name: Attach the .g3a
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-g3a
+          path: Bench-*.g3a
+          if-no-files-found: error
+
+      - name: Put the .g3a on the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Bench-*.g3a
+          generate_release_notes: true

@@ -3,10 +3,11 @@
 How Bench is built, what was verified where, and what the user has to do on
 their own machine. Date: 31 October 2026.
 
-**Status: the .g3a files for M0 and M1 were NOT built here.** This container
-cannot reach the fxSDK's download source and has no SuperH compiler. The
-reason, the evidence, and the two ways forward are in section 5. Everything
-else in Stage 1 and Stage 2 that does not need a cross-compiler is done.
+**Status: no .g3a was built in this container.** It cannot reach the fxSDK's
+download source and has no SuperH compiler. The reason and the evidence are in
+section 5; the way that actually produces the file is the GitHub workflow in
+`.github/workflows/build.yml` (section 7). Everything that does not need a
+cross-compiler is done and tested here.
 
 ## 1. What the project needs
 
@@ -55,6 +56,9 @@ giteapc install Vhex-Kernel-Core/fxlibc
 fxsdk path        # prints where the SDK and the compiler live
 ```
 
+This is the same sequence `.github/workflows/build.yml` runs, with the
+`noudisks2` variant of the fxSDK so no UDisks2 is needed on a runner.
+
 If a package name differs on your mirror, use `giteapc list` and copy the
 name; the repository names above come from the README's links.
 
@@ -65,18 +69,18 @@ cd /path/to/bench
 fxsdk build-cg
 ```
 
-`build-cg/` then contains the add-in. The output name is set in
-`CMakeLists.txt`:
+`build-cg/` then contains the add-in. The output name comes from
+`version.txt` and lands in the project root:
 
 ```
-Bench-<BENCH_VERSION>.g3a        e.g. Bench-0.0.1.g3a
+Bench-<version>.g3a        e.g. Bench-1.0.0.g3a
 ```
 
-Bump the version in `CMakeLists.txt` (`set(BENCH_VERSION "0.0.1")`) at each
-milestone, or override it on the command line:
+Bump `version.txt` when a version is tagged; the About screen shows the same
+number. To build a different version without touching the file:
 
 ```bash
-fxsdk build-cg -DBENCH_VERSION=0.0.2
+fxsdk build-cg -DBENCH_VERSION=1.0.1
 ```
 
 The spike add-in builds on its own so it can be deleted after M1:
@@ -98,6 +102,14 @@ make test-all      # both
 ```
 
 These run anywhere a C11 compiler and Python 3 exist, including this container.
+
+There is also a build of the whole add-in that needs neither a calculator nor
+the fxSDK, useful for checking layout and for the screenshots:
+
+```bash
+make sim        # compiles src/{platform,ui,apps} against tools/sim
+make shots      # renders every screen into docs/images
+```
 
 ### Optional: gint header check
 
@@ -149,8 +161,11 @@ What was done instead:
    `sh-elf-gcc` build trees as a tarball). Then M0 and the spike can be built
    here and the g3a sizes reported without involving the user's machine.
 
-Until one of those happens, every "build passes" line in the milestone list
-means "native tests pass; the calculator build has not been run".
+A third route, and the one this repository now takes, is the CI workflow in
+section 7: a GitHub runner installs the toolchain and builds the file. Until the
+first successful run of it, every "build passes" line in the milestone list
+means "native tests pass and the sources type-check against gint; the
+calculator build has not been run".
 
 ## 6. Versions used for the header checks
 
@@ -160,3 +175,26 @@ means "native tests pass; the calculator build has not been run".
 | fxSDK project template | 2.10.0 |
 | Host compiler used for the checks | gcc 12.2.0 (Debian 12) |
 | Python for `tools/` | 3.11 |
+
+## 7. Where the .g3a comes from
+
+`.github/workflows/build.yml` has two jobs:
+
+| Job | What | When |
+|-----|------|------|
+| `native-tests` | `make test`, `make py-test`, `make sim`, `make shots` | every push and pull request |
+| `g3a` | installs fxSDK + `sh-elf-gcc` + fxlibc + gint with GiteaPC, runs `fxsdk build-cg`, uploads `Bench-<version>.g3a`; on a `v*` tag it also attaches the file to the GitHub release | after `native-tests` passes |
+
+A GitHub runner has the network access the sandbox lacks. To cut a release:
+
+```bash
+echo 1.0.1 > version.txt          # bump
+git commit -am "1.0.1"
+git tag v1.0.1
+git push origin main --tags       # the workflow builds and publishes
+```
+
+The workflow's install steps follow the pattern used by other gint projects;
+they have not been run from this repository yet, so the first tag is also the
+first test of the pipeline.
+

@@ -1,0 +1,5 @@
+# tour step: 08_uncert_op
+# run with tools/sim/run_tour.sh, which draws every step
+right
+exe
+exe

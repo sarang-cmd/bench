@@ -1,34 +1,129 @@
-/* main.c - Bench entry point.
+/* main.c - entry point and router for the Bench add-in.
  *
- * M0 build (version 0.0.1): clear the screen to paper, draw one red square,
- * wait for a key press, exit.  No file, timer or text entry code here; those
- * arrive at the milestones that need them.
+ * Spec: docs/plan.md section 5 (screen and input model).
  *
- * Colours: the plan's Bauhaus palette, converted to the display's 16-bit
- * R5G6B5 format by C_RGB (gint/display-cg.h).
- *     paper #f4f3ee -> r 244, g 243, b 238 -> (30, 60, 29)
- *     ink   #2f2d2e -> r  47, g  45, b  46 -> ( 5, 11,  5)
- *     red   #d92d27 -> r 217, g  45, b  39 -> (27, 11,  4)
- * The palette moves to src/ui/theme.h in M2. */
+ * One screen at a time.  main.c keeps the current view, asks it to draw, waits
+ * for a key (or, on the Pacer run screen, a short timeout) and passes the key
+ * back.  Apps never call each other: they return APP_BACK, or ask for a screen
+ * with app_open().
+ *
+ * Files: store_init() creates Bench/notes, Bench/cards and Bench/state once,
+ * then app_settings_load() reads state/settings.cfg.  Nothing else is touched
+ * here. */
 
 #include <gint/display.h>
-#include <gint/keyboard.h>
 
-#define BENCH_PAPER C_RGB(30, 60, 29)
-#define BENCH_RED C_RGB(27, 11, 4)
+#include "apps/app.h"
+#include "platform/input.h"
+#include "platform/screen.h"
+#include "platform/store.h"
+#include "theme.h"
+#include "version.h"
+
+typedef enum {
+    VIEW_MENU = 0,
+    VIEW_PACER,
+    VIEW_UNCERT,
+    VIEW_CARDS,
+    VIEW_NOTES,
+    VIEW_NUMTHEORY,
+    VIEW_SETTINGS,
+    VIEW_ABOUT,
+    VIEW_COUNT,
+} view_t;
+
+typedef struct {
+    void (*init)(void);
+    void (*draw)(void);
+    app_result_t (*key)(bench_event_t ev);
+    int (*timeout)(void);
+} app_entry_t;
+
+static bench_settings_t cfg;
+static view_t view = VIEW_MENU;
+
+/* Declared before the table so the initialisers below can name the apps. */
+static app_entry_t const apps[VIEW_COUNT] = {
+    [VIEW_MENU] = { app_menu_init, app_menu_draw, app_menu_key,
+                    app_menu_timeout },
+    [VIEW_PACER] = { app_pacer_init, app_pacer_draw, app_pacer_key,
+                     app_pacer_timeout },
+    [VIEW_UNCERT] = { app_uncert_init, app_uncert_draw, app_uncert_key,
+                      app_uncert_timeout },
+    [VIEW_CARDS] = { app_cards_init, app_cards_draw, app_cards_key,
+                     app_cards_timeout },
+    [VIEW_NOTES] = { app_notes_init, app_notes_draw, app_notes_key,
+                     app_notes_timeout },
+    [VIEW_NUMTHEORY] = { app_numtheory_init, app_numtheory_draw,
+                         app_numtheory_key, app_numtheory_timeout },
+    [VIEW_SETTINGS] = { app_settings_init, app_settings_draw, app_settings_key,
+                        app_settings_timeout },
+    [VIEW_ABOUT] = { app_about_init, app_about_draw, app_about_key,
+                     app_about_timeout },
+};
+
+bench_settings_t *app_cfg(void)
+{
+    return &cfg;
+}
+
+static void set_view(view_t v)
+{
+    if (v < 0 || v >= VIEW_COUNT)
+        v = VIEW_MENU;
+    view = v;
+    apps[view].init();
+}
+
+void app_open(app_screen_t screen)
+{
+    switch (screen)
+    {
+    case APP_SCREEN_PACER: set_view(VIEW_PACER); break;
+    case APP_SCREEN_UNCERT: set_view(VIEW_UNCERT); break;
+    case APP_SCREEN_CARDS: set_view(VIEW_CARDS); break;
+    case APP_SCREEN_NOTES: set_view(VIEW_NOTES); break;
+    case APP_SCREEN_NUMTHEORY: set_view(VIEW_NUMTHEORY); break;
+    case APP_SCREEN_SETTINGS: set_view(VIEW_SETTINGS); break;
+    case APP_SCREEN_ABOUT: set_view(VIEW_ABOUT); break;
+    default: set_view(VIEW_MENU); break;
+    }
+}
 
 int main(void)
 {
-    /* The OS shows a 384x216 window inside gint's 396x224 surface
-     * (gint/display-cg.h), so the visible area starts at (6, 4). */
-    int const cx = 6 + 384 / 2;
-    int const cy = 4 + 216 / 2;
-    int const half = 48; /* a 97x97 square */
+    bool running = true;
 
-    dclear(BENCH_PAPER);
-    drect(cx - half, cy - half, cx + half, cy + half, BENCH_RED);
+    scr_init();
+    store_init();
+    app_settings_load(&cfg);
+    set_view(VIEW_MENU);
+
+    while (running)
+    {
+        app_entry_t const *cur = &apps[view];
+        int tmo;
+        bench_event_t ev;
+        app_result_t r;
+
+        cur->draw();
+        tmo = cur->timeout();
+        ev = tmo > 0 ? input_next_timeout(tmo) : input_next();
+
+        if (ev.key == BK_MENU)
+            break;
+        if (ev.key == BK_NONE)
+            continue;
+
+        r = cur->key(ev);
+        if (r == APP_QUIT)
+            break;
+        if (r == APP_BACK)
+            set_view(VIEW_MENU);
+    }
+
+    /* Leave the display in a known state for the OS. */
+    dclear(TH_PAPER);
     dupdate();
-
-    getkey();
     return 1;
 }

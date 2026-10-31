@@ -416,3 +416,36 @@ Release checklist:
 1. Set up the container or WSL toolchain. Build M0.
 2. Run the M1 spike on your calculator. Fill in `docs/spike.md`.
 3. Hand the agent the M2 task with this plan and the spike answers.
+
+## 12. What changed while building it
+
+Plan v1 held up: the module split, the core/platform boundary and the acceptance
+tables all survived contact with the code. These are the places the
+implementation had to decide something the plan left open. Each one is
+reflected in the code and in `docs/STATUS.md`.
+
+| # | Plan said | Built as | Why |
+|---|-----------|----------|-----|
+| 1 | Palette in "the calculator's 16-bit format" via `C_RGB()` | raw RGB565 words in `src/ui/theme.h`, with the hex they came from | gint's `C_RGB()` shifts green by six while its own `C_GREEN` constant is `0x07e0`, so the macro moves green one bit; writing the word keeps `#f4f3ee` as `#f4f3ee` |
+| 2 | "The visible screen is 384x216, the framebuffer is larger. Confirm in the headers." | confirmed: 396x224, window centred at (6,4) | every drawing call goes through `src/platform/screen.c`, which adds the offset and clips, so no app knows it exists |
+| 3 | Text entry may need the ALPHA shift; fallback is a file list | search uses an on-screen keyboard (arrows, EXE) | the ALPHA mapping is spike question 5 and unconfirmed; the keyboard works whatever it says |
+| 4 | Round the uncertainty to 1 significant figure, "use 2 if the first digit is 1" as a setting | 1 figure is the default, the 2-when-1 rule is the *other* setting | the plan's own acceptance row (`0.15 -> 0.2`) only holds with 1 figure |
+| 5 | Percentage uncertainty "shown on screen" | computed from the rounded uncertainty that is displayed | keeps the three numbers on the screen consistent with each other |
+| 6 | Session draws box 2 every second session, box 3 every fourth | session index is 0-based: box 2 on sessions 1, 3, 5..., box 3 on 3, 7, 11... | the plan gives the pattern, not the phase; 0-based keeps "session 0" meaning "never drilled" |
+| 7 | A too-long card line is "a warning" | the side is truncated to 120 characters and reported with its line number | "show a warning", not "skip the card" |
+| 8 | 32 KiB note cap, raise after the memory spike | kept at 32 KiB; the About screen reports the largest free block | spike question 7 is still open |
+| 9 | Settings saved "on change only" | a value comparison against the file's contents, then one write | a key press that changes nothing writes nothing |
+| 10 | Files in `docs/tasks/` | they shipped in `agent/tasks/`, copied to `docs/tasks/` and left in place | do not disturb the original pack |
+| 11 | Build with `fxsdk build-cg` in the sandbox | written and type-checked here; built by `.github/workflows/build.yml` | the sandbox cannot reach `git.planet-casio.com` (docs/toolchain.md section 5) |
+| 12 | Home screen: five tiles | six tiles: the five tools plus Settings, with About on F6 | Settings needs a door; F6 keeps the house in six tiles and three rows |
+
+Two additions the plan did not name, both small and both tested:
+
+- `src/core/numparse.c`: the calculator may not have a usable `strtod` for the
+  values people type into a keypad, so the tools parse typed numbers with this
+  module instead (62 checks).
+- `src/core/settings.c`: the settings file needed a parser anyway, and a parser
+  in the core can be tested (659 checks).
+
+Not done, because it needs the calculator: the ten spike answers, the Exam Mode
+check, the redraw-time measurement, and every hardware test in section 7.

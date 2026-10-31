@@ -1,0 +1,9 @@
+# tour step: 04_pacer_run
+# run with tools/sim/run_tour.sh, which draws every step
+exe
+exe
+exe
+exe
+exe
+f1
+f1

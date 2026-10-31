@@ -1,8 +1,11 @@
-# Native (PC) build for the Bench core.
+# Native (PC) build for the Bench core, plus the host preview of the screens.
 #
 #   make test        build and run every native test in tests/
 #   make py-test     run the tools/ tests
 #   make test-all    both of the above
+#   make sim         build the host preview (tools/sim) of the add-in
+#   make shots       render every screen to docs/images (needs `make sim`)
+#   make gint-check  type-check the add-in against real gint headers
 #   make clean
 #
 # There is no gint here on purpose: src/core must stay free of gint includes,
@@ -42,6 +45,34 @@ py-test:
 	@echo "== python tool tests =="
 	$(PYTHON) -m unittest discover -s tools -p "test_*.py" -v
 
+test-all: test py-test
+
+# ---------------------------------------------------------------------------
+# Host preview.  tools/sim/ supplies a small stand-in for gint so the whole
+# add-in (platform, ui, apps) compiles and runs on a PC.  It is a development
+# toy, not the build the calculator gets; the real build is `fxsdk build-cg`.
+# ---------------------------------------------------------------------------
+
+SIM_SRC := $(wildcard src/core/*.c) $(wildcard src/platform/*.c) \
+           $(wildcard src/ui/*.c) $(wildcard src/apps/*.c) tools/sim/sim.c
+SIM_CFLAGS := -std=gnu11 -O1 -g -Wall -Wextra -Wno-missing-field-initializers \
+              -Wno-missing-braces \
+              -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include
+SIM_HDR := $(wildcard src/*.h src/ui/*.h src/platform/*.h src/apps/*.h \
+             tools/sim/include/gint/*.h tools/sim/sim_font.h)
+
+build/sim/bench: $(SIM_SRC) $(SIM_HDR) | build/sim
+	$(CC) $(SIM_CFLAGS) -Dmain=bench_main -c -o build/sim/main.o src/main.c
+	$(CC) $(SIM_CFLAGS) -o $@ build/sim/main.o $(filter-out src/main.c,$(SIM_SRC)) $(LDLIBS)
+
+build/sim:
+	@mkdir -p build/sim
+
+sim: build/sim/bench
+
+shots: sim
+	@tools/sim/run_tour.sh $(CURDIR)/docs/images
+
 # Type-check the platform sources against real gint headers.  Needs the gint
 # include folder, which the fxSDK installs (fxsdk path shows where).
 # This is not a build: it checks names, signatures and warnings only.
@@ -49,6 +80,9 @@ py-test:
 # so this check uses the fxSDK's own language level and no -pedantic.
 GINT_WARN := -Wall -Wextra -Werror
 GINT_INC ?= $(HOME)/.local/include
+GINT_SRC := $(wildcard src/*.c) $(wildcard src/platform/*.c) \
+            $(wildcard src/ui/*.c) $(wildcard src/apps/*.c) \
+            $(wildcard spike/*.c)
 gint-check:
 	@test -d "$(GINT_INC)/gint" || { \
 	  echo "gint headers not found in $(GINT_INC)/gint"; \
@@ -58,14 +92,16 @@ gint-check:
 	@printf '%s\n' \
 	  '#ifndef GINT_CONFIG' \
 	  '#define GINT_CONFIG' \
-	  '#include <gint/defs/types.h>' \
-	  '#define GINT_VERSION "2.10.0"' \
-	  '#define GINT_HASH 0x0000000' \
+	  '#define GINT_OS_FXCG50 1' \
 	  '#endif' > build/gintstub/gint/config.h
-	$(CC) -fsyntax-only -std=gnu17 $(GINT_WARN) -DFXCG50 \
-	  -Ibuild/gintstub -I$(GINT_INC) src/main.c
-	$(CC) -fsyntax-only -std=gnu17 $(GINT_WARN) -DFXCG50 \
-	  -Ibuild/gintstub -I$(GINT_INC) spike/main.c
-	@echo "gint header check passed: src/main.c and spike/main.c"
+	@fail=0; for f in $(GINT_SRC); do \
+	  printf '  %-28s ' "$$f"; \
+	  if $(CC) -fsyntax-only -std=gnu17 $(GINT_WARN) -DFXCG50 \
+	     -Ibuild/gintstub -I$(GINT_INC) -Isrc -Isrc/ui -Isrc/core -Isrc/apps \
+	     "$$f"; then echo ok; else echo FAILED; fail=1; fi; \
+	done; \
+	if [ $$fail -ne 0 ]; then echo "GINT CHECK FAILED"; exit 1; fi; \
+	echo "GINT CHECK PASSED ($$(echo $(GINT_SRC) | wc -w) files)"
 
-.PHONY: all test test-all py-test gint-check clean
+clean:
+	rm -rf build

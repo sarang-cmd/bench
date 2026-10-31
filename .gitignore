@@ -15,3 +15,9 @@ __pycache__/
 # Editor
 .vscode
 *.sublime-workspace
+
+# Simulator screenshots (only the PNGs are kept)
+docs/images/*.ppm
+
+# Node, used only to try a browser locally
+node_modules/

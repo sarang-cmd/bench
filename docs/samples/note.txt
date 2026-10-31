@@ -1,0 +1,24 @@
+Bench sample note (plain text)
+==============================
+
+This file exists so the Notes viewer has something to open before you write
+your own.  It is deliberately plain: no Markdown, so the viewer shows it as
+text and wraps it to the window.
+
+Physics constants worth memorising
+  g        9.81 m/s^2
+  c        3.00 x 10^8 m/s
+  e        1.60 x 10^-19 C
+  h        6.63 x 10^-34 J s
+  k_B      1.38 x 10^-23 J/K
+
+Exam habits
+  - Read the whole paper first; mark the easy questions.
+  - Write the formula before substituting numbers.
+  - Carry units through every line.
+  - If you are stuck for more than two minutes, move on.
+  - Check that the answer has the right order of magnitude.
+
+Use the Pacer tool to plan the timing of a practice paper, and this viewer to
+keep the formula list next to it.  Press F1 in the viewer to search, F3 to jump
+to a heading (Markdown files only), UP/DOWN to scroll.

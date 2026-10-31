@@ -1,0 +1,3 @@
+# tour step: 26_settings
+# run with tools/sim/run_tour.sh, which draws every step
+f5
