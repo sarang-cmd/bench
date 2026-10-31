@@ -45,6 +45,7 @@ set(SOURCES
   src/core/numtheory.c
   src/core/pacer.c
   src/core/settings.c
+  src/core/sigfig.c
   src/core/textsearch.c
   src/core/uncert.c
 
@@ -66,6 +67,7 @@ set(SOURCES
   src/apps/app_numtheory.c
   src/apps/app_pacer.c
   src/apps/app_settings.c
+  src/apps/app_sigfig.c
   src/apps/app_uncert.c
   src/apps/registry.c
 )

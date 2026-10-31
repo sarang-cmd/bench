@@ -35,6 +35,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Uncertainty result](docs/images/10_uncert_result.png) | ![Cards](docs/images/14_cards_answer.png) |
 | ![Markdown](docs/images/18_notes_markdown.png) | ![Number theory](docs/images/24_numtheory_gcd.png) |
 | ![Cards boxes](docs/images/16_cards_boxes.png) | ![Settings](docs/images/26_settings.png) |
+| ![Function table](docs/images/32_function_table.png) | ![Sig figs](docs/images/35_sigfig_modes.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -128,6 +129,24 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | totient | Euler phi |
 | CRT | one pair or a list of congruences |
 
+### Sig figs
+Count them, round them, write them in standard form or with an SI prefix, then
+practise. Significant figures are counted on the **text**, not on the value, so
+`1200` has 2 and `1200.` has 4 - which is exactly the point students lose marks
+on.
+
+| Mode | What it answers |
+|---|---|
+| Count the figures | `0.004560` -> 4 |
+| Round to n figures | `1234.5` to 3 -> `1230` = `1.23 x 10^3` |
+| Round to n decimals | half up on the next decimal |
+| Standard form | `4.56 x 10^-3`, always with the power |
+| SI prefix | `4.56 m`, `45.6 u`, `0.0456 n` - the unit is yours |
+| Practice | eight awkward values, typed answer, score |
+
+Rounding is half-up on the decimal digits, never on the binary float, so
+`1.2345` to 3 figures is `1.23` and `1.2355` is `1.24`.
+
 ## Keys
 
 | Key | Where | What |
@@ -144,6 +163,9 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | F3 / F4 | Notes | heading list / jump to the top |
 | F1..F4 | home | the four categories: Study, Math, Science, Tools |
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
+| F1 / F2 | Sig figs | clear the number / practice |
+| UP/DOWN | Sig figs | pick one of the six modes |
+| LEFT/RIGHT | Sig figs | the n of the rounding modes |
 | F6 | home | About |
 | F1 / F2 / F3 / F4 | Function table | table / row count / clear slot / degrees-radians |
 | digits, `.`, `-` | number fields | type a value, DEL removes |

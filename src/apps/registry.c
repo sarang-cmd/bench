@@ -47,6 +47,13 @@ static void icon_frame(int x, int y, int fill, int edge)
     sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
 }
 
+/* Three bars, each shorter than the last: a number cut to fewer figures. */
+static void icon_steps(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 3; i++)
+        sh_square_icon(x + 2, y + 2 + i * 6, 17 - i * 5, fill, edge, 1);
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -181,6 +188,29 @@ static char const help_function[] =
     "\n"
     "Keys: EXE edit, F1 table, F3 clear.";
 
+
+static char const help_sigfig[] =
+    "Sig figs\n"
+    "How many figures, and how to write\n"
+    "them.\n"
+    "\n"
+    "UP/DOWN picks a mode, LEFT/RIGHT\n"
+    "changes n, EXE types the number.\n"
+    "\n"
+    "Count: leading zeros never count,\n"
+    "and trailing zeros count only after\n"
+    "a decimal point. 0.004560 has 4.\n"
+    "\n"
+    "Round: half up on the decimal\n"
+    "digits, so 1234.5 to 3 figures is\n"
+    "1230 = 1.23 x 10^3.\n"
+    "\n"
+    "Practice asks a question; type the\n"
+    "count and EXE marks it, F2 moves\n"
+    "on.\n"
+    "\n"
+    "Keys: EXE type, F1 clear.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -249,6 +279,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_UNCERT,
         .needs_file = false,
         .help = help_uncert,
+    },
+    {
+        .id = "sigfig",
+        .title = "Sig figs",
+        .subtitle = "round, standard",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_TEAL,
+        .icon = icon_steps,
+        .screen = APP_SCREEN_SIGFIG,
+        .needs_file = false,
+        .help = help_sigfig,
     },
     {
         .id = "settings",

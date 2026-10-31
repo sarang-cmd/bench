@@ -54,6 +54,15 @@
     "help": "Uncertainty\nArithmetic with errors, to 1 or 2\nsignificant figures.\n\nType a value and its absolute error,\npick an operation, type the second\nvalue and error.\n\nChain mode keeps the result as the\nfirst value of the next step.\n\nKeys: F1..F3 operation, EXE apply,\nEXIT back."
   },
   {
+    "id": "sigfig",
+    "title": "Sig figs",
+    "subtitle": "round, standard",
+    "category": "Science",
+    "screen": 10,
+    "needs_file": false,
+    "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
+  },
+  {
     "id": "settings",
     "title": "Settings",
     "subtitle": "options",

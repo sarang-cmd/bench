@@ -43,6 +43,17 @@ next one.
   tool's accent as its fill, a 3 px border and a hard shadow; everything on it
   is coloured by measurement, and a subtitle the palette cannot carry gets a
   paper plate hugging the words. Unverified on device.
+- **Sig figs and standard form (F9)**, the second of the fifteen:
+  `src/core/sigfig.c` counts figures on the text (so `1200` is 2 and `1200.` is
+  4), rounds half-up on the decimal digits, and writes standard form and SI
+  prefixes without a unit of its own. `src/apps/app_sigfig.c` has six modes -
+  count, round to n figures, round to n decimals, standard form, SI prefix and
+  a practice question with a score. 41 native checks. Unverified on device.
+- **Home screen: one clean block.** A page shows only the rows it needs, the
+  grid is centred in what is left, and the softkey strip reads Study, Math,
+  Science, Tools, Help, About - F5 is help for the selected tile here as it is
+  on every other screen, so Settings is a tile and not a second meaning for F5.
+  Unverified on device.
 - **Function table (F1)**, the first of the fifteen: `src/core/expr.c` is a
   shunting-yard parser (fixed 32-entry stack, implicit multiplication, column
   numbers on every error), `src/core/exprs.c` reads and writes the six slots,

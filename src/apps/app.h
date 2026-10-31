@@ -31,6 +31,7 @@ typedef enum {
     APP_SCREEN_ABOUT,
     APP_SCREEN_HELP,
     APP_SCREEN_FUNCTION,
+    APP_SCREEN_SIGFIG,
 } app_screen_t;
 
 /* Switch to another screen (implemented in main.c). */
@@ -63,5 +64,6 @@ DECLARE_APP(settings);
 DECLARE_APP(about);
 DECLARE_APP(help);
 DECLARE_APP(function);
+DECLARE_APP(sigfig);
 
 #endif /* BENCH_APP_H */
