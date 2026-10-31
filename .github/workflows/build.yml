@@ -58,9 +58,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use the requested version
-        if: inputs.version != ''
-        run: echo "${{ inputs.version }}" > version.txt
+      - name: Pick the version
+        shell: bash
+        run: |
+          # A tag wins, then a workflow_dispatch input, then version.txt.
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            printf '%s\n' "${GITHUB_REF#refs/tags/v}" > version.txt
+          elif [ -n "${{ inputs.version }}" ]; then
+            printf '%s\n' "${{ inputs.version }}" > version.txt
+          fi
+          echo "building version $(cat version.txt)"
 
       - name: Install build dependencies
         run: |
@@ -94,16 +101,28 @@ jobs:
           test -f "Bench-$(cat version.txt).g3a"
           ls -lh Bench-*.g3a
 
+      - name: Build the M1 spike add-in
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          if [ -f spike/CMakeLists.txt ]; then
+            (cd spike && fxsdk build-cg)
+            ls -lh spike/Bench-spike-*.g3a || true
+          fi
+
       - name: Attach the .g3a
         uses: actions/upload-artifact@v4
         with:
           name: bench-g3a
-          path: Bench-*.g3a
+          path: |
+            Bench-*.g3a
+            spike/Bench-spike-*.g3a
           if-no-files-found: error
 
       - name: Put the .g3a on the release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: Bench-*.g3a
+          files: |
+            Bench-*.g3a
+            spike/Bench-spike-*.g3a
           generate_release_notes: true
