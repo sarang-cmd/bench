@@ -443,6 +443,29 @@ static char const help_moles[] =
     "type, F3/F4 change mode, DEL takes\n"
     "a digit back.";
 
+static char const help_base[] =
+    "Bases and bits\n"
+    "One number in base 2 to 36, and\n"
+    "the same number as two's complement\n"
+    "at 8, 16 and 32 bits.\n"
+    "\n"
+    "F1 switches between converting\n"
+    "and the bitwise operators.\n"
+    "\n"
+    "F3 changes the entry base, or the\n"
+    "operator: AND, OR, XOR, shift left\n"
+    "and shift right. A shift uses the\n"
+    "count in b and refuses 63 or more.\n"
+    "\n"
+    "F2 opens the letter keyboard for\n"
+    "digits above 9, since the keypad\n"
+    "has no A to F keys this add-in may\n"
+    "count on. Digits can still be\n"
+    "typed straight in.\n"
+    "\n"
+    "Keys: digits type, DEL takes one\n"
+    "back, F4 swaps a and b.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -544,6 +567,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_TRIANGLE,
         .needs_file = false,
         .help = help_triangle,
+    },
+    {
+        .id = "base",
+        .title = "Base and bits",
+        .subtitle = "hex, shifts",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_BASE,
+        .needs_file = false,
+        .help = help_base,
     },
     {
         .id = "numtheory",

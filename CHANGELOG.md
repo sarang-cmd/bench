@@ -58,6 +58,15 @@ next one.
   out under the answer. Unverified on device.
 
 
+- **Base and bits (F12)**: `src/core/base.c` parses and prints any base from 2
+  to 36, writes two's complement at 8, 16 and 32 bits (hex padded to the width,
+  binary grouped in fours), and does AND, OR, XOR and logical shifts, refusing a
+  shift of 63 or more (78 native checks). `src/apps/app_base.c` shows one value
+  in five bases with all three widths, and a second tab for the operators; F2
+  opens the letter keyboard because the keypad has no A-F keys. Unverified on
+  device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

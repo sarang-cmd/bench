@@ -32,6 +32,7 @@ set(SOURCES
   src/main.c
 
   src/core/cards_parse.c
+  src/core/base.c
   src/core/chem.c
   src/core/color.c
   src/core/cplx.c
@@ -71,6 +72,7 @@ set(SOURCES
   src/apps/app_cplx.c
   src/apps/app_function.c
   src/apps/app_help.c
+  src/apps/app_base.c
   src/apps/app_menu.c
   src/apps/app_moles.c
   src/apps/app_notes.c

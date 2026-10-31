@@ -401,6 +401,32 @@ export const toolCopy = {
     ],
   },
 
+  base: {
+    rank: 9,
+    accent: "red",
+    tag: "hex, shifts",
+    summary:
+      "One number in five bases and as two's complement at 8, 16 and 32 bits, plus the bitwise operators.",
+    body:
+      "The converting tab shows a value in decimal, hex, octal, binary and base " +
+      "36 at once, then the same value as a two's complement pattern at the " +
+      "three widths a paper uses. The operator tab puts two numbers side by side " +
+      "in binary and shows the result in decimal and hex, with the bits set.",
+    points: [
+      "255 is FF, 377, 11111111 and 73 in base 36.",
+      "-1 at 8 bits is 1111 1111, and at 32 bits eight F's.",
+      "12 AND 10 is 8; 12 XOR 10 is 6; 10 << 2 is 40.",
+      "A shift of 63 or more is refused rather than undefined.",
+    ],
+    lead: "62_base_convert.png",
+    leadCaption: "255 in five bases and at three widths",
+    shots: [
+      ["62_base_convert.png", "255 in five bases and at three widths"],
+      ["64_base_negative.png", "Minus one as two's complement"],
+      ["63_base_bits.png", "The operator tab: 12 AND 10"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

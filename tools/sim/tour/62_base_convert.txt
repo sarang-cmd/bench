@@ -1,0 +1,3 @@
+# tour step: 62_base_convert
+# 255 in base 10: FF in hex, 377 in octal, 1111 1111 at 8 bits.
+tool:base

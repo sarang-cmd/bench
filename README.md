@@ -2,11 +2,12 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Fifteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+**Seventeen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
-statistics, SUVAT and projectiles, moles, uncertainty and significant figures. One
+statistics, SUVAT and projectiles, moles, bases and bits, uncertainty and
+significant figures. One
 `.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
@@ -268,6 +269,25 @@ Volumes are in dm3 because that is what `c = n / V` wants, so 25 cm3 is
 `0.025`; the screen says so under each field. `R` is 8.314, for p in kPa and V
 in dm3. A zero where a formula divides is refused, not printed as infinity.
 
+### Base and bits
+One number in every base, and the same number as a two's complement pattern at
+the three widths a paper uses.
+
+| Base 10 | 255 | -1 |
+|---|---|---|
+| hex | FF | -1 |
+| octal | 377 | -1 |
+| binary | 11111111 | -1 |
+| 8-bit | 1111 1111 = FF | 1111 1111 = FF |
+| 16-bit | 0000 0000 1111 1111 = 00FF | 1111 1111 1111 1111 = FFFF |
+| 32-bit | ... 0000 1111 1111 = 000000FF | ... 1111 1111 = FFFFFFFF |
+
+F1 switches to the operators: `12 AND 10 = 8`, `12 XOR 10 = 6`, and shifts with
+the count in `b`, shown in binary, decimal and hex with the bits set. A shift of
+63 or more is refused rather than undefined. F3 changes the entry base (2, 8,
+10, 16, 36) or the operator; F2 opens the letter keyboard, because the keypad
+has no A-F keys this add-in may count on.
+
 ## Keys
 
 | Key | Where | What |
@@ -290,6 +310,10 @@ in dm3. A zero where a formula divides is refused, not printed as infinity.
 | F3 / F4 | Moles | previous / next calculation |
 | UP / DOWN | Moles | pick a field |
 | F1 | Moles | the mode's worked example again |
+| F1 | Base and bits | convert / operators |
+| F2 | Base and bits | the letter keyboard for A-F |
+| F3 | Base and bits | entry base / the operator |
+| F4 | Base and bits | swap a and b |
 | F3 / F4 | Statistics | quartile method / the working |
 | F2 | SUVAT | the flight path |
 | F3 | SUVAT | g = 9.81 or 10 |

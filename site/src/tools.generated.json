@@ -397,6 +397,40 @@
       ]
     },
     {
+      "id": "base",
+      "name": "Base and bits",
+      "subtitle": "hex, shifts",
+      "category": "Math",
+      "help": "Bases and bits\nOne number in base 2 to 36, and\nthe same number as two's complement\nat 8, 16 and 32 bits.\n\nF1 switches between converting\nand the bitwise operators.\n\nF3 changes the entry base, or the\noperator: AND, OR, XOR, shift left\nand shift right. A shift uses the\ncount in b and refuses 63 or more.\n\nF2 opens the letter keyboard for\ndigits above 9, since the keypad\nhas no A to F keys this add-in may\ncount on. Digits can still be\ntyped straight in.\n\nKeys: digits type, DEL takes one\nback, F4 swaps a and b.",
+      "rank": 9,
+      "accent": "red",
+      "tag": "hex, shifts",
+      "summary": "One number in five bases and as two's complement at 8, 16 and 32 bits, plus the bitwise operators.",
+      "body": "The converting tab shows a value in decimal, hex, octal, binary and base 36 at once, then the same value as a two's complement pattern at the three widths a paper uses. The operator tab puts two numbers side by side in binary and shows the result in decimal and hex, with the bits set.",
+      "points": [
+        "255 is FF, 377, 11111111 and 73 in base 36.",
+        "-1 at 8 bits is 1111 1111, and at 32 bits eight F's.",
+        "12 AND 10 is 8; 12 XOR 10 is 6; 10 << 2 is 40.",
+        "A shift of 63 or more is refused rather than undefined."
+      ],
+      "lead": "62_base_convert.png",
+      "leadCaption": "255 in five bases and at three widths",
+      "shots": [
+        [
+          "62_base_convert.png",
+          "255 in five bases and at three widths"
+        ],
+        [
+          "64_base_negative.png",
+          "Minus one as two's complement"
+        ],
+        [
+          "63_base_bits.png",
+          "The operator tab: 12 AND 10"
+        ]
+      ]
+    },
+    {
       "id": "uncert",
       "name": "Uncertainty",
       "subtitle": "value and error",
@@ -556,7 +590,8 @@
         "seq",
         "cplx",
         "numtheory",
-        "stats"
+        "stats",
+        "base"
       ]
     },
     {
@@ -570,7 +605,7 @@
     }
   ],
   "counts": {
-    "tools": 15,
-    "screens": 62
+    "tools": 16,
+    "screens": 66
   }
 }

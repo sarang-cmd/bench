@@ -81,6 +81,15 @@
     "help": "Triangle\nThree sides and three angles. Fill\nin what you know and leave the rest\nblank.\n\nGive any three values, at least one\na side: SSS, SAS, ASA and AAS all\nsolve, and the fields fill in.\n\nSSA - two sides and an angle not\nbetween them - can have two answers.\nThe title bar then says so and F2\nswaps between the two triangles.\n\nArea and perimeter are under the\nfields.  F3 degrees, F4 radians.\n\nKeys: arrows move, digits type,\nEXE solves, F1 clears."
   },
   {
+    "id": "base",
+    "title": "Base and bits",
+    "subtitle": "hex, shifts",
+    "category": "Math",
+    "screen": 18,
+    "needs_file": false,
+    "help": "Bases and bits\nOne number in base 2 to 36, and\nthe same number as two's complement\nat 8, 16 and 32 bits.\n\nF1 switches between converting\nand the bitwise operators.\n\nF3 changes the entry base, or the\noperator: AND, OR, XOR, shift left\nand shift right. A shift uses the\ncount in b and refuses 63 or more.\n\nF2 opens the letter keyboard for\ndigits above 9, since the keypad\nhas no A to F keys this add-in may\ncount on. Digits can still be\ntyped straight in.\n\nKeys: digits type, DEL takes one\nback, F4 swaps a and b."
+  },
+  {
     "id": "numtheory",
     "title": "Number theory",
     "subtitle": "gcd to CRT",
@@ -112,7 +121,7 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 18,
+    "screen": 19,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
   },
