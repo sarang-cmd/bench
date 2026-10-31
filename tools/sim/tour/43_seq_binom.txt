@@ -1,0 +1,12 @@
+# tour step: 43_seq_binom
+# 10 choose 3 and row 10 of Pascal's triangle.
+f2
+right
+exe
+f4
+f4
+f1
+1
+0
+right
+3

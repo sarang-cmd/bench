@@ -18,7 +18,11 @@ fs=/tmp/bench-checkfs
 
 rm -rf "$fs"
 mkdir -p "$fs/notes" "$fs/cards" "$fs/state"
+# State files the tour needs to show a real screen (the six expressions).
+[ -f "$root/docs/samples/state/exprs.txt" ] &&
+    cp "$root/docs/samples/state/exprs.txt" "$fs/state/"
 for f in "$root"/docs/samples/*; do
+    [ -f "$f" ] || continue
     case "$f" in
         *cards*.txt) cp "$f" "$fs/cards/" ;;
         *) cp "$f" "$fs/notes/" ;;

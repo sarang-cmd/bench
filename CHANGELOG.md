@@ -37,6 +37,46 @@ next one.
   code is ink on shade.
 
 ### Added
+- **Home screen v2**: four categories on F1..F4, a 3 x 2 page of tiles, page
+  dots when a category has more than one page, and a dashboard strip on Study
+  that counts the decks and notes on the card. The selected tile keeps the
+  tool's accent as its fill, a 3 px border and a hard shadow; everything on it
+  is coloured by measurement, and a subtitle the palette cannot carry gets a
+  paper plate hugging the words. Unverified on device.
+- **Sequences and binomials (F5)**: `src/core/seq.c` does arithmetic and
+  geometric terms and sums, the sum to infinity, exact `C(n,k)` (cancelling
+  before multiplying, so it can answer up to n = 62 instead of wrapping) and
+  Pascal's rows. `src/apps/app_seq.c` is three screens with the first few terms
+  listed under the answers. 41 native checks. Unverified on device.
+- **Triangle solver (F2)**: `src/core/triangle.c` solves SSS, SAS, ASA/AAS and
+  SSA from whatever is given, with the ambiguous SSA case reporting two
+  triangles rather than silently picking one. `src/apps/app_triangle.c` is six
+  fields, the answers written back into them, area and perimeter underneath,
+  and F2 to swap between the two SSA triangles. 42 native checks.
+  Unverified on device.
+- **Polynomials (F3)**, quadratics and the arithmetic behind them:
+  `src/core/poly.c` parses and prints polynomials, adds, subtracts, multiplies,
+  expands `(ax + b)^n`, divides with quotient and remainder, solves a quadratic
+  with real or complex roots, and factors over the rationals with the rational
+  root theorem. `src/apps/app_poly.c` is three screens - quadratic (disc,
+  roots, vertex, factor pair), expand, and roots from typed coefficients.
+  83 native checks. Unverified on device.
+- **Sig figs and standard form (F9)**, the second of the fifteen:
+  `src/core/sigfig.c` counts figures on the text (so `1200` is 2 and `1200.` is
+  4), rounds half-up on the decimal digits, and writes standard form and SI
+  prefixes without a unit of its own. `src/apps/app_sigfig.c` has six modes -
+  count, round to n figures, round to n decimals, standard form, SI prefix and
+  a practice question with a score. 41 native checks. Unverified on device.
+- **Home screen: one clean block.** A page shows only the rows it needs, the
+  grid is centred in what is left, and the softkey strip reads Study, Math,
+  Science, Tools, Help, About - F5 is help for the selected tile here as it is
+  on every other screen, so Settings is a tile and not a second meaning for F5.
+  Unverified on device.
+- **Function table (F1)**, the first of the fifteen: `src/core/expr.c` is a
+  shunting-yard parser (fixed 32-entry stack, implicit multiplication, column
+  numbers on every error), `src/core/exprs.c` reads and writes the six slots,
+  and `src/apps/app_function.c` is the slot list, the table and the probe.
+  Unverified on device.
 - `src/core/mathfn.{c,h}`: sqrt, exp, ln, log10, pow, sin, cos, tan and the
   degree conversion in plain C — no libm, no gint, so the calculator build and
   the host tests run the same code. 85 native checks against the textbook

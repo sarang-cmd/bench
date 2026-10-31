@@ -25,8 +25,10 @@ void w_title(char const *title, char const *hint)
     {
         int const y = (TH_TITLE_H - scr_text_h()) / 2;
 
-        scr_text_as(SCR_TR_TITLE, SCR_W - TH_PAD - scr_text_w(hint), y, hint,
-                    TH_YELLOW);
+        /* Kept clear of the red square, which owns the last 8 pixels: the hint
+         * used to sit on top of it. */
+        scr_text_as(SCR_TR_TITLE, SCR_W - TH_PAD - 8 - scr_text_w(hint), y,
+                    hint, TH_YELLOW);
     }
     /* Bauhaus: a 4-pixel red square after the title, always in the same place. */
     scr_fill(SCR_W - TH_PAD - 4, TH_TITLE_H - 6, 4, 4, TH_RED);

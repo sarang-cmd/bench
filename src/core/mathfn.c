@@ -318,3 +318,125 @@ double bm_tan(double x)
         return bm_nan();        /* an odd multiple of pi/2 */
     return s / c;
 }
+
+/* ---- inverse trigonometry ------------------------------------------------ */
+
+/* atan on |x| <= 1: halve the argument twice with
+ * atan(x) = 2 atan(x / (1 + sqrt(1 + x^2))), then the series, which now needs
+ * only ten terms for |x| <= tan(pi/16). */
+static double atan_small(double x)
+{
+    double const x2 = x * x;
+    double p = 1.0 / 21.0;      /* (-1)^10 x^21 / 21 */
+    int k;
+
+    for (k = 9; k >= 0; k--)
+        p = ((k & 1) ? -1.0 : 1.0) / (double)(2 * k + 1) + x2 * p;
+    return x * p;
+}
+
+double bm_atan(double x)
+{
+    bool neg = x < 0.0;
+    bool inv = false;
+    double r;
+
+    if (bm_isnan(x))
+        return x;
+    if (!bm_isfinite(x))
+        return neg ? -BM_HALF_PI : BM_HALF_PI;
+    if (neg)
+        x = -x;
+    if (x > 1.0)
+    {
+        inv = true;
+        x = 1.0 / x;
+    }
+    r = x / (1.0 + bm_sqrt(1.0 + x * x));
+    r = r / (1.0 + bm_sqrt(1.0 + r * r));
+    r = 4.0 * atan_small(r);
+    if (inv)
+        r = BM_HALF_PI - r;
+    return neg ? -r : r;
+}
+
+double bm_asin(double x)
+{
+    if (bm_isnan(x) || x < -1.0 || x > 1.0)
+        return bm_nan();
+    if (x == 1.0)
+        return BM_HALF_PI;
+    if (x == -1.0)
+        return -BM_HALF_PI;
+    return bm_atan(x / bm_sqrt(1.0 - x * x));
+}
+
+double bm_acos(double x)
+{
+    if (bm_isnan(x) || x < -1.0 || x > 1.0)
+        return bm_nan();
+    return BM_HALF_PI - bm_asin(x);
+}
+
+/* ---- hyperbolics --------------------------------------------------------- */
+
+double bm_sinh(double x)
+{
+    double const e = bm_exp(x);
+
+    if (x > 710.0)
+        return bm_inf();
+    if (x < -710.0)
+        return -bm_inf();
+    return (e - 1.0 / e) * 0.5;
+}
+
+double bm_cosh(double x)
+{
+    double const e = bm_exp(x);
+
+    if (x > 710.0 || x < -710.0)
+        return bm_inf();
+    return (e + 1.0 / e) * 0.5;
+}
+
+double bm_tanh(double x)
+{
+    if (x > 20.0)
+        return 1.0;
+    if (x < -20.0)
+        return -1.0;
+    {
+        double const e = bm_exp(2.0 * x);
+
+        return (e - 1.0) / (e + 1.0);
+    }
+}
+
+/* ---- rounding ------------------------------------------------------------ */
+
+#define BM_WHOLE_LIMIT 4.6116860184273879e18   /* 2^62 */
+
+double bm_floor(double x)
+{
+    long long t;
+
+    if (!bm_isfinite(x) || x >= BM_WHOLE_LIMIT || x <= -BM_WHOLE_LIMIT)
+        return x;
+    t = (long long)x;
+    if ((double)t > x)
+        t--;
+    return (double)t;
+}
+
+double bm_ceil(double x)
+{
+    long long t;
+
+    if (!bm_isfinite(x) || x >= BM_WHOLE_LIMIT || x <= -BM_WHOLE_LIMIT)
+        return x;
+    t = (long long)x;
+    if ((double)t < x)
+        t++;
+    return (double)t;
+}

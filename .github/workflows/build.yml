@@ -241,10 +241,23 @@ jobs:
         shell: bash
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
+      # A compile error must be readable: the raw job log lives on blob
+      # storage, which some clients cannot fetch, so the useful lines are
+      # repeated as annotations.
       - name: Build Bench
+        shell: bash
         run: |
-          fxsdk --version
-          fxsdk build-cg
+          set -o pipefail
+          log=/tmp/bench-build.log
+          if ! { fxsdk --version && fxsdk build-cg; } 2>&1 | tee "$log"; then
+            {
+              grep -iE "error:|Error [0-9]+|undefined reference|No such file|No rule to make" "$log" | tail -n 12
+              tail -n 3 "$log"
+            } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+              echo "::error title=add-in build failed::${line:-<blank>}"
+            done
+            exit 1
+          fi
           test -f "Bench-$(cat version.txt).g3a"
           ls -lh Bench-*.g3a
 

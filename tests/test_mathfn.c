@@ -122,6 +122,60 @@ static void test_trig(void)
     T_TRUE(bm_isnan(bm_sin(bm_inf())));
 }
 
+static void test_inverse_trig(void)
+{
+    T_SECTION("inverse trigonometry");
+
+    T_EXACT(bm_atan(0.0), 0.0);
+    T_NEAR(bm_atan(1.0), BM_PI / 4.0, REL);
+    T_NEAR(bm_atan(-1.0), -BM_PI / 4.0, REL);
+    T_NEAR(bm_atan(2.0), atan(2.0), REL);
+    T_NEAR(bm_atan(100.0), atan(100.0), REL);
+    T_NEAR(bm_atan(0.001), atan(0.001), REL);
+    T_NEAR(bm_atan(bm_inf()), BM_HALF_PI, REL);
+    T_NEAR(bm_atan(-bm_inf()), -BM_HALF_PI, REL);
+
+    T_EXACT(bm_asin(0.0), 0.0);
+    T_NEAR(bm_asin(0.5), BM_PI / 6.0, REL);
+    T_NEAR(bm_asin(1.0), BM_HALF_PI, REL);
+    T_NEAR(bm_asin(-1.0), -BM_HALF_PI, REL);
+    T_NEAR(bm_asin(0.9), asin(0.9), 1e-13);
+    T_TRUE(bm_isnan(bm_asin(1.5)));
+
+    T_NEAR(bm_acos(1.0), 0.0, REL);
+    T_NEAR(bm_acos(0.5), BM_PI / 3.0, REL);
+    T_NEAR(bm_acos(-1.0), BM_PI, REL);
+    T_NEAR(bm_acos(0.9), acos(0.9), 1e-13);
+    T_TRUE(bm_isnan(bm_acos(-1.5)));
+
+    /* Round trip through the functions the tools actually use. */
+    T_NEAR(bm_atan(bm_tan(0.4)), 0.4, REL);
+    T_NEAR(bm_sin(bm_asin(0.25)), 0.25, REL);
+}
+
+static void test_hyperbolic_and_rounding(void)
+{
+    T_SECTION("hyperbolics and rounding");
+
+    T_EXACT(bm_sinh(0.0), 0.0);
+    T_NEAR(bm_cosh(0.0), 1.0, REL);
+    T_NEAR(bm_sinh(1.0), sinh(1.0), 1e-13);
+    T_NEAR(bm_cosh(1.0), cosh(1.0), 1e-13);
+    T_NEAR(bm_tanh(1.0), tanh(1.0), 1e-14);
+    T_NEAR(bm_tanh(-0.5), tanh(-0.5), 1e-14);
+    T_EXACT(bm_tanh(50.0), 1.0);
+
+    T_EXACT(bm_floor(2.7), 2.0);
+    T_EXACT(bm_floor(-2.7), -3.0);
+    T_EXACT(bm_floor(3.0), 3.0);
+    T_EXACT(bm_floor(-0.5), -1.0);
+    T_EXACT(bm_ceil(2.1), 3.0);
+    T_EXACT(bm_ceil(-2.7), -2.0);
+    T_EXACT(bm_ceil(-0.5), 0.0);
+    T_EXACT(bm_ceil(3.0), 3.0);
+    T_EXACT(bm_floor(1e300), 1e300);
+}
+
 static void test_pow2(void)
 {
     T_SECTION("powers of two");
@@ -154,6 +208,8 @@ static void run_tests(void)
     test_exp_ln();
     test_pow();
     test_trig();
+    test_inverse_trig();
+    test_hyperbolic_and_rounding();
     test_pow2();
     test_predicates();
 }

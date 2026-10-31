@@ -1,0 +1,13 @@
+# tour step: 40_triangle_sss
+# 3, 4, 5: the right angle is opposite the 5, and the area is 6.
+f2
+right
+right
+right
+exe
+3
+right
+4
+right
+5
+exe

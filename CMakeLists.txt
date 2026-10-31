@@ -33,6 +33,8 @@ set(SOURCES
 
   src/core/cards_parse.c
   src/core/color.c
+  src/core/expr.c
+  src/core/exprs.c
   src/core/help.c
   src/core/leitner.c
   src/core/mathfn.c
@@ -41,8 +43,12 @@ set(SOURCES
   src/core/numfmt.c
   src/core/numparse.c
   src/core/numtheory.c
+  src/core/poly.c
   src/core/pacer.c
+  src/core/seq.c
   src/core/settings.c
+  src/core/sigfig.c
+  src/core/triangle.c
   src/core/textsearch.c
   src/core/uncert.c
 
@@ -57,12 +63,17 @@ set(SOURCES
 
   src/apps/app_about.c
   src/apps/app_cards.c
+  src/apps/app_function.c
   src/apps/app_help.c
   src/apps/app_menu.c
   src/apps/app_notes.c
   src/apps/app_numtheory.c
   src/apps/app_pacer.c
+  src/apps/app_poly.c
+  src/apps/app_seq.c
   src/apps/app_settings.c
+  src/apps/app_sigfig.c
+  src/apps/app_triangle.c
   src/apps/app_uncert.c
   src/apps/registry.c
 )
