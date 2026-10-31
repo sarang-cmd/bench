@@ -1,0 +1,5 @@
+# tour step: 42_seq_arith
+# 3, 7, 11, ...: the tenth term and the sum of ten.
+f2
+right
+exe

@@ -14,7 +14,9 @@
  * the pixels afterwards, so a wrong constant fails the build.
  *
  * Keys: F1..F4 category, LEFT/RIGHT/UP/DOWN move (LEFT/RIGHT at the edge
- * turns the page), EXE opens, F5 Settings, F6 About, MENU quits.
+ * turns the page), EXE opens, MENU quits, F5 is the help page for the selected
+ * tile - the same key that opens help on every other screen - and F6 is About.
+ * Settings is a tile in Tools, not a shortcut, so F5 means one thing everywhere.
  */
 
 #include "app.h"
@@ -22,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "app_help.h"
 #include "core/color.h"
 #include "platform/screen.h"
 #include "platform/store.h"
@@ -199,9 +202,13 @@ void app_menu_draw(void)
     int const dots_y = SCR_H - TH_SOFT_H - 10;
     int const grid_bottom = dots_y - 6;
     int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / TILE_COLS;
+    /* Only the rows this page needs: a category of three does not leave a
+     * hole where the fourth tile would be. */
+    int const rows = size == 0 ? TILE_ROWS
+                   : (size - page * TILES_PER_PAGE + TILE_COLS - 1) / TILE_COLS;
     int tile_h;
     char const *const soft[6] = {
-        "Study", "Math", "Science", "Tools", "Settings", "About",
+        "Study", "Math", "Science", "Tools", "Help", "About",
     };
 
     scr_clear(TH_PAPER);
@@ -213,7 +220,17 @@ void app_menu_draw(void)
         grid_top = TH_CONTENT_Y + TH_GAP + 20 + 6;
     }
 
-    tile_h = (grid_bottom - grid_top - TH_GAP) / TILE_ROWS;
+    if (rows > TILE_ROWS)
+        tile_h = (grid_bottom - grid_top - TH_GAP) / TILE_ROWS;
+    else
+        tile_h = (grid_bottom - grid_top - TH_GAP * (rows - 1)) / rows;
+    if (tile_h > 92)
+        tile_h = 92;
+    /* Centre the block in the grid when the page does not fill it, so the
+     * paper left over is above and below rather than dumped at the bottom. */
+    if (tile_h * rows + TH_GAP * (rows - 1) < grid_bottom - grid_top)
+        grid_top += (grid_bottom - grid_top - tile_h * rows - TH_GAP * (rows - 1))
+                    / 2;
 
     for (int i = 0; i < TILES_PER_PAGE; i++)
     {
@@ -287,7 +304,7 @@ app_result_t app_menu_key(bench_event_t ev)
     case BK_MENU:
         return APP_QUIT;
     case BK_F5:
-        app_open(APP_SCREEN_SETTINGS);
+        app_help_open(tool_category_at(category, sel));
         break;
     case BK_F6:
         app_open(APP_SCREEN_ABOUT);

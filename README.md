@@ -35,6 +35,10 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Uncertainty result](docs/images/10_uncert_result.png) | ![Cards](docs/images/14_cards_answer.png) |
 | ![Markdown](docs/images/18_notes_markdown.png) | ![Number theory](docs/images/24_numtheory_gcd.png) |
 | ![Cards boxes](docs/images/16_cards_boxes.png) | ![Settings](docs/images/26_settings.png) |
+| ![Function table](docs/images/32_function_table.png) | ![Sig figs](docs/images/35_sigfig_modes.png) |
+| ![Polynomials](docs/images/37_poly_quad.png) | ![Expand](docs/images/38_poly_expand.png) |
+| ![Triangle](docs/images/40_triangle_sss.png) | ![Two triangles](docs/images/41_triangle_ssa.png) |
+| ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -128,6 +132,57 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | totient | Euler phi |
 | CRT | one pair or a list of congruences |
 
+### Sequences and binomials
+Arithmetic and geometric terms, the sum of the first n, the sum to infinity when
+`|r| < 1`, and binomials.
+
+`C(n,k)` is computed exactly and the factors are cancelled before they are
+multiplied, so `C(52,5)` is right and `C(62,31)` still fits; a coefficient that
+would pass 64 bits is refused rather than printed wrong. Row n of Pascal's
+triangle is listed underneath.
+
+### Triangle solver
+Give any three of the six values, at least one a side, and the rest fills in.
+SSS, SAS, ASA and AAS go through the law of cosines and the law of sines; SSA
+reports **two** triangles when there are two instead of quietly picking one, and
+F2 swaps between them.
+
+The six boxes are `a b c` over `A B C`, so the labels match the sides they are
+opposite. F3 is degrees, F4 is radians, and the unit is in the title bar.
+
+### Polynomials
+Quadratics and the arithmetic around them, over a small fixed-size polynomial
+type (`src/core/poly.c`, degree 8 at most, doubles for coefficients).
+
+| Screen | What it answers |
+|---|---|
+| Quadratic | discriminant, both roots (real or complex), the vertex, and the factor pair when the roots are whole |
+| Expand | `(ax + b)^n` term by term, n up to 8 |
+| Roots | a polynomial typed as coefficients: the rational roots, and what is left over |
+
+Roots are typed as `c0..cn`, not as text: the keypad has no letters for `x^2`,
+and the ALPHA mapping is one of the things only the device can settle. The
+rational root theorem does the searching, so `2x^2 - 3x + 1` finds `1/2` and
+`1`, while `x^2 + 1` honestly reports none.
+
+### Sig figs
+Count them, round them, write them in standard form or with an SI prefix, then
+practise. Significant figures are counted on the **text**, not on the value, so
+`1200` has 2 and `1200.` has 4 - which is exactly the point students lose marks
+on.
+
+| Mode | What it answers |
+|---|---|
+| Count the figures | `0.004560` -> 4 |
+| Round to n figures | `1234.5` to 3 -> `1230` = `1.23 x 10^3` |
+| Round to n decimals | half up on the next decimal |
+| Standard form | `4.56 x 10^-3`, always with the power |
+| SI prefix | `4.56 m`, `45.6 u`, `0.0456 n` - the unit is yours |
+| Practice | eight awkward values, typed answer, score |
+
+Rounding is half-up on the decimal digits, never on the binary float, so
+`1.2345` to 3 figures is `1.23` and `1.2355` is `1.24`.
+
 ## Keys
 
 | Key | Where | What |
@@ -144,6 +199,15 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | F3 / F4 | Notes | heading list / jump to the top |
 | F1..F4 | home | the four categories: Study, Math, Science, Tools |
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
+| F1 / F2 | Sig figs | clear the number / practice |
+| F3 / F4 | Sequences | previous / next screen |
+| F3 / F4 | Triangle | degrees / radians (re-solves) |
+| F2 | Triangle | the other triangle, when SSA has two |
+| F3 / F4 | Polynomials | previous / next screen |
+| F2 | Polynomials, roots | one more coefficient |
+| UP/DOWN | Sig figs | pick one of the six modes |
+| F4 / F3 | Sig figs | next / previous mode |
+| LEFT/RIGHT | Sig figs | the n of the rounding modes |
 | F6 | home | About |
 | F1 / F2 / F3 / F4 | Function table | table / row count / clear slot / degrees-radians |
 | digits, `.`, `-` | number fields | type a value, DEL removes |

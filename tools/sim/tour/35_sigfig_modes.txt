@@ -1,0 +1,11 @@
+# tour step: 35_sigfig_modes
+# Count the figures in a number that ends in zeros, then round a third one.
+f3
+right
+exe
+up
+f1
+1
+2
+0
+0

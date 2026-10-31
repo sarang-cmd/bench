@@ -47,6 +47,49 @@ static void icon_frame(int x, int y, int fill, int edge)
     sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
 }
 
+/* Three bars, each shorter than the last: a number cut to fewer figures. */
+static void icon_steps(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 3; i++)
+        sh_square_icon(x + 2, y + 2 + i * 6, 17 - i * 5, fill, edge, 1);
+}
+
+/* A curve that turns: a parabola, the shape of the quadratic tool. */
+static void icon_curve(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 17; i++)
+    {
+        int const dx = i - 8;
+        int const h = (dx * dx) / 12;
+
+        sh_square_icon(x + 2 + i, y + 16 - h, 2, fill, edge, 1);
+    }
+}
+
+/* A triangle outline: the triangle solver. */
+static void icon_tri_outline(int x, int y, int fill, int edge)
+{
+    int const top = y + 2, bottom = y + 17;
+
+    for (int i = 0; i < 16; i++)
+    {
+        int const half = (15 * i) / 15 / 2;
+
+        scr_fill(x + 2 + 8 - half, top + i, 1, 1, fill);
+        scr_fill(x + 2 + 8 + half, top + i, 1, 1, fill);
+    }
+    scr_hline(x + 2, bottom, 17, fill);
+    (void)edge;
+}
+
+/* Steps that get further apart: a sequence. */
+static void icon_steps_up(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 3; i++)
+        scr_fill(x + 3 + i * 5, y + 17 - (i + 1) * 4, 4, (i + 1) * 4, fill);
+    (void)edge;
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -181,6 +224,97 @@ static char const help_function[] =
     "\n"
     "Keys: EXE edit, F1 table, F3 clear.";
 
+
+static char const help_sigfig[] =
+    "Sig figs\n"
+    "How many figures, and how to write\n"
+    "them.\n"
+    "\n"
+    "UP/DOWN picks a mode, LEFT/RIGHT\n"
+    "changes n, EXE types the number.\n"
+    "\n"
+    "Count: leading zeros never count,\n"
+    "and trailing zeros count only after\n"
+    "a decimal point. 0.004560 has 4.\n"
+    "\n"
+    "Round: half up on the decimal\n"
+    "digits, so 1234.5 to 3 figures is\n"
+    "1230 = 1.23 x 10^3.\n"
+    "\n"
+    "Practice asks a question; type the\n"
+    "count and EXE marks it, F2 moves\n"
+    "on.\n"
+    "\n"
+    "Keys: EXE type, F1 clear.";
+
+
+static char const help_poly[] =
+    "Polynomials\n"
+    "Quadratics, expansion and rational\n"
+    "roots.\n"
+    "\n"
+    "Three screens, F4 or F2 next and F3\n"
+    "back:\n"
+    "  Quadratic  a, b, c give the\n"
+    "             discriminant, both roots\n"
+    "             and the vertex.\n"
+    "  Expand     (ax + b)^n to degree 8.\n"
+    "  Roots      c0..cn as coefficients;\n"
+    "             whole and half roots are\n"
+    "             found, the rest is shown.\n"
+    "\n"
+    "Arrows move between fields, digits\n"
+    "type, DEL deletes, F1 clears.  F2 on\n"
+    "the roots screen adds a coefficient.\n"
+    "\n"
+    "Rounding is half up on the digits.";
+
+
+static char const help_triangle[] =
+    "Triangle\n"
+    "Three sides and three angles. Fill\n"
+    "in what you know and leave the rest\n"
+    "blank.\n"
+    "\n"
+    "Give any three values, at least one\n"
+    "a side: SSS, SAS, ASA and AAS all\n"
+    "solve, and the fields fill in.\n"
+    "\n"
+    "SSA - two sides and an angle not\n"
+    "between them - can have two answers.\n"
+    "The title bar then says so and F2\n"
+    "swaps between the two triangles.\n"
+    "\n"
+    "Area and perimeter are under the\n"
+    "fields.  F3 degrees, F4 radians.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "EXE solves, F1 clears.";
+
+
+static char const help_seq[] =
+    "Sequences\n"
+    "Arithmetic and geometric terms,\n"
+    "their sums, and binomials.\n"
+    "\n"
+    "Three screens, F4 next and F3 back.\n"
+    "\n"
+    "  Arithmetic  a, d, n: the nth term\n"
+    "              and the sum, then the\n"
+    "              first few terms.\n"
+    "  Geometric   a, r, n: as above, plus\n"
+    "              the sum to infinity when\n"
+    "              |r| < 1.\n"
+    "  Binomial    n choose k exactly, and\n"
+    "              row n of Pascal.\n"
+    "\n"
+    "Terms count from 1, so the first term\n"
+    "is n = 1.  C(n,k) is refused rather\n"
+    "than rounded when it passes 64 bits.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "EXE solves, F1 clears.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -229,6 +363,39 @@ static tool_t const tools[] = {
         .help = help_function,
     },
     {
+        .id = "seq",
+        .title = "Sequences",
+        .subtitle = "terms, sums",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_YELLOW,
+        .icon = icon_steps_up,
+        .screen = APP_SCREEN_SEQ,
+        .needs_file = false,
+        .help = help_seq,
+    },
+    {
+        .id = "poly",
+        .title = "Polynomials",
+        .subtitle = "roots, expand",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_VIOLET,
+        .icon = icon_curve,
+        .screen = APP_SCREEN_POLY,
+        .needs_file = false,
+        .help = help_poly,
+    },
+    {
+        .id = "triangle",
+        .title = "Triangle",
+        .subtitle = "sides, angles",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_tri_outline,
+        .screen = APP_SCREEN_TRIANGLE,
+        .needs_file = false,
+        .help = help_triangle,
+    },
+    {
         .id = "numtheory",
         .title = "Number theory",
         .subtitle = "gcd to CRT",
@@ -249,6 +416,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_UNCERT,
         .needs_file = false,
         .help = help_uncert,
+    },
+    {
+        .id = "sigfig",
+        .title = "Sig figs",
+        .subtitle = "round, standard",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_TEAL,
+        .icon = icon_steps,
+        .screen = APP_SCREEN_SIGFIG,
+        .needs_file = false,
+        .help = help_sigfig,
     },
     {
         .id = "settings",

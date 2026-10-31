@@ -1,0 +1,6 @@
+# tour step: 34_sigfig
+# starts at the home screen; see tools/sim/run_tour.sh
+# Science (F3) -> Sig figs (third tile: Uncertainty, Sig figs)
+f3
+right
+exe
