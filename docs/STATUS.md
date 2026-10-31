@@ -185,7 +185,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | A2 tool registry | **done**: `src/apps/registry.c` is the only list; `docs/tools.json` is generated from it |
 | A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard; selection inverts the tile |
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons |
-| A5 shared services | **partly**: help is done (screen, key, paging, tests); expression engine, number entry, working lines, history and settings v2 are not started |
+| A5 shared services | **partly**: help is done (screen, key, paging, tests) and `core/mathfn.c` gives core sqrt, exp, ln, log10, pow and the trigonometric functions without libm (the expression engine's ground); expression engine, number entry, working lines, history and settings v2 are not started |
 | B overlap hunt | **done for every existing screen**: 30 scripts, 0 findings; worst cases added |
 | C fifteen tools | **not started** (F1..F15) |
 | D demo content | **not started** |
