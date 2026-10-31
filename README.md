@@ -37,6 +37,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Cards boxes](docs/images/16_cards_boxes.png) | ![Settings](docs/images/26_settings.png) |
 | ![Function table](docs/images/32_function_table.png) | ![Sig figs](docs/images/35_sigfig_modes.png) |
 | ![Polynomials](docs/images/37_poly_quad.png) | ![Expand](docs/images/38_poly_expand.png) |
+| ![Triangle](docs/images/40_triangle_sss.png) | ![Two triangles](docs/images/41_triangle_ssa.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -130,6 +131,15 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | totient | Euler phi |
 | CRT | one pair or a list of congruences |
 
+### Triangle solver
+Give any three of the six values, at least one a side, and the rest fills in.
+SSS, SAS, ASA and AAS go through the law of cosines and the law of sines; SSA
+reports **two** triangles when there are two instead of quietly picking one, and
+F2 swaps between them.
+
+The six boxes are `a b c` over `A B C`, so the labels match the sides they are
+opposite. F3 is degrees, F4 is radians, and the unit is in the title bar.
+
 ### Polynomials
 Quadratics and the arithmetic around them, over a small fixed-size polynomial
 type (`src/core/poly.c`, degree 8 at most, doubles for coefficients).
@@ -180,6 +190,8 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F1..F4 | home | the four categories: Study, Math, Science, Tools |
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
 | F1 / F2 | Sig figs | clear the number / practice |
+| F3 / F4 | Triangle | degrees / radians (re-solves) |
+| F2 | Triangle | the other triangle, when SSA has two |
 | F3 / F4 | Polynomials | previous / next screen |
 | F2 | Polynomials, roots | one more coefficient |
 | UP/DOWN | Sig figs | pick one of the six modes |

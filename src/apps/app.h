@@ -32,6 +32,7 @@ typedef enum {
     APP_SCREEN_HELP,
     APP_SCREEN_FUNCTION,
     APP_SCREEN_POLY,
+    APP_SCREEN_TRIANGLE,
     APP_SCREEN_SIGFIG,
 } app_screen_t;
 
@@ -66,6 +67,7 @@ DECLARE_APP(about);
 DECLARE_APP(help);
 DECLARE_APP(function);
 DECLARE_APP(poly);
+DECLARE_APP(triangle);
 DECLARE_APP(sigfig);
 
 #endif /* BENCH_APP_H */

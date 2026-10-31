@@ -43,6 +43,12 @@ next one.
   tool's accent as its fill, a 3 px border and a hard shadow; everything on it
   is coloured by measurement, and a subtitle the palette cannot carry gets a
   paper plate hugging the words. Unverified on device.
+- **Triangle solver (F2)**: `src/core/triangle.c` solves SSS, SAS, ASA/AAS and
+  SSA from whatever is given, with the ambiguous SSA case reporting two
+  triangles rather than silently picking one. `src/apps/app_triangle.c` is six
+  fields, the answers written back into them, area and perimeter underneath,
+  and F2 to swap between the two SSA triangles. 42 native checks.
+  Unverified on device.
 - **Polynomials (F3)**, quadratics and the arithmetic behind them:
   `src/core/poly.c` parses and prints polynomials, adds, subtracts, multiplies,
   expands `(ax + b)^n`, divides with quotient and remainder, solves a quadratic

@@ -1,0 +1,17 @@
+# tour step: 41_triangle_ssa
+# a = 10, b = 15, A = 30 degrees: two triangles, and F2 offers the other one.
+f2
+right
+exe
+1
+0
+right
+1
+5
+right
+down
+left
+left
+3
+0
+exe

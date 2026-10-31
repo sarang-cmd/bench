@@ -47,6 +47,7 @@ set(SOURCES
   src/core/pacer.c
   src/core/settings.c
   src/core/sigfig.c
+  src/core/triangle.c
   src/core/textsearch.c
   src/core/uncert.c
 
@@ -70,6 +71,7 @@ set(SOURCES
   src/apps/app_poly.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
+  src/apps/app_triangle.c
   src/apps/app_uncert.c
   src/apps/registry.c
 )

@@ -66,6 +66,22 @@ static void icon_curve(int x, int y, int fill, int edge)
     }
 }
 
+/* A triangle outline: the triangle solver. */
+static void icon_tri_outline(int x, int y, int fill, int edge)
+{
+    int const top = y + 2, bottom = y + 17;
+
+    for (int i = 0; i < 16; i++)
+    {
+        int const half = (15 * i) / 15 / 2;
+
+        scr_fill(x + 2 + 8 - half, top + i, 1, 1, fill);
+        scr_fill(x + 2 + 8 + half, top + i, 1, 1, fill);
+    }
+    scr_hline(x + 2, bottom, 17, fill);
+    (void)edge;
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -245,6 +261,28 @@ static char const help_poly[] =
     "\n"
     "Rounding is half up on the digits.";
 
+
+static char const help_triangle[] =
+    "Triangle\n"
+    "Three sides and three angles. Fill\n"
+    "in what you know and leave the rest\n"
+    "blank.\n"
+    "\n"
+    "Give any three values, at least one\n"
+    "a side: SSS, SAS, ASA and AAS all\n"
+    "solve, and the fields fill in.\n"
+    "\n"
+    "SSA - two sides and an angle not\n"
+    "between them - can have two answers.\n"
+    "The title bar then says so and F2\n"
+    "swaps between the two triangles.\n"
+    "\n"
+    "Area and perimeter are under the\n"
+    "fields.  F3 degrees, F4 radians.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "EXE solves, F1 clears.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -291,6 +329,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_FUNCTION,
         .needs_file = false,
         .help = help_function,
+    },
+    {
+        .id = "triangle",
+        .title = "Triangle",
+        .subtitle = "sides, angles",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_tri_outline,
+        .screen = APP_SCREEN_TRIANGLE,
+        .needs_file = false,
+        .help = help_triangle,
     },
     {
         .id = "poly",
