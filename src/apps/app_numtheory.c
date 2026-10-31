@@ -348,8 +348,6 @@ static void draw_list(void)
     int y = TH_CONTENT_Y + TH_PAD;
     int rows = w_rows_in(TH_CONTENT_H - 4 * TH_LINE);
 
-    scr_text(TH_PAD, y, "Number theory", TH_INK);
-    y += TH_LINE + 2;
     list_top = w_scroll_follow(list_sel, list_top, rows);
     for (int i = 0; i < rows && list_top + i < FN_COUNT; i++)
     {

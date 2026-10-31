@@ -1,3 +1,6 @@
 # tour step: 26_settings
-# run with tools/sim/run_tour.sh, which draws every step
-f5
+# starts at the home screen; see tools/sim/run_tour.sh
+down
+down
+right
+exe

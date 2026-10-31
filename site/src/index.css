@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-feature-settings: "ss01" on;
+  }
+  ::selection {
+    background: #f2c230;
+    color: #1a1818;
+  }
+  /* The screenshots are 2x captures of a 396x224 framebuffer: keep the pixels
+     square instead of letting the browser blur them. */
+  .pixel {
+    image-rendering: pixelated;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}

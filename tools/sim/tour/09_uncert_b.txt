@@ -1,5 +1,5 @@
 # tour step: 09_uncert_b
-# run with tools/sim/run_tour.sh, which draws every step
+# starts at the home screen; see tools/sim/run_tour.sh
 right
 exe
 exe
