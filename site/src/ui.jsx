@@ -2,12 +2,13 @@
 // so every accent colour is spelled out here instead of being built from a
 // string at runtime.
 
+// bg / dot: the accent as a background; fg: readable text on top of it.
 export const accents = {
-  red: { bg: "bg-red", border: "border-red", text: "text-red", dot: "bg-red" },
-  blue: { bg: "bg-blue", border: "border-blue", text: "text-blue", dot: "bg-blue" },
-  yellow: { bg: "bg-yellow", border: "border-yellow", text: "text-ink", dot: "bg-yellow" },
-  teal: { bg: "bg-teal", border: "border-teal", text: "text-teal", dot: "bg-teal" },
-  violet: { bg: "bg-violet", border: "border-violet", text: "text-violet", dot: "bg-violet" },
+  red: { bg: "bg-red", text: "text-red", dot: "bg-red", fg: "text-paper" },
+  blue: { bg: "bg-blue", text: "text-blue", dot: "bg-blue", fg: "text-paper" },
+  yellow: { bg: "bg-yellow", text: "text-ink", dot: "bg-yellow", fg: "text-ink" },
+  teal: { bg: "bg-teal", text: "text-teal", dot: "bg-teal", fg: "text-paper" },
+  violet: { bg: "bg-violet", text: "text-violet", dot: "bg-violet", fg: "text-paper" },
 };
 
 export function Section({ id, children, className = "" }) {

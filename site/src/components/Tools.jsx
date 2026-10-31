@@ -22,7 +22,7 @@ export default function Tools() {
             >
               <div className={index % 2 ? "lg:order-2" : ""}>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className={`flex h-9 w-9 items-center justify-center border-3 border-ink ${accent.dot} font-mono text-sm font-bold`}>
+                  <span className={`flex h-9 w-9 items-center justify-center border-3 border-ink ${accent.dot} ${accent.fg} font-mono text-sm font-bold`}>
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="text-2xl font-black sm:text-3xl">{tool.name}</h3>
