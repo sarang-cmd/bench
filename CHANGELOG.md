@@ -43,6 +43,13 @@ next one.
   tool's accent as its fill, a 3 px border and a hard shadow; everything on it
   is coloured by measurement, and a subtitle the palette cannot carry gets a
   paper plate hugging the words. Unverified on device.
+- **Polynomials (F3)**, quadratics and the arithmetic behind them:
+  `src/core/poly.c` parses and prints polynomials, adds, subtracts, multiplies,
+  expands `(ax + b)^n`, divides with quotient and remainder, solves a quadratic
+  with real or complex roots, and factors over the rationals with the rational
+  root theorem. `src/apps/app_poly.c` is three screens - quadratic (disc,
+  roots, vertex, factor pair), expand, and roots from typed coefficients.
+  83 native checks. Unverified on device.
 - **Sig figs and standard form (F9)**, the second of the fifteen:
   `src/core/sigfig.c` counts figures on the text (so `1200` is 2 and `1200.` is
   4), rounds half-up on the decimal digits, and writes standard form and SI

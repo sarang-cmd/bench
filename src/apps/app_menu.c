@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "app_help.h"
 #include "core/color.h"
 #include "platform/screen.h"
 #include "platform/store.h"

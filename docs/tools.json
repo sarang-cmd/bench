@@ -36,6 +36,15 @@
     "help": "Function table\nA table and a value for f(x).\n\n1. Pick a slot f, g, h, p, q, r.\n2. EXE types the expression on the\n   keyboard: x, pi, e, + - * / ^,\n   sin cos tan ln log sqrt abs.\n3. F1 opens the table.\n\nIn the table: LEFT/RIGHT move the\nstart, F1 changes the step, F2 the\nrow count, EXE probes one value.\nF4 switches degrees and radians;\nthe mode shows in the title bar.\n\nSlots are written to\nBench/state/exprs.txt when you\nleave the tool.\n\nKeys: EXE edit, F1 table, F3 clear."
   },
   {
+    "id": "poly",
+    "title": "Polynomials",
+    "subtitle": "roots, expand",
+    "category": "Math",
+    "screen": 10,
+    "needs_file": false,
+    "help": "Polynomials\nQuadratics, expansion and rational\nroots.\n\nThree screens, F4 or F2 next and F3\nback:\n  Quadratic  a, b, c give the\n             discriminant, both roots\n             and the vertex.\n  Expand     (ax + b)^n to degree 8.\n  Roots      c0..cn as coefficients;\n             whole and half roots are\n             found, the rest is shown.\n\nArrows move between fields, digits\ntype, DEL deletes, F1 clears.  F2 on\nthe roots screen adds a coefficient.\n\nRounding is half up on the digits."
+  },
+  {
     "id": "numtheory",
     "title": "Number theory",
     "subtitle": "gcd to CRT",
@@ -58,7 +67,7 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 10,
+    "screen": 11,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
   },

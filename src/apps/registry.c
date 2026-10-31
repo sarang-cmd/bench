@@ -54,6 +54,18 @@ static void icon_steps(int x, int y, int fill, int edge)
         sh_square_icon(x + 2, y + 2 + i * 6, 17 - i * 5, fill, edge, 1);
 }
 
+/* A curve that turns: a parabola, the shape of the quadratic tool. */
+static void icon_curve(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 17; i++)
+    {
+        int const dx = i - 8;
+        int const h = (dx * dx) / 12;
+
+        sh_square_icon(x + 2 + i, y + 16 - h, 2, fill, edge, 1);
+    }
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -211,6 +223,28 @@ static char const help_sigfig[] =
     "\n"
     "Keys: EXE type, F1 clear.";
 
+
+static char const help_poly[] =
+    "Polynomials\n"
+    "Quadratics, expansion and rational\n"
+    "roots.\n"
+    "\n"
+    "Three screens, F4 or F2 next and F3\n"
+    "back:\n"
+    "  Quadratic  a, b, c give the\n"
+    "             discriminant, both roots\n"
+    "             and the vertex.\n"
+    "  Expand     (ax + b)^n to degree 8.\n"
+    "  Roots      c0..cn as coefficients;\n"
+    "             whole and half roots are\n"
+    "             found, the rest is shown.\n"
+    "\n"
+    "Arrows move between fields, digits\n"
+    "type, DEL deletes, F1 clears.  F2 on\n"
+    "the roots screen adds a coefficient.\n"
+    "\n"
+    "Rounding is half up on the digits.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -257,6 +291,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_FUNCTION,
         .needs_file = false,
         .help = help_function,
+    },
+    {
+        .id = "poly",
+        .title = "Polynomials",
+        .subtitle = "roots, expand",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_VIOLET,
+        .icon = icon_curve,
+        .screen = APP_SCREEN_POLY,
+        .needs_file = false,
+        .help = help_poly,
     },
     {
         .id = "numtheory",
