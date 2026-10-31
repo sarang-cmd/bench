@@ -1,0 +1,13 @@
+# tour step: 30_help_scroll
+# starts at the home screen; see tools/sim/run_tour.sh
+# F5 opens the help page; DOWN past the end must not scroll past the last
+# page (a help text that fits does not move at all).
+f5
+down
+down
+down
+down
+down
+down
+down
+down

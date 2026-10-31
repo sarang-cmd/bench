@@ -1,0 +1,4 @@
+# tour step: 29_help
+# starts at the home screen; see tools/sim/run_tour.sh
+# F5 opens the help page for the tile under the cursor (Pacer)
+f5

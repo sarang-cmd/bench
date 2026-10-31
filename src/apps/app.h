@@ -16,6 +16,7 @@ typedef enum {
     APP_CONTINUE = 0,   /* stay here */
     APP_BACK = 1,       /* return to the home screen */
     APP_QUIT = 2,       /* leave the add-in */
+    APP_UP = 3,         /* return to the screen that was open before this one */
 } app_result_t;
 
 /* Screens an app may ask for.  main.c maps these to its own view ids. */
@@ -28,6 +29,7 @@ typedef enum {
     APP_SCREEN_NUMTHEORY,
     APP_SCREEN_SETTINGS,
     APP_SCREEN_ABOUT,
+    APP_SCREEN_HELP,
 } app_screen_t;
 
 /* Switch to another screen (implemented in main.c). */
@@ -58,5 +60,6 @@ DECLARE_APP(notes);
 DECLARE_APP(numtheory);
 DECLARE_APP(settings);
 DECLARE_APP(about);
+DECLARE_APP(help);
 
 #endif /* BENCH_APP_H */

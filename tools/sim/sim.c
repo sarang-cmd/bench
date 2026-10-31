@@ -70,7 +70,8 @@ static int trace_dropped;
 static int trace_is_text(int kind)
 {
     return kind == SCR_TR_TEXT || kind == SCR_TR_TITLE ||
-           kind == SCR_TR_SOFTKEY || kind == SCR_TR_TILE_TITLE;
+           kind == SCR_TR_SOFTKEY || kind == SCR_TR_TILE_TITLE ||
+           kind == SCR_TR_STRIP;
 }
 
 void scr_trace(int kind, int x, int y, int w, int h, int fg, int bg,

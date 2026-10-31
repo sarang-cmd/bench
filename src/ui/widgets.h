@@ -19,6 +19,11 @@ void w_title(char const *title, char const *hint);
  * drawn as a blank slot.  `active` inverts one slot (0..5) or -1. */
 void w_softkeys(char const *const labels[6], int active);
 
+/* The softkey bar without softkeys: a plain strip with an optional left hint
+ * and a right-hand action.  Used by screens whose keys are all on the keypad
+ * (help, About, an empty list), so the bar does not show six empty slots. */
+void w_strip(char const *left, char const *right);
+
 /* A raised panel for grouping content. */
 void w_panel(int x, int y, int w, int h);
 
