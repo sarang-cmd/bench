@@ -183,14 +183,14 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 |---|---|
 | A1 tile colour bug | **done**: measured foregrounds, 2 px icon outline, check in `make test` |
 | A2 tool registry | **done**: `src/apps/registry.c` is the only list; `docs/tools.json` is generated from it |
-| A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard |
+| A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard; selection inverts the tile |
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons |
-| A5 shared services | **not started**: expression engine, number entry, working lines, history, settings v2, help |
-| B overlap hunt | **done for every existing screen**: 28 scripts, 0 findings; worst cases added |
+| A5 shared services | **partly**: help is done (screen, key, paging, tests); expression engine, number entry, working lines, history and settings v2 are not started |
+| B overlap hunt | **done for every existing screen**: 30 scripts, 0 findings; worst cases added |
 | C fifteen tools | **not started** (F1..F15) |
 | D demo content | **not started** |
 | E settings v2 | **not started** |
-| F tutorial and help | **partly**: help text lives in the registry; the help screen itself is not built |
+| F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run tour, empty states and `docs/TUTORIAL.md` are not written |
 | G WebAssembly simulator | **not started** |
 | H website v2 | **not started** |
 | I README and metadata | **not started** |
@@ -201,9 +201,18 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 
 - **Text on paper is ink or blue.** Red is 4.46:1 on paper and teal 3.00:1, so
   neither may carry body text. Alerts are ink; "good news" is blue.
-- **A paper plate instead of a darker colour.** The palette is fixed, so where
-  no palette colour reaches 4.5:1 on a tile the label sits on flat paper rather
-  than inventing a tint. This shows on the selected red, teal and violet tiles.
+- **Selection inverts the tile instead of tinting it.** A selected tile is ink
+  with paper text (12.27:1 whatever the accent); an unselected one is paper
+  with ink text and an icon in the tool's colour. The first version filled the
+  tile with its accent and put a paper plate under lines that could not reach
+  AA; it passed every check and looked like a form, so the plate is gone.
+- **F5 is help on every screen.** It is drawn in the softkey strip even where a
+  screen leaves the slot empty, because it works there: the menu shows the help
+  for the tile under the cursor, a tool screen its own help, and EXE returns to
+  the screen that asked.
+- **F6 is Settings on the home screen.** About is a tile in the Tools category
+  rather than another shortcut, so the strip shows four categories, help and
+  settings and nothing twice.
 - **The title floor is 3.0:1, body is 4.5:1.** Tile titles and the title bar are
   treated as WCAG large text; they are the biggest, boldest labels on the
   screen and the only way to keep ink on red.
@@ -219,7 +228,11 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | Screen | Finding | Fix |
 |---|---|---|
 | Home | icon in the tile's own colour | measured foreground + outline |
-| Home | ink on red (2.75:1), small subtitle | paper plate |
+| Home | ink on red (2.75:1), small subtitle | paper plate, then selection inverted (see above) |
+| Home | the selected tile's shadow was drawn inside the tile | an L outside the shape |
+| Home | triangle and framed icons grew outside their 20x20 box | outline grows by `TH_ICON_OL` on every side |
+| Help | an empty softkey strip with six dividers | `w_strip`, one hint line, no dividers |
+| About | the Exam Mode sentence in red on paper (4.46:1) | ink with a red mark before it |
 | Pacer run | paper on teal (3.00:1) gap line | plate inside the coloured band |
 | Pacer, Cards, Number theory | red cursor on the yellow field (2.91:1) | ink cursor |
 | Settings | teal "Saved to ..." (3.00:1) | ink |
@@ -233,5 +246,5 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 ### Unverified on device
 
 Everything in this session. The hardware is the user's: the new home screen,
-the plates, the shadows, the keyboard change and the title-bar cut have been
-looked at in the host preview only.
+the inverted selection, the shadows, the help screen, the keyboard change and
+the title-bar cut have been looked at in the host preview only.
