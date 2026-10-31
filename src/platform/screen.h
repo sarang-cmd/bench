@@ -61,7 +61,9 @@ enum {
     SCR_TR_FILL,       /* a filled rectangle */
     SCR_TR_FRAME,      /* a rectangle outline */
     SCR_TR_ICON,       /* a tile icon: fg drawn on bg */
-    SCR_TR_TILE_TITLE  /* a tile's title: large text, 3:1 floor */
+    SCR_TR_TILE_TITLE, /* a tile's title: large text, 3:1 floor */
+    SCR_TR_STRIP       /* a hint in the softkey strip, on a screen with no
+                        * softkeys: readable text, but not confined to a cell */
 };
 
 #ifdef BENCH_TRACE

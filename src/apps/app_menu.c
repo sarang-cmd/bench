@@ -12,10 +12,11 @@
  * fills it with ink and turns the text paper, which is 12.27:1 no matter what
  * the tool's accent is.  tools/sim checks the pixels afterwards.
  *
- * Keys: F1..F4 category, LEFT/RIGHT/UP/DOWN move (LEFT/RIGHT at the edge
- * turns the page), EXE opens, F5 Settings, F6 About, MENU quits. */
+ * Keys: F1..F4 category, LEFT/RIGHT/UP/DOWN move, EXE opens, F5 help for
+ * the selected tool, F6 Settings, MENU quits. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -167,7 +168,7 @@ void app_menu_draw(void)
     int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
     int tile_h;
     char const *const soft[6] = {
-        "Study", "Math", "Science", "Tools", "Settings", "About",
+        "Study", "Math", "Science", "Tools", "Help", "Settings",
     };
 
     scr_clear(TH_PAPER);
@@ -262,10 +263,16 @@ app_result_t app_menu_key(bench_event_t ev)
     case BK_MENU:
         return APP_QUIT;
     case BK_F5:
-        app_open(APP_SCREEN_SETTINGS);
+    {
+        /* Help for whatever tile is under the cursor: the same row that the
+         * tool screen shows, so there is one help text per tool. */
+        tool_t const *tool = tool_category_at(category, sel);
+
+        app_help_open(tool);
         break;
+    }
     case BK_F6:
-        app_open(APP_SCREEN_ABOUT);
+        app_open(APP_SCREEN_SETTINGS);
         break;
     case BK_EXE:
     {

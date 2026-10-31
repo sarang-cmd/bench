@@ -19,6 +19,7 @@
  * Files written: state/cards.sav (once, when a session ends) */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -207,7 +208,7 @@ static void draw_list(void)
         w_message("No decks yet", "Put .txt decks in Bench/cards");
         scr_text_center(0, SCR_W, TH_CONTENT_Y + TH_CONTENT_H / 2 + TH_LINE,
                         "One card per line: question | answer", TH_INK);
-        w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+        w_strip(NULL, NULL);
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "EXIT back", TH_INK);
         return;
@@ -388,7 +389,7 @@ static void draw_stats(void)
     scr_text(TH_PAD, y, "Box 2 is drawn on odd sessions, box 3 every", TH_INK);
     scr_text(TH_PAD, y + TH_LINE, "fourth session.", TH_INK);
 
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+    w_strip(NULL, NULL);
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "EXIT back to the summary", TH_INK);
 }
@@ -451,6 +452,11 @@ static void answer(bool right)
 
 app_result_t app_cards_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("cards"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
 

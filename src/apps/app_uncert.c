@@ -17,6 +17,7 @@
  * Files: none. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -147,7 +148,7 @@ static void draw_pair(char const *title, char const *sub)
     else
         scr_text(TH_PAD, y, "Same units for value and uncertainty.", TH_INK);
 
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+    w_strip(NULL, NULL);
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "type digits   UP/DOWN field   EXE next", TH_INK);
     (void)title;
@@ -204,7 +205,7 @@ static void draw_b(void)
             scr_text_ellipsis(TH_PAD, y, err, TH_INK, w);
         else
             scr_text(TH_PAD, y, "unc = |a^n| * |n| * da / |a|", TH_INK);
-        w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+        w_strip(NULL, NULL);
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "type n   EXE apply   EXIT back", TH_INK);
         return;
@@ -321,6 +322,11 @@ static void apply_op(void)
 
 app_result_t app_uncert_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("uncert"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
     if (ev.key == BK_EXIT)

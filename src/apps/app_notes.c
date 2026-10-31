@@ -18,6 +18,7 @@
  * Files written: none.  Search text lives in memory only. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -291,7 +292,7 @@ static void draw_list(void)
     if (file_count == 0)
     {
         w_message("No notes yet", "Put .md or .txt files in Bench/notes");
-        w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+        w_strip(NULL, NULL);
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "EXIT back", TH_INK);
         return;
@@ -373,7 +374,7 @@ static void draw_view(void)
     if (line_count == 0)
     {
         w_message("Empty note", "Nothing to show in this file");
-        w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+        w_strip(NULL, NULL);
         return;
     }
 
@@ -523,7 +524,7 @@ static void draw_heads(void)
     if (heading_count == 0)
     {
         w_message("No headings", "This note has no # lines");
-        w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+        w_strip(NULL, NULL);
         return;
     }
 
@@ -545,7 +546,7 @@ static void draw_heads(void)
         w_row(TH_PAD, y + i * TH_LINE, SCR_W - 2 * TH_PAD, label, num,
               i == head_sel);
     }
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+    w_strip(NULL, NULL);
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "UP/DOWN pick   EXE jump   EXIT back", TH_INK);
 }
@@ -631,6 +632,11 @@ static void jump_to_offset(int offset)
 
 app_result_t app_notes_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("notes"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
 
