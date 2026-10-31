@@ -210,6 +210,18 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
   screen leaves the slot empty, because it works there: the menu shows the help
   for the tile under the cursor, a tool screen its own help, and EXE returns to
   the screen that asked.
+- **A tile keeps its accent only when selected.** Unselected tiles are paper, so
+  the grid reads as a sheet of cards and the accent marks the one you are on.
+  The subtitle of a selected tile sits on a paper plate when the palette cannot
+  carry ink or paper at 4.5:1 (red 4.46, teal 4.09, violet 3.79).
+- **The Tools category holds Settings and About**, not the "Settings tools, Help,
+  Tour" of the category map, until those screens exist; F5 and F6 keep their
+  shortcuts so Settings is one key away from anywhere.
+- **The angle mode is a per-tool toggle for now** (F4 in the Function table, shown
+  in the title bar) and moves into Settings v2 with workstream E, where it
+  becomes the shared setting the master prompt asks for.
+- **The Function table's tile reads "Function"**, because a tile title is 14
+  characters at most; the docs and the help text call it the Function table.
 - **F6 is Settings on the home screen.** About is a tile in the Tools category
   rather than another shortcut, so the strip shows four categories, help and
   settings and nothing twice.
