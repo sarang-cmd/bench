@@ -35,6 +35,7 @@ set(SOURCES
   src/core/color.c
   src/core/help.c
   src/core/leitner.c
+  src/core/mathfn.c
   src/core/md_layout.c
   src/core/md_parse.c
   src/core/numfmt.c
