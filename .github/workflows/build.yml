@@ -115,9 +115,10 @@ jobs:
         if: steps.toolchain.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          # Browser UA: the host answers 403 to the default curl agent.
-          ua="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-          curl -fsSL -A "$ua" -m 60 \
+          # Default curl UA on purpose: this host rejects a browser User-Agent
+          # (curl exit 22) and serves the script to plain curl. Retries because
+          # the first attempt after a cold start sometimes 502s.
+          curl -fsSL --retry 4 --retry-all-errors --retry-delay 3 -m 60 \
             "https://git.planet-casio.com/Lephenixnoir/GiteaPC/raw/branch/master/install.sh" \
             -o /tmp/giteapc-install.sh
           printf '\n' | bash /tmp/giteapc-install.sh
