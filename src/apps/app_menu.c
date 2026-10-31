@@ -7,10 +7,10 @@
  * a category with more than six tools gets pages, shown as dots.
  *
  * Colour rules, and the bug they exist for: an icon drawn in the same colour
- * as its tile disappears.  So every foreground here is chosen by measurement
- * (core/color.h) - the better of ink and paper on the fill - and tools/sim
- * checks the pixels afterwards.  A tile that is selected and whose text still
- * cannot reach 4.5:1 gets a paper plate under that line.
+ * as its tile disappears.  So an unselected tile is paper with ink text and an
+ * icon whose colour is measured against paper (core/color.h); selecting a tile
+ * fills it with ink and turns the text paper, which is 12.27:1 no matter what
+ * the tool's accent is.  tools/sim checks the pixels afterwards.
  *
  * Keys: F1..F4 category, LEFT/RIGHT/UP/DOWN move (LEFT/RIGHT at the edge
  * turns the page), EXE opens, F5 Settings, F6 About, MENU quits. */
@@ -37,35 +37,13 @@ static int notes_files;
 
 static int const category_keys[4] = { BK_F1, BK_F2, BK_F3, BK_F4 };
 
-/* A 20x20 icon, drawn so that it is a different colour from its tile. */
-static int icon_colour(int fill)
+/* The icon colour on an unselected tile: the accent when it can be told apart
+ * from paper, ink when it cannot (shade is 1.31:1, the trap this bug is about). */
+static int icon_on_paper(tool_t const *tool)
 {
-    /* The better of the two foregrounds, by measurement. */
-    return col_better_on(fill, TH_INK, TH_PAPER);
-}
-
-/* The readable foreground on `fill`, and whether it needs a paper plate. */
-static int text_colour(int fill, double floor, bool *plate)
-{
-    int const best = col_better_on(fill, TH_INK, TH_PAPER);
-
-    *plate = col_contrast(best, fill) < floor;
-    return *plate ? TH_INK : best;
-}
-
-/* A paper plate under a line that cannot reach AA on the tile colour.  Flat,
- * no border: it reads as a highlight mark, not as an input field. */
-static void draw_plate(int x, int y, int w, int h)
-{
-    scr_fill(x, y, w, h, TH_PAPER);
-}
-
-/* Width a label will actually occupy once it is cut to fit. */
-static int text_fit(char const *s, int max_w)
-{
-    int const w = scr_text_w(s);
-
-    return w <= max_w ? w : max_w;
+    return col_contrast(tool->accent, TH_PAPER) >= COL_ICON_MIN_CONTRAST
+               ? tool->accent
+               : TH_INK;
 }
 
 /* ---- dashboard ---------------------------------------------------------- */
@@ -113,52 +91,37 @@ static void draw_dashboard(int x, int y, int w, int h)
 
 static void draw_tile(tool_t const *tool, int x, int y, int w, int h, bool on)
 {
-    int const fill = on ? tool->accent : TH_PAPER;
-    int const icon_fg = on ? icon_colour(fill) : TH_INK;
-    int const icon_fill = on ? icon_colour(fill)
-                             : (col_contrast(tool->accent, TH_PAPER) >=
-                                        COL_ICON_MIN_CONTRAST
-                                    ? tool->accent
-                                    : TH_INK);
-    int const icon_edge = on ? (icon_fg == TH_PAPER ? TH_INK : TH_PAPER) : TH_INK;
+    /* Selection inverts the tile: ink body, paper text.  12.27:1 whatever the
+     * accent is, so no plate, no special case, no way for a label to vanish. */
+    int const fill = on ? TH_INK : TH_PAPER;
+    int const title_c = on ? TH_PAPER : TH_INK;
+    int const sub_c = on ? TH_SHADE : TH_INK;
+    int const icon_fill = on ? tool->accent : icon_on_paper(tool);
+    int const icon_edge = on ? TH_PAPER : TH_INK;
     int const tx = x + 28;
     int const text_w = w - 28 - 5;
     int const block_h = 2 * TH_LINE;
     int const ty = y + (h - block_h) / 2;
-    bool plate = false;
-    int title_c;
-    int sub_c;
 
     /* Shadow first, so the tile sits on it: 3 px, right and bottom. */
     if (on)
     {
-        scr_fill(x + TH_SHADOW, y + TH_SHADOW, w, TH_SHADOW, TH_INK);
+        scr_fill(x + TH_SHADOW, y + h, w, TH_SHADOW, TH_INK);
         scr_fill(x + w, y + TH_SHADOW, TH_SHADOW, h, TH_INK);
     }
 
     scr_fill(x, y, w, h, fill);
     scr_frame(x, y, w, h, TH_INK, on ? TH_BORDER_SEL : TH_BORDER);
 
-    /* Icon: the fill colour, outlined in the other one, so it can never
-     * vanish into the tile.  Recorded for the harness in tools/sim. */
+    /* The icon keeps the tool's colour, outlined so it can never merge into
+     * the tile.  Recorded for the harness in tools/sim. */
     tool->icon(x + 4, ty + (block_h - 20) / 2, icon_fill, icon_edge);
     SCR_TRACE(SCR_TR_ICON, x + 4, ty + (block_h - 20) / 2, 22, 22, icon_fill,
               fill, tool->title);
 
-    title_c = text_colour(fill, COL_TITLE_MIN_CONTRAST, &plate);
-    if (plate)
-        draw_plate(tx - 2, ty - 1, text_fit(tool->title, text_w) + 4,
-                   TH_LINE - 1);
     scr_text_ellipsis_as(SCR_TR_TILE_TITLE, tx, ty, tool->title, title_c,
                          text_w);
-
-    sub_c = text_colour(fill, COL_TEXT_MIN_CONTRAST, &plate);
-    if (plate)
-        draw_plate(tx - 2, ty + TH_LINE - 1,
-                   text_fit(tool->subtitle, text_w) + 4, TH_LINE - 1);
     scr_text_ellipsis(tx, ty + TH_LINE, tool->subtitle, sub_c, text_w);
-
-    (void)icon_edge;
 }
 
 /* ---- pages -------------------------------------------------------------- */
@@ -200,6 +163,7 @@ void app_menu_draw(void)
     int top = TH_CONTENT_Y + TH_PAD;
     int dots_y = SCR_H - TH_SOFT_H - 9;
     int grid_h;
+    int grid_y;
     int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
     int tile_h;
     char const *const soft[6] = {
@@ -217,6 +181,15 @@ void app_menu_draw(void)
 
     grid_h = dots_y - top - 4;
     tile_h = (grid_h - TH_GAP) / 2;
+    grid_y = top;
+    /* A category with one row of tools sits in the middle of the grid rather
+     * than leaving a hole at the bottom of an otherwise empty page. */
+    {
+        int const rows = (size + TILE_COLS - 1) / TILE_COLS;
+
+        if (rows > 0)
+            grid_y = top + (grid_h - (rows * tile_h + (rows - 1) * TH_GAP)) / 2;
+    }
 
     for (int i = 0; i < TILES_PER_PAGE; i++)
     {
@@ -228,7 +201,8 @@ void app_menu_draw(void)
         if (!tool)
             continue;
         draw_tile(tool, TH_PAD + col * (tile_w + TH_GAP),
-                  top + row * (tile_h + TH_GAP), tile_w, tile_h, index == sel);
+                  grid_y + row * (tile_h + TH_GAP), tile_w, tile_h,
+                  index == sel);
     }
 
     /* A category with no tools still says something instead of a blank page. */

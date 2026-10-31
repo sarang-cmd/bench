@@ -14,17 +14,17 @@
 
 static void icon_square(int x, int y, int fill, int edge)
 {
-    sh_square_icon(x + 1, y + 1, 16, fill, edge, 2);
+    sh_square_icon(x + 2, y + 2, 16, fill, edge, 2);
 }
 
 static void icon_circle(int x, int y, int fill, int edge)
 {
-    sh_circle_icon(x + 10, y + 10, 8, fill, edge, 2);
+    sh_circle_icon(x + 10, y + 10, 7, fill, edge, 2);
 }
 
 static void icon_triangle(int x, int y, int fill, int edge)
 {
-    sh_triangle_icon(x + 2, y + 2, 17, 16, fill, edge, 2);
+    sh_triangle_icon(x + 3, y + 2, 15, 15, fill, edge, 2);
 }
 
 static void icon_half_circle(int x, int y, int fill, int edge)
@@ -44,7 +44,7 @@ static void icon_ring(int x, int y, int fill, int edge)
 
 static void icon_frame(int x, int y, int fill, int edge)
 {
-    sh_square_frame_icon(x + 1, y + 1, 16, fill, edge, 2);
+    sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
 }
 
 /* ---- help text ----------------------------------------------------------

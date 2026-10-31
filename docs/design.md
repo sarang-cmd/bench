@@ -12,7 +12,7 @@ is what the design means. `tools/sim` checks one against the other on every run
 
 | Name | Hex | 5-6-5 | Role |
 |---|---|---|---|
-| paper | `#f4f3ee` | `0xF79D` | the page, tile body, plates |
+| paper | `#f4f3ee` | `0xF79D` | the page, unselected tile bodies, text on ink |
 | ink | `#2f2d2e` | `0x3166` | text, borders, shadows |
 | red | `#d92d27` | `0xD165` | Pacer, headings, rules, alert blocks |
 | yellow | `#f2c230` | `0xEE06` | Cards, the active field, the title hint |
@@ -30,10 +30,13 @@ converted by hand and was wrong by one step in six of the eight colours.
 - Flat fills only. No gradients, no rounded corners, no anti-aliasing.
 - Borders: `TH_BORDER` (2 px) on panels and unselected tiles,
   `TH_BORDER_SEL` (3 px) on the selected tile.
-- Hard offset shadow: `TH_SHADOW` (3 px) right and bottom. Selected tiles and
-  modals only — a shadow on everything reads as noise at 384x216.
+- Hard offset shadow: `TH_SHADOW` (3 px) right and bottom, drawn outside the
+  shape as an L — never inside it, or a filled tile swallows its own shadow.
+  Selected tiles and modals only; a shadow on everything is noise at 384x216.
 - Icons: one shape per tool, drawn twice — `edge` grown by `TH_ICON_OL`, then
-  `fill`. That outline is why an icon can never disappear into its tile.
+  `fill`. That outline is why an icon can never disappear into its tile. The
+  outline grows the shape by `TH_ICON_OL` on every side, not just horizontally,
+  so an icon stays inside its nominal 20x20 box and never touches a border.
 
 ## 3. Type
 
@@ -71,16 +74,25 @@ The measurements that shaped the rules:
 
 So the rule is not "ink, or paper on blue and violet". It is:
 
-1. **Choose by measurement.** `col_better_on(fill, ink, paper)` returns whichever
-   of the two reads better on that fill.
-2. **If the winner still misses its floor, put a paper plate under the line.**
-   The plate is flat paper, no border: a highlight mark, not an input field.
-   Ink on paper is 12.27:1, so the line is readable whatever the tile colour.
-3. **Never draw a foreground in the colour behind it.** No text on a fill of the
-   same colour, no icon on a tile of its own colour.
+1. **Pick the foreground by measurement.** `col_better_on(fill, ink, paper)`
+   returns whichever of the two reads better on that fill. A tool's accent is
+   used for its icon only where it clears 1.5:1 against paper (shade does not;
+   the Settings tile gets an ink icon).
+2. **Never put body text on an accent fill.** Red, teal and violet cannot
+   carry a subtitle at 4.5:1 in either ink or paper. The first version of this
+   screen solved that with a paper plate under each line; it worked, and it
+   looked like a form. The tile now inverts instead.
+3. **Selection is an invert, not a tint.** An unselected tile is paper with ink
+   text. The selected tile is ink with paper text — 12.27:1 for the title and
+   9.33:1 for the subtitle, whatever the accent is — plus the 3 px hard shadow
+   and the 3 px border. The tool's colour survives as the icon, outlined in
+   paper so it cannot merge into the ink.
+4. **Never draw a foreground in the colour behind it.** No text on a fill of the
+   same colour, no icon on a tile of its own colour. `tools/sim` fails the build
+   if a label's own pixels are painted over by a later fill.
 
-This is what the home screen does, and it is why the Pacer tile's subtitle sits
-on a paper plate while its title sits straight on the red.
+That is the whole contrast story: one measured choice for the icon, one invert
+for selection, and a checker that reads the finished framebuffer.
 
 ## 5. The checks
 
