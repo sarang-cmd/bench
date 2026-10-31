@@ -1,8 +1,7 @@
 # tour step: 35_sigfig_modes
 # Count the figures in a number that ends in zeros, then round a third one.
-f3
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:sigfig
 up
 f1
 1

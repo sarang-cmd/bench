@@ -1,0 +1,5 @@
+# tour step: 61_moles_yield
+# Yield: 3.5 g obtained against 5 g expected is 70 per cent.
+tool:moles
+f3
+f3

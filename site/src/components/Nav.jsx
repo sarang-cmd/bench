@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { Link, ROUTES } from "../router.jsx";
 
-const links = [
-  ["Tour", "#tour"],
-  ["Tools", "#tools"],
-  ["Install", "#install"],
-  ["Keys", "#keys"],
-];
+// The bar carries five; the sheet and the footer carry all eight, so a phone
+// never has to guess what else exists.
+const inBar = ["/features", "/tutorial", "/install", "/downloads", "/about"];
+const links = ROUTES.filter((route) => route.path !== "/")
+  .map((route) => [route.label, route.path])
+  .filter(([, path]) => inBar.includes(path));
 
 export default function Nav({ version }) {
   const [open, setOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function Nav({ version }) {
   return (
     <header className="sticky top-0 z-40 border-b-3 border-ink bg-paper/95 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 sm:px-8 lg:px-12">
-        <a href="#top" className="flex items-center gap-3" aria-label="Bench, to the top">
+        <Link to="/" className="flex items-center gap-3" aria-label="Bench, home">
           <img
             src="images/brand-wordmark.png"
             alt="Bench"
@@ -29,24 +30,24 @@ export default function Nav({ version }) {
             height={152}
             className="h-9 w-auto sm:h-10"
           />
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-6 md:flex" aria-label="Sections">
           {links.map(([label, href]) => (
-            <a
+            <Link
               key={href}
-              href={href}
+              to={href}
               className="border-b-3 border-transparent pb-0.5 text-sm font-bold uppercase tracking-wide hover:border-red"
             >
               {label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#install"
+          <Link
+            to="/downloads"
             className="border-3 border-ink bg-yellow px-3 py-1.5 font-mono text-xs font-bold shadow-brute-sm hover:-translate-y-0.5"
           >
             v{version}
-          </a>
+          </Link>
         </nav>
 
         <button
@@ -66,19 +67,23 @@ export default function Nav({ version }) {
       {open && (
         <div id="mobile-menu" className="border-t-3 border-ink bg-paper md:hidden">
           <nav className="mx-auto flex w-full max-w-6xl flex-col px-5 py-2" aria-label="Sections">
-            {links.map(([label, href]) => (
-              <a
-                key={href}
-                href={href}
+            {ROUTES.filter((route) => route.path !== "/").map((route) => (
+              <Link
+                key={route.path}
+                to={route.path}
                 onClick={() => setOpen(false)}
-                className="border-b-3 border-ink/10 py-3 text-lg font-bold last:border-b-0"
+                className="border-b-3 border-ink/10 py-3 text-lg font-bold"
               >
-                {label}
-              </a>
+                {route.label}
+              </Link>
             ))}
-            <a href="#install" onClick={() => setOpen(false)} className="py-3 font-mono text-sm uppercase">
+            <Link
+              to="/downloads"
+              onClick={() => setOpen(false)}
+              className="py-3 font-mono text-sm uppercase"
+            >
               Download v{version}
-            </a>
+            </Link>
           </nav>
         </div>
       )}

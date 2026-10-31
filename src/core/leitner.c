@@ -340,3 +340,23 @@ int leitner_state_format(leitner_state_t const *st, char *buf, int size)
     buf[written] = '\0';
     return written;
 }
+
+void leitner_shuffle(int *order, int n, uint32_t seed)
+{
+    uint32_t x = seed ? seed : 0x9E3779B9u;
+
+    if (!order || n < 2) return;
+    for (int i = n - 1; i > 0; i--) {
+        /* xorshift32: small, deterministic, and good enough to mix a deck. */
+        x ^= x << 13;
+        x ^= x >> 17;
+        x ^= x << 5;
+        {
+            int const j = (int)(x % (uint32_t)(i + 1));
+            int const t = order[i];
+
+            order[i] = order[j];
+            order[j] = t;
+        }
+    }
+}

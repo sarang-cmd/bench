@@ -1,4 +1,4 @@
 # tour step: 26_settings
-# starts at the home screen; see tools/sim/run_tour.sh
-# F6 is the Settings shortcut
-f6
+# Settings lives in the Tools category.  Five rows: four that change the tools
+# and one that says whether the first-run hint has been read.
+tool:settings

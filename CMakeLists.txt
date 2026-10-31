@@ -32,11 +32,16 @@ set(SOURCES
   src/main.c
 
   src/core/cards_parse.c
+  src/core/base.c
+  src/core/chem.c
   src/core/color.c
+  src/core/cplx.c
   src/core/expr.c
   src/core/exprs.c
+  src/core/graph.c
   src/core/help.c
   src/core/leitner.c
+  src/core/logbook.c
   src/core/mathfn.c
   src/core/md_layout.c
   src/core/md_parse.c
@@ -44,10 +49,13 @@ set(SOURCES
   src/core/numparse.c
   src/core/numtheory.c
   src/core/poly.c
+  src/core/roots.c
   src/core/pacer.c
   src/core/seq.c
+  src/core/stats.c
   src/core/settings.c
   src/core/sigfig.c
+  src/core/suvat.c
   src/core/triangle.c
   src/core/textsearch.c
   src/core/uncert.c
@@ -63,16 +71,24 @@ set(SOURCES
 
   src/apps/app_about.c
   src/apps/app_cards.c
+  src/apps/app_cplx.c
   src/apps/app_function.c
+  src/apps/app_graph.c
   src/apps/app_help.c
+  src/apps/app_base.c
+  src/apps/app_log.c
   src/apps/app_menu.c
+  src/apps/app_moles.c
   src/apps/app_notes.c
   src/apps/app_numtheory.c
   src/apps/app_pacer.c
   src/apps/app_poly.c
+  src/apps/app_roots.c
   src/apps/app_seq.c
+  src/apps/app_stats.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
+  src/apps/app_suvat.c
   src/apps/app_triangle.c
   src/apps/app_uncert.c
   src/apps/registry.c

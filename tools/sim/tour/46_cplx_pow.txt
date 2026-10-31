@@ -1,0 +1,16 @@
+# tour step: 46_cplx_pow
+# a ^ n: a is changed to 1 + i, b re to 4; F2 twice moves the op on from x to ^.
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:cplx
+del
+1
+right
+del
+1
+down
+left
+del
+4
+f2
+f2
+exe

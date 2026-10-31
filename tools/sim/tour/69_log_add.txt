@@ -1,0 +1,4 @@
+# tour step: 69_log_add
+# F1 opens the add form with the minutes field ready.
+tool:log
+f1

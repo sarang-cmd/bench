@@ -1,0 +1,3 @@
+# tour step: 53_stats_list
+# The seed list 2 4 4 4 5 5 7 9: mean 5, median 4.5, sd 2.0 / 2.138.
+tool:stats

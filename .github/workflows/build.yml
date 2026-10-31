@@ -80,16 +80,21 @@ jobs:
       - name: Build and run the native test suite
         run: make test
 
+      - name: The README's numbers match the repository
+        run: python3 tools/gen_readme_stats.py --check
+
       - name: Python tool tests
         run: make py-test
 
-      # docs/tools.json is generated from the add-in's own registry; a
-      # hand-edited copy, or a tool added without regenerating it, fails here.
-      - name: The generated tool list matches the registry
+      # docs/tools.json comes from the add-in's own registry and spike/spike.diff
+      # from the spike's sources: a hand-edited copy, or a tool added without
+      # regenerating them, fails here.
+      - name: The generated files match their sources
         run: |
           make sim
           python3 tools/gen_tools_json.py
-          git diff --exit-code docs/tools.json
+          python3 tools/gen_spike_patch.py
+          git diff --exit-code docs/tools.json spike/spike.diff
 
       - name: Host preview of the screens
         run: |
@@ -98,6 +103,15 @@ jobs:
           make sim
           make shots
           ls -l docs/images/*.png | head
+
+      - name: The site's generated files match their sources
+        run: |
+          node site/scripts/gen-tools.mjs
+          node site/scripts/gen-stats.mjs
+          node site/scripts/gen-changelog.mjs
+          git diff --exit-code site/src/tools.generated.json \
+                             site/src/stats.generated.json \
+                             site/src/changelog.generated.json
 
       - name: Keep the screenshots
         uses: actions/upload-artifact@v4
@@ -272,10 +286,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bench-g3a
-          path: |
-            Bench-*.g3a
-            spike/Bench-spike-*.g3a
+          path: Bench-*.g3a
           if-no-files-found: error
+
+      # The spike in its own artifact, so the add-in artifact holds one file and
+      # nobody can mistake the diagnostic add-in for Bench. It is never a
+      # release asset; see docs/spike.md.
+      - name: Attach the M1 spike
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-spike
+          path: spike/Bench-spike-*.g3a
+          if-no-files-found: ignore
 
       # The release notes are the CHANGELOG section for this version, written by
       # hand and committed: generate_release_notes calls a second API that the
@@ -350,6 +372,46 @@ jobs:
           files: Bench-*.g3a
           body_path: /tmp/release-notes.md
 
+      # The .g3a also lives in the repository, in dist/: a release asset and an
+      # artifact both live on blob storage, while a git remote works almost
+      # everywhere. Only tagged and automatic builds refresh it - a plain push
+      # to main would rewrite the repository on every commit - and the commit
+      # says [skip ci] so it cannot start a build of its own.
+      - name: Keep the .g3a in dist/ on main
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          version=$(cat version.txt)
+          file="Bench-${version}.g3a"
+          dir=$(mktemp -d)
+          git clone --quiet --depth 1 --branch main \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$dir" \
+            || { echo "::warning title=dist::cannot clone main; dist/ not updated"; exit 0; }
+          mkdir -p "$dir/dist"
+          cp "$file" "$dir/dist/$file"
+          {
+            printf 'version %s\n' "$version"
+            printf 'file %s\n' "$file"
+            printf 'size %s\n' "$(stat -c %s "$file")"
+            printf 'sha256 %s\n' "$(sha256sum "$file" | cut -d' ' -f1)"
+            printf 'commit %s\n' "$GITHUB_SHA"
+            printf 'built %s\n' "$(date -u +%Y-%m-%d)"
+          } > "$dir/dist/BUILD.txt"
+          cd "$dir"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          if git diff --cached --quiet; then
+            echo "dist/ already holds this build"
+            exit 0
+          fi
+          git commit --quiet -m "dist: Bench ${version} from ${GITHUB_SHA:0:7} [skip ci]"
+          git push --quiet origin HEAD:main \
+            || echo "::warning title=dist::main moved during the build; dist/ not updated"
+
       # Artifact and release downloads go through blob storage, which some
       # networks cannot reach. A branch is plain git, so the same bytes are also
       # force-pushed to `builds`: `git fetch origin builds` is enough. This runs
@@ -372,3 +434,37 @@ jobs:
           git add -f "${files[@]}"
           git commit -m "Bench $(cat version.txt) from ${GITHUB_SHA}"
           git push --force origin HEAD:builds
+
+  site:
+    name: Site build and page checks
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install the site's dependencies
+        working-directory: site
+        run: npm ci
+
+      # Same rule as docs/tools.json for the add-in: the generated data must
+      # match the files it is built from, or the build fails here.
+      - name: The generated data matches its sources
+        working-directory: site
+        run: |
+          npm run gen-tools
+          npm run gen-stats
+          npm run gen-changelog
+          git diff --exit-code src/tools.generated.json src/stats.generated.json src/changelog.generated.json
+
+      - name: Every route renders
+        working-directory: site
+        run: node scripts/check-pages.mjs
+
+      - name: Build the site
+        working-directory: site
+        run: npm run build

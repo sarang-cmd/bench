@@ -1,0 +1,4 @@
+# tour step: 58_suvat_path
+# F2 draws the flight path for 20 m/s at 30 degrees with g = 9.81.
+tool:suvat
+f2

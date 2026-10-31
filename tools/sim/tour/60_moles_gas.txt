@@ -1,0 +1,6 @@
+# tour step: 60_moles_gas
+# The gas equation: 100 kPa, 24 dm3, 298 K gives 0.9686 mol.  Two F4 presses
+# from the moles mode.
+tool:moles
+f4
+f4

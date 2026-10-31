@@ -1,0 +1,14 @@
+# tour step: 70_log_entries
+# Two sessions: 45 minutes of Pacer, then 20 of Cards.  The day follows the
+# newest entry by itself.
+tool:log
+f1
+4
+5
+exe
+f1
+2
+0
+right
+down
+exe

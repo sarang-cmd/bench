@@ -42,6 +42,13 @@ static void icon_ring(int x, int y, int fill, int edge)
     sh_ring_icon(x + 10, y + 10, 8, 3, fill, edge, 2);
 }
 
+/* A target: a ring with a solid centre, for the root finder. */
+static void icon_target(int x, int y, int fill, int edge)
+{
+    sh_ring_icon(x + 10, y + 10, 8, 3, fill, edge, 1);
+    sh_circle_icon(x + 10, y + 10, 3, fill, edge, 1);
+}
+
 static void icon_frame(int x, int y, int fill, int edge)
 {
     sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
@@ -88,6 +95,17 @@ static void icon_steps_up(int x, int y, int fill, int edge)
     for (int i = 0; i < 3; i++)
         scr_fill(x + 3 + i * 5, y + 17 - (i + 1) * 4, 4, (i + 1) * 4, fill);
     (void)edge;
+}
+
+/* An "i" in dots: two squares, the dot over the stem. */
+static void icon_i(int x, int y, int fill, int edge)
+{
+    /* The dot: a square outlined, then filled. */
+    scr_fill(x + 7, y + 1, 6, 6, edge);
+    scr_fill(x + 8, y + 2, 4, 4, fill);
+    /* The stem, twice as tall as it is wide. */
+    scr_fill(x + 7, y + 9, 6, 10, edge);
+    scr_fill(x + 8, y + 10, 4, 8, fill);
 }
 
 /* Two rows of small cells: a table of values. */
@@ -177,9 +195,12 @@ static char const help_numtheory[] =
 
 static char const help_settings[] =
     "Settings\n"
-    "Uncertainty figures, the Pacer\n"
-    "checkpoint size and the Notes wrap\n"
-    "width.\n"
+    "Five rows: uncertainty figures, the\n"
+    "Pacer checkpoint size, the Notes\n"
+    "wrap width, the unit the Triangle\n"
+    "tool opens in, and whether the\n"
+    "first-run line on the home screen\n"
+    "has been read.\n"
     "\n"
     "Every value is also a line in\n"
     "Bench/state/settings.cfg, one per\n"
@@ -315,6 +336,189 @@ static char const help_seq[] =
     "Keys: arrows move, digits type,\n"
     "EXE solves, F1 clears.";
 
+
+static char const help_cplx[] =
+    "Complex numbers\n"
+    "Two numbers a and b, one operation\n"
+    "at a time.\n"
+    "\n"
+    "F2 picks the operation: a + b,\n"
+    "a - b, a x b, a / b and a ^ n, where\n"
+    "n is the real part of b.\n"
+    "\n"
+    "The result is written three ways:\n"
+    "rectangular (-1 + 2i), its modulus\n"
+    "and argument, and polar form.\n"
+    "\n"
+    "F3 shows the argument in degrees,\n"
+    "F4 in radians.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "DEL deletes, F1 clears, EXIT home.";
+
+
+static char const help_roots[] =
+    "Root finder\n"
+    "Solves f(x) = 0 one step at a time,\n"
+    "so the convergence is visible.\n"
+    "\n"
+    "F2 picks the method:\n"
+    "  bisection needs a and b with a\n"
+    "    sign change between them\n"
+    "  Newton needs one guess x0\n"
+    "  secant needs two guesses x0, x1\n"
+    "\n"
+    "F3 solves. The table lists n, x and\n"
+    "f(x); the plot marks every iterate.\n"
+    "\n"
+    "Radians always, whatever the angle\n"
+    "setting says. Tolerance 1e-6, at most\n"
+    "50 steps.\n"
+    "\n"
+    "Keys: EXE edits f or solves, F1 clears,\n"
+    "F2 method, arrows move and scroll.";
+
+
+static char const help_stats[] =
+    "Statistics\n"
+    "Type a value, press EXE to add it,\n"
+    "and the summary is worked out as\n"
+    "you go. Up to 200 values.\n"
+    "\n"
+    "F2 switches between one list and\n"
+    "paired data (x, then y). Pairs give\n"
+    "the line y = a + bx, r and r squared.\n"
+    "\n"
+    "F3 picks the quartile method:\n"
+    "  median  halves split through the\n"
+    "          median\n"
+    "  sheet   (n-1)p + 1, interpolated\n"
+    "\n"
+    "F4 shows the working for the standard\n"
+    "deviation. F1 clears the list.\n"
+    "\n"
+    "Keys: digits type, EXE adds, DEL takes\n"
+    "back a digit or a value.";
+
+static char const help_suvat[] =
+    "SUVAT and projectiles\n"
+    "Type any three of s, u, v, a and t.\n"
+    "The other two are worked out, with\n"
+    "the equation that gave each one.\n"
+    "\n"
+    "Use the arrows to pick a quantity,\n"
+    "type the number, press EXE. DEL on\n"
+    "an empty field un-knows it.\n"
+    "\n"
+    "F2 draws the flight path: range,\n"
+    "greatest height and time in the air\n"
+    "for a launch speed, angle and height.\n"
+    "\n"
+    "F3 switches g between 9.81 and 10.\n"
+    "Where a quadratic gives two times,\n"
+    "the first is shown and the second\n"
+    "is mentioned under it.\n"
+    "\n"
+    "Keys: digits type, EXE keeps, DEL\n"
+    "takes back, F1 starts again.";
+
+static char const help_moles[] =
+    "Moles and solutions\n"
+    "Five calculations, one per mode:\n"
+    "moles from a mass, concentration,\n"
+    "the gas equation, dilution, and\n"
+    "yield or atom economy.\n"
+    "\n"
+    "Each mode opens on a worked\n"
+    "example; F1 puts it back.\n"
+    "\n"
+    "The unit under each number is the\n"
+    "one the formula wants: volumes in\n"
+    "dm3, so 25 cm3 is 0.025, and\n"
+    "temperature in kelvin.\n"
+    "\n"
+    "R is 8.314, for p in kPa and V in\n"
+    "dm3. A zero where a formula divides\n"
+    "says so instead of printing an\n"
+    "infinity.\n"
+    "\n"
+    "Keys: UP/DOWN pick a field, digits\n"
+    "type, F3/F4 change mode, DEL takes\n"
+    "a digit back.";
+
+static char const help_base[] =
+    "Bases and bits\n"
+    "One number in base 2 to 36, and\n"
+    "the same number as two's complement\n"
+    "at 8, 16 and 32 bits.\n"
+    "\n"
+    "F1 switches between converting\n"
+    "and the bitwise operators.\n"
+    "\n"
+    "F3 changes the entry base, or the\n"
+    "operator: AND, OR, XOR, shift left\n"
+    "and shift right. A shift uses the\n"
+    "count in b and refuses 63 or more.\n"
+    "\n"
+    "F2 opens the letter keyboard for\n"
+    "digits above 9, since the keypad\n"
+    "has no A to F keys this add-in may\n"
+    "count on. Digits can still be\n"
+    "typed straight in.\n"
+    "\n"
+    "Keys: digits type, DEL takes one\n"
+    "back, F4 swaps a and b.";
+
+static char const help_graph[] =
+    "Lab graph\n"
+    "Type a measured pair and its error,\n"
+    "press EXE, and repeat. F2 draws\n"
+    "the graph with a bar up and down\n"
+    "through every point and the line of\n"
+    "best fit.\n"
+    "\n"
+    "The gradient comes with its standard\n"
+    "error, from the residuals, and r\n"
+    "squared says how well the line\n"
+    "fits. Fewer than three points leave\n"
+    "nothing to measure the error against,\n"
+    "so it is left off.\n"
+    "\n"
+    "The axes hold the whole bar, not\n"
+    "just the centre, so a measurement\n"
+    "never runs off the top.\n"
+    "\n"
+    "Up to twelve points. F1 clears,\n"
+    "F3 puts the example back, DEL on an\n"
+    "empty field drops the last point.\n"
+    "\n"
+    "Keys: digits type, LEFT/RIGHT pick\n"
+    "a field, EXE adds the point.";
+
+static char const help_log[] =
+    "Study log\n"
+    "What you did, for how long, and\n"
+    "on which day, in a text file you\n"
+    "can also edit by hand:\n"
+    "\n"
+    "  2026-10-31 25 pacer\n"
+    "\n"
+    "A broken line is skipped and\n"
+    "counted, never added up wrongly.\n"
+    "\n"
+    "F1 adds a session: type the\n"
+    "minutes, UP/DOWN picks the tool,\n"
+    "LEFT/RIGHT moves between the three\n"
+    "fields, EXE saves it. F2 deletes\n"
+    "the last one, which is the mistake\n"
+    "you will make.\n"
+    "\n"
+    "Bench cannot read the calendar, so\n"
+    "a new entry takes the day after the\n"
+    "newest one in the log; UP/DOWN on\n"
+    "the day moves it. The file is\n"
+    "written once, when you leave.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -352,6 +556,28 @@ static tool_t const tools[] = {
         .help = help_notes,
     },
     {
+        .id = "log",
+        .title = "Study log",
+        .subtitle = "minutes per day",
+        .category = TOOL_CAT_STUDY,
+        .accent = TH_YELLOW,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_LOG,
+        .needs_file = false,
+        .help = help_log,
+    },
+    {
+        .id = "cplx",
+        .title = "Complex",
+        .subtitle = "a + bi",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_i,
+        .screen = APP_SCREEN_CPLX,
+        .needs_file = false,
+        .help = help_cplx,
+    },
+    {
         .id = "function",
         .title = "Function",
         .subtitle = "x and f(x)",
@@ -385,6 +611,17 @@ static tool_t const tools[] = {
         .help = help_poly,
     },
     {
+        .id = "roots",
+        .title = "Root finder",
+        .subtitle = "bisect, Newton",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_VIOLET,
+        .icon = icon_target,
+        .screen = APP_SCREEN_ROOTS,
+        .needs_file = false,
+        .help = help_roots,
+    },
+    {
         .id = "triangle",
         .title = "Triangle",
         .subtitle = "sides, angles",
@@ -396,6 +633,17 @@ static tool_t const tools[] = {
         .help = help_triangle,
     },
     {
+        .id = "base",
+        .title = "Base and bits",
+        .subtitle = "hex, shifts",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_BASE,
+        .needs_file = false,
+        .help = help_base,
+    },
+    {
         .id = "numtheory",
         .title = "Number theory",
         .subtitle = "gcd to CRT",
@@ -405,6 +653,28 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NUMTHEORY,
         .needs_file = false,
         .help = help_numtheory,
+    },
+    {
+        .id = "stats",
+        .title = "Statistics",
+        .subtitle = "mean to regression",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_STATS,
+        .needs_file = false,
+        .help = help_stats,
+    },
+    {
+        .id = "graph",
+        .title = "Lab graph",
+        .subtitle = "error bars",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_BLUE,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_GRAPH,
+        .needs_file = false,
+        .help = help_graph,
     },
     {
         .id = "uncert",
@@ -427,6 +697,28 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_SIGFIG,
         .needs_file = false,
         .help = help_sigfig,
+    },
+    {
+        .id = "suvat",
+        .title = "SUVAT",
+        .subtitle = "motion, projectiles",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_YELLOW,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_SUVAT,
+        .needs_file = false,
+        .help = help_suvat,
+    },
+    {
+        .id = "moles",
+        .title = "Moles",
+        .subtitle = "mass, gas, conc",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_VIOLET,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_MOLES,
+        .needs_file = false,
+        .help = help_moles,
     },
     {
         .id = "settings",

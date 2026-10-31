@@ -56,6 +56,7 @@ static int wrong_count;
 static int issue_count;
 static char issues[ISSUE_MAX][40];
 static int issue_lines;
+static bool shuffle;   /* mixed order inside a box (Cards v2) */
 static uint32_t session_id;
 static char message[64];
 
@@ -263,10 +264,13 @@ static void draw_deck(void)
 
     if (deck->count == 0)
         scr_text(TH_PAD, y, "Nothing to drill in this deck.", TH_INK);
+    else
+        scr_text(TH_PAD, y, shuffle ? "Order: mixed inside each box"
+                                    : "Order: deck order, box by box", TH_INK);
 
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                    "F1 start   EXIT back", TH_INK);
-    w_softkeys((char const *const[6]){ "Start", "", "", "", "", "" }, -1);
+                    "F1 start   F2 mixed order   EXIT back", TH_INK);
+    w_softkeys((char const *const[6]){ "Start", "Mix", "", "", "", "" }, -1);
 }
 
 static void draw_session(void)
@@ -427,6 +431,8 @@ static void start_session(void)
             order[i] = i;
         session_cards = deck->count;
     }
+    if (shuffle)
+        leitner_shuffle(order, session_cards, session_id * 2654435761u + 1u);
     screen = SC_SESSION;
 }
 
@@ -486,6 +492,8 @@ app_result_t app_cards_key(bench_event_t ev)
         }
         else if (ev.key == BK_F1)
             start_session();
+        else if (ev.key == BK_F2)
+            shuffle = !shuffle;
         break;
 
     case SC_SESSION:

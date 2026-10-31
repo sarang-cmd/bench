@@ -1,4 +1,4 @@
-import { DOWNLOAD, REPO, VERSION, specs } from "../data.js";
+import { DOWNLOAD, REPO, SHA256, VERSION, specs } from "../data.js";
 import { BruteButton, Eyebrow, Heading, Blurb, Section } from "../ui.jsx";
 
 const steps = [
@@ -59,6 +59,10 @@ export default function Install() {
               Source on GitHub
             </BruteButton>
           </div>
+
+          <p className="mt-4 break-all font-mono text-[11px] leading-relaxed text-paper/55">
+            sha256 {SHA256}
+          </p>
         </div>
 
         <div className="min-w-0 space-y-6">

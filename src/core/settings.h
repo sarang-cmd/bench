@@ -36,8 +36,13 @@ typedef struct {
     uint8_t uncert_sig;        /* 1 or 2 significant figures for the uncertainty */
     uint8_t pacer_checkpoint;  /* marks between checkpoints, default 10 */
     uint8_t notes_wrap;        /* 0 = wrap to screen width, else percent (50..150) */
-    uint8_t reserved;
+    uint8_t angle_unit;        /* SETTINGS_ANGLE_DEG or SETTINGS_ANGLE_RAD */
+    uint8_t tour_done;         /* 1 once the first-run hint has been read */
+    uint8_t reserved[3];
 } bench_settings_t;
+
+#define SETTINGS_ANGLE_DEG 0
+#define SETTINGS_ANGLE_RAD 1
 
 /* Everything at its documented default. */
 void settings_defaults(bench_settings_t *s);
@@ -56,6 +61,8 @@ int settings_format(bench_settings_t const *s, char *buf, int size);
 uint8_t settings_clamp_uncert_sig(int v);
 uint8_t settings_clamp_checkpoint(int v);
 uint8_t settings_clamp_wrap(int v);
+uint8_t settings_clamp_angle(int v);
+uint8_t settings_clamp_flag(int v);
 
 /* True when two settings structures hold the same values (the app only writes
  * the file when this is false). */
@@ -63,5 +70,6 @@ bool settings_equal(bench_settings_t const *a, bench_settings_t const *b);
 
 /* Human text for a setting, for the settings screen. */
 char const *settings_uncert_sig_text(uint8_t v);
+char const *settings_angle_text(uint8_t v);
 
 #endif /* BENCH_SETTINGS_H */

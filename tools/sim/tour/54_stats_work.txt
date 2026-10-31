@@ -1,0 +1,4 @@
+# tour step: 54_stats_work
+# F4 shows the working behind the standard deviation.
+tool:stats
+f4

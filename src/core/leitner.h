@@ -50,6 +50,11 @@ bool leitner_due(uint8_t box, uint32_t session);
 int leitner_session_build(uint8_t const *boxes, int n, uint32_t session,
                           int *order, int max_order);
 
+/* Shuffles `order[0..n)` in place, deterministically for a given seed: the same
+ * seed is the same session order, so a test can pin it and two runs on the same
+ * day agree.  Cards v2 uses this for the "mixed" session. */
+void leitner_shuffle(int *order, int n, uint32_t seed);
+
 /* ---- progress state ----------------------------------------------------- */
 
 typedef struct {

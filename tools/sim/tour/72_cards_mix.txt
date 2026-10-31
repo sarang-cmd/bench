@@ -1,0 +1,6 @@
+# tour step: 72_cards_mix
+# F2 on the deck screen mixes the order inside each box, so two sessions on
+# the same deck are not the same sequence.
+tool:cards
+exe
+f2

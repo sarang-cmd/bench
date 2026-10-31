@@ -1,0 +1,9 @@
+# tour step: 64_base_hex
+# Entry base 16, typed as 1F4: 500 in decimal, 1114 in octal.
+tool:base
+f3
+f3
+f1
+f1
+1
+f

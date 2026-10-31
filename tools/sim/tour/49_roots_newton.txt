@@ -1,0 +1,6 @@
+# tour step: 49_roots_newton
+# x^2 - 2 from 1 with Newton: 1.5, 1.416667, 1.414216, and the table.
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:roots
+f2
+f3

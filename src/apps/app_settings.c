@@ -79,6 +79,12 @@ static void change(int delta)
     else if (row == 1)
         cfg->pacer_checkpoint =
             settings_clamp_checkpoint(cfg->pacer_checkpoint + delta);
+    else if (row == 3)
+        cfg->angle_unit = settings_clamp_angle(
+            cfg->angle_unit == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_DEG
+                                                  : SETTINGS_ANGLE_RAD);
+    else if (row == 4)
+        cfg->tour_done = settings_clamp_flag(cfg->tour_done + delta);
     else
     {
         int v = cfg->notes_wrap;
@@ -121,6 +127,11 @@ void app_settings_draw(void)
         nt_append(num, (int)sizeof num, "%");
     }
     w_row(TH_PAD, y, w, "Note width", num, row == 2);
+    y += TH_LINE;
+    w_row(TH_PAD, y, w, "Angles default", settings_angle_text(cfg->angle_unit), row == 3);
+    y += TH_LINE;
+    w_row(TH_PAD, y, w, "First-run hint", cfg->tour_done ? "read" : "showing",
+          row == 4);
     y += TH_LINE + 6;
 
     scr_text(TH_PAD, y, settings_uncert_sig_text(cfg->uncert_sig), TH_INK);
@@ -162,7 +173,7 @@ app_result_t app_settings_key(bench_event_t ev)
     }
     if (ev.key == BK_UP && row > 0)
         row--;
-    else if (ev.key == BK_DOWN && row < 2)
+    else if (ev.key == BK_DOWN && row < 4)
         row++;
     else if (ev.key == BK_LEFT)
         change(-1);

@@ -16,6 +16,116 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **Demo content (V2, workstream D)**: `demo/` holds three notes, three decks
+  and a fortnight study log so a fresh install is not three empty screens. The
+  text is written from scratch, not copied from a booklet or a past paper, and
+  `demo/README.md` says in its first section that it needs human proofreading.
+  `tests/test_demo_files.c` reads every demo file with the add-in's own parsers
+  (108 checks) and fails on a single skipped line, so the sample cannot rot into
+  something the calculator refuses to read.
+
+- **The site is eight pages, not one (V2)**: `/features`, `/simulator`,
+  `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the
+  landing page, which keeps its layout. `src/router.jsx` is a 120-line path
+  switch with real `<a href>`s, so back, forward, middle-click and a shared link
+  all work; `vercel.json` rewrites every path to `index.html`. Every route sets
+  its own title, description, canonical and Open Graph image.
+  `scripts/gen-stats.mjs` and `scripts/gen-changelog.mjs` write the numbers and
+  the changelog from `CHANGELOG.md`, `docs/tools.json` and `src/`, and
+  `scripts/check-pages.mjs` renders all eight routes in Node and fails the build
+  if one throws. Eight 1200x630 Open Graph cards come from
+  `tools/brand/make_brand.py`. The canonical URL is now
+  `bench-sarang-dev.vercel.app` everywhere; `sitemap.xml` lists all eight
+  routes.
+
+- **The simulator page is honest about the simulator**: the interactive
+  WebAssembly build (workstream G) is not done, and the page says so instead of
+  pretending. What it shows today is the real frame buffer: 75 captures made by
+  the add-in's own simulator.
+
+- **Settings, five rows (V2)**: `src/core/settings.c` gains two keys,
+  `angle_unit` (0 degrees, 1 radians) and `tour_done` (0 or 1). The screen now
+  lists the unit the Triangle tool opens in and whether the first-run line on
+  the home screen has been read; `app_triangle_init()` takes its starting unit
+  from the setting, and F3/F4 still switch for that session only, without
+  writing the file. A settings file from 1.0.0 still loads: the new keys fall
+  back to their defaults. 687 native checks in `tests/test_settings.c`.
+  Unverified on device.
+
+- **First-run hint (V2)**: with `tour_done 0` the home screen prints one line
+  above the softkeys - "F1-F4 categories, F5 explains a tile, EXE opens it" -
+  and opening help with F5 sets `tour_done` and writes the file once.
+
+- **Complex numbers (F6)**: `src/core/cplx.c` adds, subtracts, multiplies,
+  divides (division by zero is a NaN, not a wrong number), raises to an integer
+  power and reports the modulus, the argument (with `bm_atan2`, new in
+  `src/core/mathfn.c`) and the polar form. `src/apps/app_cplx.c` shows all three
+  at once, F2 cycles the operation, F3/F4 pick degrees or radians in the title
+  bar. 37 native checks. Unverified on device.
+
+- **The M1 spike has its own artifact.** It used to ride inside `bench-g3a`,
+  next to the add-in, so the thing you download to get Bench offered two
+  `.g3a` files and one of them printed diagnostics. `bench-g3a` now holds
+  `Bench-<version>.g3a` and nothing else; the spike is in `bench-spike`. It was
+  never a release asset and still is not.
+
+- **Root finder (F4)**: `src/core/roots.c` does bisection, Newton (numeric
+  derivative, step 1e-6) and the secant method, keeping every iterate so the
+  screen can show n, x, f(x) and the step size. `src/apps/app_roots.c` solves
+  from the shared expression engine, F2 cycles the method, F3 solves, and a
+  small plot marks each iterate on the curve. A bracket with no sign change, a
+  zero slope and a parse error each get their own sentence and column. 40
+  native checks. Unverified on device.
+
+- **Statistics with working (F7)**: `src/core/stats.c` gives n, sum, mean,
+  median, mode, range, both quartile methods, the outlier fences and the
+  population and sample standard deviations (53 native checks). Paired data
+  gets the least squares line, r and r squared. `src/apps/app_stats.c` adds
+  values as you type them, shows the summary and a box plot, has a screen for
+  the working and a screen for the regression. Unverified on device.
+
+- **SUVAT and projectiles (F10)**: `src/core/suvat.c` solves any three of s, u,
+  v, a and t, one table entry per triple, and reports the equation each answer
+  came from; when a quadratic gives two sensible times it keeps the first and
+  names the second (73 native checks). `src/apps/app_suvat.c` fills the grid as
+  you type, marks worked-out values with a dot, and draws the flight path for a
+  launch speed, angle and height. Unverified on device.
+
+- **Moles and solutions (F11)**: `src/core/chem.c` covers n = m / Mr, c = n / V,
+  pV = nRT with R in kPa dm3, dilution and the two percentages, refusing a zero
+  where a formula divides (47 native checks). `src/apps/app_moles.c` has one
+  mode per family, opens each on a worked example, and writes the substitution
+  out under the answer. Unverified on device.
+
+
+- **Base and bits (F12)**: `src/core/base.c` parses and prints any base from 2
+  to 36, writes two's complement at 8, 16 and 32 bits (hex padded to the width,
+  binary grouped in fours), and does AND, OR, XOR and logical shifts, refusing a
+  shift of 63 or more (78 native checks). `src/apps/app_base.c` shows one value
+  in five bases with all three widths, and a second tab for the operators; F2
+  opens the letter keyboard because the keypad has no A-F keys. Unverified on
+  device.
+
+
+- **Lab graph (F8)**: `src/core/graph.c` fits a line to measured points and
+  quotes the standard error of the gradient and the intercept from the
+  residuals, plus a round axis range for the plot (42 native checks).
+  `src/apps/app_graph.c` takes x, y and an error per point, lists them with the
+  fit, and draws the graph with a bar through each point and the line of best
+  fit. Unverified on device.
+
+
+- **Study log (F13)**, **Notes v2 (F14)** and **Cards v2 (F15)**: a plain text
+  log of what you studied and for how long, with totals, days logged and the
+  longest streak (`src/core/logbook.c`, 56 native checks); the Notes footer now
+  counts words as well as lines (`textsearch_words`, 6 more checks); and a
+  Cards deck can be drilled in a mixed order inside each box
+  (`leitner_shuffle`, deterministic for a session, 8 more checks). Bench cannot
+  read the calendar - gint's date fields were never checked on the hardware - so
+  a log entry takes the day after the newest one and UP/DOWN moves it.
+  Unverified on device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every
@@ -37,6 +147,16 @@ next one.
   code is ink on shade.
 
 ### Added
+- **The .g3a lives in the repository**, at `dist/Bench-<version>.g3a`, with
+  `BUILD.txt` recording the commit, size and SHA-256. Release assets and
+  artifacts both come from blob storage, which some networks cannot reach; a git
+  remote is plain git. CI refreshes `dist/` for tagged and automatic builds with
+  a `[skip ci]` commit, so the copy does not go stale.
+- **The M1 spike as one patch**: `spike/spike.diff` holds the whole diagnostic
+  add-in, generated from `spike/` by `tools/gen_spike_patch.py`
+  (`make spike-patch`). `git apply spike/spike.diff` on a tree without `spike/`
+  reproduces it byte for byte; CI fails if the patch and the sources disagree.
+  The spike still is not on any release.
 - **Home screen v2**: four categories on F1..F4, a 3 x 2 page of tiles, page
   dots when a category has more than one page, and a dashboard strip on Study
   that counts the decks and notes on the card. The selected tile keeps the

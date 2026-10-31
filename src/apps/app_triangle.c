@@ -54,6 +54,9 @@ void app_triangle_init(void)
 {
     for (int i = 0; i < FIELDS; i++)
         field[i][0] = 0;
+    /* The tool opens in whatever unit Settings names; F3/F4 still switch
+     * for this session only and never write the settings file. */
+    use_deg = app_cfg()->angle_unit != SETTINGS_ANGLE_RAD;
     sel = 0;
     solved = false;
     solutions = 0;

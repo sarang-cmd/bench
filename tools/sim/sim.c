@@ -12,6 +12,7 @@
  * Key script format, one token per line:
  *   up down left right exe exit menu f1..f6 del 0..9 . - alg
  *   shot:<file.ppm>    capture the screen and carry on
+ *   tool:<id>          open a tool by registry id, skipping the home screen
  * When the script runs out the screen is captured to $BENCH_SHOT (if set) and
  * the program exits, which is what the screenshot targets use. */
 
@@ -26,6 +27,7 @@
 
 #include "sim_font.h"
 
+#include "apps/app.h"
 #include "apps/registry.h"
 #include "core/color.h"
 #include "platform/screen.h"
@@ -611,6 +613,29 @@ static key_event_t next_event(void)
         {
             capture(tok + 5);
             continue;
+        }
+        /* Jump straight to a tool by id: a tour then survives the home screen
+         * being reordered, which it did not when the only way in was counting
+         * tiles. */
+        if (strncmp(tok, "tool:", 5) == 0)
+        {
+            tool_t const *t = tool_by_id(tok + 5);
+
+            if (!t)
+            {
+                fprintf(stderr, "sim: no tool '%s'\n", tok + 5);
+                continue;
+            }
+            app_open(t->screen);
+            /* Hand back a dead key so the main loop draws the new screen
+             * before the script moves on; opening and returning here would
+             * leave the old frame in the capture. */
+            key_event_t e;
+
+            memset(&e, 0, sizeof e);
+            e.type = KEYEV_DOWN;
+            e.key = BK_NONE;
+            return e;
         }
         k = key_for_token(tok);
         if (k < 0)

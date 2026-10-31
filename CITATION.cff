@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use Bench in teaching material, cite it like this."
+title: "Bench: a study add-in for the Casio fx-CG 50"
+abstract: >-
+  One .g3a for the Casio fx-CG 50: a paper pacer, uncertainty arithmetic, Leitner
+  flashcards, a Markdown reader, a study log, an expression engine, solvers,
+  statistics and science screens, written in C against gint.
+authors:
+  - name: "sarang-cmd"
+    alias: "sarang-cmd"
+repository-code: "https://github.com/sarang-cmd/bench"
+url: "https://bench-sarang-dev.vercel.app"
+license: MIT
+type: software
+keywords:
+  - calculator
+  - casio
+  - fx-cg50
+  - gint
+  - fxsdk
+  - study

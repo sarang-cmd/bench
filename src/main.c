@@ -30,10 +30,18 @@ typedef enum {
     VIEW_SETTINGS,
     VIEW_ABOUT,
     VIEW_HELP,
+    VIEW_CPLX,
     VIEW_FUNCTION,
     VIEW_POLY,
+    VIEW_ROOTS,
     VIEW_TRIANGLE,
     VIEW_SEQ,
+    VIEW_STATS,
+    VIEW_SUVAT,
+    VIEW_MOLES,
+    VIEW_BASE,
+    VIEW_GRAPH,
+    VIEW_LOG,
     VIEW_SIGFIG,
     VIEW_COUNT,
 } view_t;
@@ -70,13 +78,29 @@ static app_entry_t const apps[VIEW_COUNT] = {
                      app_about_timeout },
     [VIEW_HELP] = { app_help_init, app_help_draw, app_help_key,
                     app_help_timeout },
+    [VIEW_CPLX] = { app_cplx_init, app_cplx_draw, app_cplx_key,
+                    app_cplx_timeout },
     [VIEW_FUNCTION] = { app_function_init, app_function_draw, app_function_key,
                         app_function_timeout },
     [VIEW_POLY] = { app_poly_init, app_poly_draw, app_poly_key,
                     app_poly_timeout },
+    [VIEW_ROOTS] = { app_roots_init, app_roots_draw, app_roots_key,
+                     app_roots_timeout },
     [VIEW_TRIANGLE] = { app_triangle_init, app_triangle_draw,
                         app_triangle_key, app_triangle_timeout },
     [VIEW_SEQ] = { app_seq_init, app_seq_draw, app_seq_key, app_seq_timeout },
+    [VIEW_STATS] = { app_stats_init, app_stats_draw, app_stats_key,
+                     app_stats_timeout },
+    [VIEW_SUVAT] = { app_suvat_init, app_suvat_draw, app_suvat_key,
+                     app_suvat_timeout },
+    [VIEW_MOLES] = { app_moles_init, app_moles_draw, app_moles_key,
+                     app_moles_timeout },
+    [VIEW_BASE] = { app_base_init, app_base_draw, app_base_key,
+                    app_base_timeout },
+    [VIEW_GRAPH] = { app_graph_init, app_graph_draw, app_graph_key,
+                     app_graph_timeout },
+    [VIEW_LOG] = { app_log_init, app_log_draw, app_log_key,
+                   app_log_timeout },
     [VIEW_SIGFIG] = { app_sigfig_init, app_sigfig_draw, app_sigfig_key,
                       app_sigfig_timeout },
 };
@@ -107,10 +131,18 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_SETTINGS: set_view(VIEW_SETTINGS); break;
     case APP_SCREEN_ABOUT: set_view(VIEW_ABOUT); break;
     case APP_SCREEN_HELP: set_view(VIEW_HELP); break;
+    case APP_SCREEN_CPLX: set_view(VIEW_CPLX); break;
     case APP_SCREEN_FUNCTION: set_view(VIEW_FUNCTION); break;
     case APP_SCREEN_POLY: set_view(VIEW_POLY); break;
+    case APP_SCREEN_ROOTS: set_view(VIEW_ROOTS); break;
     case APP_SCREEN_TRIANGLE: set_view(VIEW_TRIANGLE); break;
     case APP_SCREEN_SEQ: set_view(VIEW_SEQ); break;
+    case APP_SCREEN_STATS: set_view(VIEW_STATS); break;
+    case APP_SCREEN_SUVAT: set_view(VIEW_SUVAT); break;
+    case APP_SCREEN_MOLES: set_view(VIEW_MOLES); break;
+    case APP_SCREEN_BASE: set_view(VIEW_BASE); break;
+    case APP_SCREEN_GRAPH: set_view(VIEW_GRAPH); break;
+    case APP_SCREEN_LOG: set_view(VIEW_LOG); break;
     case APP_SCREEN_SIGFIG: set_view(VIEW_SIGFIG); break;
     default: set_view(VIEW_MENU); break;
     }
