@@ -8,6 +8,7 @@
  * on a timer and never inside a loop. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -145,6 +146,11 @@ void app_settings_draw(void)
 
 app_result_t app_settings_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("settings"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
     if (ev.key == BK_EXIT)

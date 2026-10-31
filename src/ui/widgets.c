@@ -25,8 +25,10 @@ void w_title(char const *title, char const *hint)
     {
         int const y = (TH_TITLE_H - scr_text_h()) / 2;
 
-        scr_text_as(SCR_TR_TITLE, SCR_W - TH_PAD - scr_text_w(hint), y, hint,
-                    TH_YELLOW);
+        /* Kept clear of the red square, which owns the last 8 pixels: the hint
+         * used to sit on top of it. */
+        scr_text_as(SCR_TR_TITLE, SCR_W - TH_PAD - 8 - scr_text_w(hint), y,
+                    hint, TH_YELLOW);
     }
     /* Bauhaus: a 4-pixel red square after the title, always in the same place. */
     scr_fill(SCR_W - TH_PAD - 4, TH_TITLE_H - 6, 4, 4, TH_RED);
@@ -41,18 +43,38 @@ void w_softkeys(char const *const labels[6], int active)
     for (int i = 0; i < 6; i++)
     {
         int x = i * TH_SOFT_W;
+        char const *label = labels[i];
 
         if (i > 0)
             scr_vline(x, y + 1, TH_SOFT_H - 1, TH_PAPER);
         if (active == i)
             scr_fill(x + 1, y + 1, TH_SOFT_W - 1, TH_SOFT_H - 1, TH_INK);
-        if (!labels[i] || !*labels[i])
+        /* F5 is help on every screen (main.c routes it), so an empty F5 slot
+         * advertises it rather than sitting blank.  A screen may still put its
+         * own label there. */
+        if ((!label || !*label) && i == 4)
+            label = "Help";
+        if (!label || !*label)
             continue;
         scr_text_as(SCR_TR_SOFTKEY,
-                    x + 1 + (TH_SOFT_W - 2 - scr_text_w(labels[i])) / 2,
-                    y + (TH_SOFT_H - scr_text_h()) / 2, labels[i],
+                    x + 1 + (TH_SOFT_W - 2 - scr_text_w(label)) / 2,
+                    y + (TH_SOFT_H - scr_text_h()) / 2, label,
                     active == i ? TH_PAPER : TH_INK);
     }
+}
+
+void w_strip(char const *left, char const *right)
+{
+    int const y = SCR_H - TH_SOFT_H;
+    int const ty = y + (TH_SOFT_H - scr_text_h()) / 2;
+
+    scr_fill(0, y, SCR_W, TH_SOFT_H, TH_SHADE);
+    scr_hline(0, y, SCR_W, TH_INK);
+    if (left && *left)
+        scr_text_as(SCR_TR_STRIP, TH_PAD, ty, left, TH_INK);
+    if (right && *right)
+        scr_text_as(SCR_TR_STRIP, SCR_W - TH_PAD - scr_text_w(right), ty, right,
+                    TH_INK);
 }
 
 /* ---- panels, messages, modals ------------------------------------------ */

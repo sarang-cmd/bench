@@ -1,3 +1,6 @@
 # tour step: 25_about
 # starts at the home screen; see tools/sim/run_tour.sh
-f6
+# Tools (F4), right to About, EXE
+f4
+right
+exe

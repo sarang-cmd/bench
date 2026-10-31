@@ -5,6 +5,7 @@
  * Files: none. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -68,17 +69,23 @@ void app_about_draw(void)
     scr_text(TH_PAD, y, "Notes cap 32 KiB, decks 500 cards", TH_INK);
     y += TH_LINE + 4;
 
-    scr_text(TH_PAD, y, "Exam Mode blocks add-ins. Bench never touches it.",
-             TH_RED);
+    /* A red mark, ink text: red on paper is 4.46:1, short of AA for a
+     * sentence (docs/design.md section 5). */
+    scr_fill(TH_PAD, y + 1, 4, 4, TH_RED);
+    scr_text(TH_PAD + 8, y, "Exam Mode blocks add-ins. Bench never touches it.",
+             TH_INK);
 
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
-    scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                    "EXE or EXIT back", TH_INK);
+    w_strip("F5 help", "EXE or EXIT back");
     scr_present();
 }
 
 app_result_t app_about_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("about"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
     if (ev.key == BK_EXIT || ev.key == BK_EXE || ev.key == BK_F6)

@@ -1,0 +1,5 @@
+# tour step: 31_function_list
+# starts at the home screen; see tools/sim/run_tour.sh
+# Math (F2) holds Function first, then Number theory
+f2
+exe

@@ -40,7 +40,7 @@ Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
 No mock-ups.
 
-## The five tools
+## The tools
 
 ### Pacer
 Minutes per mark, checkpoint times, and a live gap line: *"Behind by 1m20s"*.
@@ -96,6 +96,24 @@ A viewer for text and a Markdown subset, with search.
 - Characters the calculator font does not have are drawn as `?` and counted in
   the footer. `tools/md2bench.py` maps the common symbols to ASCII first.
 
+### Function table
+The expression engine, with a table and a probe. `src/core/expr.c` is a
+shunting-yard parser with a fixed 32-entry operator stack, so no expression can
+overflow the calculator's stack, and errors come with the column that failed
+(`1/0` is "divide by zero at column 2").
+
+- Operators `+ - * / ^`, unary minus, implicit multiplication (`3x`, `2(x+1)`),
+  `x`, `pi`, `e`.
+- Functions `sin cos tan asin acos atan sinh cosh tanh exp ln log sqrt abs floor
+  ceil`, case insensitive.
+- Six slots `f g h p q r`, saved to `Bench/state/exprs.txt` when you leave the
+  tool, and only when one changed.
+- A table of `x` and `f(x)` with a start, a step from 0.1 to 10 and a row
+  count; EXE probes one value; F4 switches degrees and radians, and the mode is
+  in the title bar.
+- The maths is `src/core/mathfn.c`: sqrt, exp, ln, log10, pow, the
+  trigonometric functions and their inverses in plain C, no libm.
+
 ### Number theory
 Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 
@@ -124,7 +142,10 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | F1 / F2 | Notes | search / next hit |
 | F1 | Number theory | run the function |
 | F3 / F4 | Notes | heading list / jump to the top |
-| F5 / F6 | home | Settings / About |
+| F1..F4 | home | the four categories: Study, Math, Science, Tools |
+| F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
+| F6 | home | About |
+| F1 / F2 / F3 / F4 | Function table | table / row count / clear slot / degrees-radians |
 | digits, `.`, `-` | number fields | type a value, DEL removes |
 
 Text entry does not use the ALPHA key. The search field opens a small on-screen
@@ -142,6 +163,7 @@ fls0/
     cards/*.txt            decks             (Cards)
     state/cards.sav        Leitner boxes     (Cards, written at session end)
     state/settings.cfg     settings          (Settings, written on change)
+    state/exprs.txt        f, g, h, p, q, r  (Function table, written on exit)
 ```
 
 Storage rules the code follows, to spare the flash: write a file once and rename

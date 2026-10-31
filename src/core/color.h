@@ -1,6 +1,6 @@
 /* color.h - colours, luminance and contrast, without gint.
  *
- * Spec: docs/design.md section 4 (never draw foreground and background in the
+ * Spec: docs/design.md section 5 (never draw foreground and background in the
  * same colour) and docs/plan.md section 5 (the palette).
  *
  * Two jobs:

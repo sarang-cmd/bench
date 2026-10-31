@@ -29,6 +29,8 @@ typedef enum {
     VIEW_NUMTHEORY,
     VIEW_SETTINGS,
     VIEW_ABOUT,
+    VIEW_HELP,
+    VIEW_FUNCTION,
     VIEW_COUNT,
 } view_t;
 
@@ -41,6 +43,8 @@ typedef struct {
 
 static bench_settings_t cfg;
 static view_t view = VIEW_MENU;
+/* The screen to come back to when a screen opened a modal-ish one (help). */
+static view_t view_before = VIEW_MENU;
 
 /* Declared before the table so the initialisers below can name the apps. */
 static app_entry_t const apps[VIEW_COUNT] = {
@@ -60,6 +64,10 @@ static app_entry_t const apps[VIEW_COUNT] = {
                         app_settings_timeout },
     [VIEW_ABOUT] = { app_about_init, app_about_draw, app_about_key,
                      app_about_timeout },
+    [VIEW_HELP] = { app_help_init, app_help_draw, app_help_key,
+                    app_help_timeout },
+    [VIEW_FUNCTION] = { app_function_init, app_function_draw, app_function_key,
+                        app_function_timeout },
 };
 
 bench_settings_t *app_cfg(void)
@@ -77,6 +85,7 @@ static void set_view(view_t v)
 
 void app_open(app_screen_t screen)
 {
+    view_before = view;
     switch (screen)
     {
     case APP_SCREEN_PACER: set_view(VIEW_PACER); break;
@@ -86,6 +95,8 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_NUMTHEORY: set_view(VIEW_NUMTHEORY); break;
     case APP_SCREEN_SETTINGS: set_view(VIEW_SETTINGS); break;
     case APP_SCREEN_ABOUT: set_view(VIEW_ABOUT); break;
+    case APP_SCREEN_HELP: set_view(VIEW_HELP); break;
+    case APP_SCREEN_FUNCTION: set_view(VIEW_FUNCTION); break;
     default: set_view(VIEW_MENU); break;
     }
 }
@@ -120,6 +131,8 @@ int main(void)
             break;
         if (r == APP_BACK)
             set_view(VIEW_MENU);
+        if (r == APP_UP)
+            set_view(view_before);
     }
 
     /* Leave the display in a known state for the OS. */

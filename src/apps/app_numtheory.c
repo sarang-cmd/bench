@@ -17,6 +17,7 @@
  * Files: none. */
 
 #include "app.h"
+#include "app_help.h"
 
 #include <string.h>
 
@@ -418,7 +419,7 @@ static void draw_result(fn_t fn)
         scr_text_ellipsis(TH_PAD + 4, y + i * TH_LINE, steps[i], TH_INK, w - 4);
     }
 
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
+    w_strip(NULL, NULL);
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "EXE or EXIT back", TH_INK);
 }
@@ -448,6 +449,11 @@ void app_numtheory_draw(void)
 
 app_result_t app_numtheory_key(bench_event_t ev)
 {
+    if (ev.key == BK_F5)
+    {
+        app_help_open(tool_by_id("numtheory"));
+        return APP_CONTINUE;
+    }
     if (ev.key == BK_MENU)
         return APP_QUIT;
 

@@ -181,16 +181,16 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 
 | Workstream | State |
 |---|---|
-| A1 tile colour bug | **done**: measured foregrounds, 2 px icon outline, check in `make test` |
-| A2 tool registry | **done**: `src/apps/registry.c` is the only list; `docs/tools.json` is generated from it |
-| A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard |
-| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons |
-| A5 shared services | **not started**: expression engine, number entry, working lines, history, settings v2, help |
-| B overlap hunt | **done for every existing screen**: 28 scripts, 0 findings; worst cases added |
-| C fifteen tools | **not started** (F1..F15) |
+| A1 tile colour bug | **done**: every foreground measured against its fill, icon outlined, check in `make test` |
+| A2 tool registry | **done**: `src/apps/registry.c` is the only list (8 rows); `docs/tools.json` is generated from it and CI diffs it |
+| A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
+| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy |
+| A5 shared services | **partly**: help is done (screen, key, paging, tests) and `core/mathfn.c` gives core sqrt, exp, ln, log10, pow and the trigonometric functions without libm (the expression engine's ground); expression engine, number entry, working lines, history and settings v2 are not started |
+| B overlap hunt | **done for every existing screen**: 30 scripts, 0 findings; worst cases added |
+| C fifteen tools | **F1 done** (expression engine and Function table); F9 is next |
 | D demo content | **not started** |
 | E settings v2 | **not started** |
-| F tutorial and help | **partly**: help text lives in the registry; the help screen itself is not built |
+| F tutorial and help | **partly**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run tour, empty states and `docs/TUTORIAL.md` are not written |
 | G WebAssembly simulator | **not started** |
 | H website v2 | **not started** |
 | I README and metadata | **not started** |
@@ -201,9 +201,30 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 
 - **Text on paper is ink or blue.** Red is 4.46:1 on paper and teal 3.00:1, so
   neither may carry body text. Alerts are ink; "good news" is blue.
-- **A paper plate instead of a darker colour.** The palette is fixed, so where
-  no palette colour reaches 4.5:1 on a tile the label sits on flat paper rather
-  than inventing a tint. This shows on the selected red, teal and violet tiles.
+- **Selection inverts the tile instead of tinting it.** A selected tile is ink
+  with paper text (12.27:1 whatever the accent); an unselected one is paper
+  with ink text and an icon in the tool's colour. The first version filled the
+  tile with its accent and put a paper plate under lines that could not reach
+  AA; it passed every check and looked like a form, so the plate is gone.
+- **F5 is help on every screen.** It is drawn in the softkey strip even where a
+  screen leaves the slot empty, because it works there: the menu shows the help
+  for the tile under the cursor, a tool screen its own help, and EXE returns to
+  the screen that asked.
+- **A tile keeps its accent only when selected.** Unselected tiles are paper, so
+  the grid reads as a sheet of cards and the accent marks the one you are on.
+  The subtitle of a selected tile sits on a paper plate when the palette cannot
+  carry ink or paper at 4.5:1 (red 4.46, teal 4.09, violet 3.79).
+- **The Tools category holds Settings and About**, not the "Settings tools, Help,
+  Tour" of the category map, until those screens exist; F5 and F6 keep their
+  shortcuts so Settings is one key away from anywhere.
+- **The angle mode is a per-tool toggle for now** (F4 in the Function table, shown
+  in the title bar) and moves into Settings v2 with workstream E, where it
+  becomes the shared setting the master prompt asks for.
+- **The Function table's tile reads "Function"**, because a tile title is 14
+  characters at most; the docs and the help text call it the Function table.
+- **F6 is Settings on the home screen.** About is a tile in the Tools category
+  rather than another shortcut, so the strip shows four categories, help and
+  settings and nothing twice.
 - **The title floor is 3.0:1, body is 4.5:1.** Tile titles and the title bar are
   treated as WCAG large text; they are the biggest, boldest labels on the
   screen and the only way to keep ink on red.
@@ -219,7 +240,11 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | Screen | Finding | Fix |
 |---|---|---|
 | Home | icon in the tile's own colour | measured foreground + outline |
-| Home | ink on red (2.75:1), small subtitle | paper plate |
+| Home | ink on red (2.75:1), small subtitle | paper plate, then selection inverted (see above) |
+| Home | the selected tile's shadow was drawn inside the tile | an L outside the shape |
+| Home | triangle and framed icons grew outside their 20x20 box | outline grows by `TH_ICON_OL` on every side |
+| Help | an empty softkey strip with six dividers | `w_strip`, one hint line, no dividers |
+| About | the Exam Mode sentence in red on paper (4.46:1) | ink with a red mark before it |
 | Pacer run | paper on teal (3.00:1) gap line | plate inside the coloured band |
 | Pacer, Cards, Number theory | red cursor on the yellow field (2.91:1) | ink cursor |
 | Settings | teal "Saved to ..." (3.00:1) | ink |
@@ -233,5 +258,5 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 ### Unverified on device
 
 Everything in this session. The hardware is the user's: the new home screen,
-the plates, the shadows, the keyboard change and the title-bar cut have been
-looked at in the host preview only.
+the inverted selection, the shadows, the help screen, the keyboard change and
+the title-bar cut have been looked at in the host preview only.

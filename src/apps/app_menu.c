@@ -1,19 +1,21 @@
 /* app_menu.c - the home screen: categories, pages of tiles, one dashboard.
  *
- * Spec: docs/plan.md section 5 and docs/design.md section 3.
+ * Spec: docs/plan.md section 5 and docs/design.md.
  *
- * Layout: a title bar, a content area, a softkey strip.  The content area is
- * divided into a category dashboard (Study only) and a 3 x 2 grid of tiles;
- * a category with more than six tools gets pages, shown as dots.
+ * The screen is the registry (registry.c) drawn: a category strip on F1..F4,
+ * six tiles a page, page dots when a category has more than one page, and a
+ * dashboard strip on Study.  Adding a tool means adding a registry row; this
+ * file does not know any tool by name.
  *
  * Colour rules, and the bug they exist for: an icon drawn in the same colour
  * as its tile disappears.  So every foreground here is chosen by measurement
- * (core/color.h) - the better of ink and paper on the fill - and tools/sim
- * checks the pixels afterwards.  A tile that is selected and whose text still
- * cannot reach 4.5:1 gets a paper plate under that line.
+ * (core/color.h) - the better of ink and paper on the fill - and a subtitle
+ * that still cannot reach 4.5:1 gets a paper plate under it.  tools/sim checks
+ * the pixels afterwards, so a wrong constant fails the build.
  *
  * Keys: F1..F4 category, LEFT/RIGHT/UP/DOWN move (LEFT/RIGHT at the edge
- * turns the page), EXE opens, F5 Settings, F6 About, MENU quits. */
+ * turns the page), EXE opens, F5 Settings, F6 About, MENU quits.
+ */
 
 #include "app.h"
 
@@ -25,47 +27,44 @@
 #include "platform/store.h"
 #include "registry.h"
 #include "theme.h"
-#include "ui/shapes.h"
 #include "ui/widgets.h"
 
 /* ---- state -------------------------------------------------------------- */
 
 static tool_category_t category;
 static int sel;          /* index inside the category */
-static int cards_files;  /* dashboard: decks on the card, counted once */
+static int cards_files;  /* dashboard: decks and notes on the card */
 static int notes_files;
 
 static int const category_keys[4] = { BK_F1, BK_F2, BK_F3, BK_F4 };
 
-/* A 20x20 icon, drawn so that it is a different colour from its tile. */
-static int icon_colour(int fill)
+/* ---- colour ------------------------------------------------------------- */
+
+/* The better of the palette's two foregrounds on `fill`. */
+static int better_foreground(int fill)
 {
-    /* The better of the two foregrounds, by measurement. */
-    return col_better_on(fill, TH_INK, TH_PAPER);
+    return col_contrast(TH_INK, fill) >= col_contrast(TH_PAPER, fill) ? TH_INK
+                                                                     : TH_PAPER;
 }
 
 /* The readable foreground on `fill`, and whether it needs a paper plate. */
 static int text_colour(int fill, double floor, bool *plate)
 {
-    int const best = col_better_on(fill, TH_INK, TH_PAPER);
+    int const best = better_foreground(fill);
 
     *plate = col_contrast(best, fill) < floor;
     return *plate ? TH_INK : best;
 }
 
-/* A paper plate under a line that cannot reach AA on the tile colour.  Flat,
- * no border: it reads as a highlight mark, not as an input field. */
-static void draw_plate(int x, int y, int w, int h)
+/* The icon colour: the accent on a paper tile, and on a coloured tile the
+ * outline's opposite, so the two can never be confused. */
+static int icon_colour(tool_t const *tool, int fill, bool on)
 {
-    scr_fill(x, y, w, h, TH_PAPER);
-}
-
-/* Width a label will actually occupy once it is cut to fit. */
-static int text_fit(char const *s, int max_w)
-{
-    int const w = scr_text_w(s);
-
-    return w <= max_w ? w : max_w;
+    if (on)
+        return better_foreground(fill);
+    return col_contrast(tool->accent, TH_PAPER) >= COL_ICON_MIN_CONTRAST
+               ? tool->accent
+               : TH_INK;
 }
 
 /* ---- dashboard ---------------------------------------------------------- */
@@ -74,7 +73,6 @@ static void dashboard_count(void)
 {
     store_entry_t list[STORE_LIST_MAX];
 
-    /* Counted once, in init: the menu must not touch the card on every key. */
     cards_files = store_list("cards", ".txt", list, STORE_LIST_MAX);
     notes_files = store_list("notes", NULL, list, STORE_LIST_MAX);
     if (cards_files < 0)
@@ -86,26 +84,19 @@ static void dashboard_count(void)
 static void draw_dashboard(int x, int y, int w, int h)
 {
     char line[64];
+    int n = 0;
 
     scr_fill(x, y, w, h, TH_SHADE);
-    scr_frame(x, y, w, h, TH_INK, 1);
-    scr_text(x + 5, y + (h - scr_text_h()) / 2, "ON THE CARD", TH_INK);
+    scr_frame(x, y, w, h, TH_INK, 2);
+    scr_fill(x + 4, y + 4, 4, 4, TH_RED);
+    scr_text(x + 12, y + (h - scr_text_h()) / 2, "ON THE CARD", TH_INK);
 
-    /* Two counts and nothing invented: cards due and streaks arrive with the
-     * Study log (F13) and Cards v2 (F15). */
-    if (notes_files > 0 || cards_files > 0)
-    {
-        int n = 0;
-
-        n += snprintf(line + n, sizeof line - (size_t)n, "%d deck%s",
-                      cards_files, cards_files == 1 ? "" : "s");
-        snprintf(line + n, sizeof line - (size_t)n, "  %d note%s", notes_files,
-                 notes_files == 1 ? "" : "s");
-    }
-    else
-    {
-        snprintf(line, sizeof line, "empty: copy files into Bench/");
-    }
+    /* Cards due and streak need the Study log (F13) and Cards v2 (F15); until
+     * then the strip counts what is on the card. */
+    n += snprintf(line + n, sizeof line - (size_t)n, "%d deck%s", cards_files,
+                  cards_files == 1 ? "" : "s");
+    snprintf(line + n, sizeof line - (size_t)n, "  %d note%s", notes_files,
+             notes_files == 1 ? "" : "s");
     scr_text_right(x + w - 5, y + (h - scr_text_h()) / 2, line, TH_INK);
 }
 
@@ -114,51 +105,56 @@ static void draw_dashboard(int x, int y, int w, int h)
 static void draw_tile(tool_t const *tool, int x, int y, int w, int h, bool on)
 {
     int const fill = on ? tool->accent : TH_PAPER;
-    int const icon_fg = on ? icon_colour(fill) : TH_INK;
-    int const icon_fill = on ? icon_colour(fill)
-                             : (col_contrast(tool->accent, TH_PAPER) >=
-                                        COL_ICON_MIN_CONTRAST
-                                    ? tool->accent
-                                    : TH_INK);
-    int const icon_edge = on ? (icon_fg == TH_PAPER ? TH_INK : TH_PAPER) : TH_INK;
-    int const tx = x + 28;
-    int const text_w = w - 28 - 5;
-    int const block_h = 2 * TH_LINE;
-    int const ty = y + (h - block_h) / 2;
+    int const icon_fill = icon_colour(tool, fill, on);
+    int const icon_edge = icon_fill == TH_INK ? TH_PAPER : TH_INK;
+    int const tx = x + 7;
+    int const text_w = w - 14;
+    /* Icon and text are one block, centred in the tile. */
+    int const block = 20 + 4 + 2 * TH_LINE;
+    int const iy = y + (h > block ? (h - block) / 2 : 4);
+    int const ty = iy + 20 + 4;
     bool plate = false;
-    int title_c;
-    int sub_c;
+    int colour;
 
-    /* Shadow first, so the tile sits on it: 3 px, right and bottom. */
+    /* Shadow first, outside the tile: 3 px right and bottom, an L, never
+     * inside the shape where a filled tile would swallow it. */
     if (on)
     {
-        scr_fill(x + TH_SHADOW, y + TH_SHADOW, w, TH_SHADOW, TH_INK);
+        scr_fill(x + TH_SHADOW, y + h, w, TH_SHADOW, TH_INK);
         scr_fill(x + w, y + TH_SHADOW, TH_SHADOW, h, TH_INK);
     }
 
     scr_fill(x, y, w, h, fill);
     scr_frame(x, y, w, h, TH_INK, on ? TH_BORDER_SEL : TH_BORDER);
 
-    /* Icon: the fill colour, outlined in the other one, so it can never
-     * vanish into the tile.  Recorded for the harness in tools/sim. */
-    tool->icon(x + 4, ty + (block_h - 20) / 2, icon_fill, icon_edge);
-    SCR_TRACE(SCR_TR_ICON, x + 4, ty + (block_h - 20) / 2, 22, 22, icon_fill,
-              fill, tool->title);
+    /* Icon: a 20x20 box, filled in one colour and outlined in the other, so it
+     * can never merge into the tile. */
+    tool->icon(x + 7, iy, icon_fill, icon_edge);
+    SCR_TRACE(SCR_TR_ICON, x + 7, iy, 20, 20, icon_fill, fill, tool->title);
 
-    title_c = text_colour(fill, COL_TITLE_MIN_CONTRAST, &plate);
+    /* Title: the largest text on the screen, so the 3:1 floor. */
+    colour = text_colour(fill, COL_TITLE_MIN_CONTRAST, &plate);
     if (plate)
-        draw_plate(tx - 2, ty - 1, text_fit(tool->title, text_w) + 4,
-                   TH_LINE - 1);
-    scr_text_ellipsis_as(SCR_TR_TILE_TITLE, tx, ty, tool->title, title_c,
+    {
+        scr_fill(tx - 2, ty - 1, text_w + 4, TH_LINE - 1, TH_PAPER);
+        colour = TH_INK;
+    }
+    scr_text_ellipsis_as(SCR_TR_TILE_TITLE, tx, ty, tool->title, colour,
                          text_w);
 
-    sub_c = text_colour(fill, COL_TEXT_MIN_CONTRAST, &plate);
+    /* Subtitle: body text, so 4.5:1.  On an accent that cannot carry it the
+     * line gets a paper plate hugging the words - the mark that says which
+     * tile is selected, rather than a box across the whole tile. */
+    colour = text_colour(fill, COL_TEXT_MIN_CONTRAST, &plate);
     if (plate)
-        draw_plate(tx - 2, ty + TH_LINE - 1,
-                   text_fit(tool->subtitle, text_w) + 4, TH_LINE - 1);
-    scr_text_ellipsis(tx, ty + TH_LINE, tool->subtitle, sub_c, text_w);
+    {
+        int const pw = scr_text_w(tool->subtitle) + 4;
+        int const sw = pw < text_w + 4 ? pw : text_w + 4;
 
-    (void)icon_edge;
+        scr_fill(tx - 2, ty + TH_LINE - 1, sw, TH_LINE - 1, TH_PAPER);
+        colour = TH_INK;
+    }
+    scr_text_ellipsis(tx, ty + TH_LINE, tool->subtitle, colour, text_w);
 }
 
 /* ---- pages -------------------------------------------------------------- */
@@ -173,9 +169,10 @@ static void draw_dots(int pages, int page, int y)
     {
         int const x = x0 + i * gap;
 
-        scr_fill(x, y, 4, 4, TH_INK);
-        if (i != page)
-            scr_fill(x + 1, y + 1, 2, 2, TH_PAPER);
+        if (i == page)
+            scr_fill(x, y, 4, 4, TH_INK);
+        else
+            scr_frame(x, y, 4, 4, TH_INK, 1);
     }
 }
 
@@ -197,10 +194,11 @@ void app_menu_draw(void)
 {
     int const size = tool_category_size(category);
     int const page = sel / TILES_PER_PAGE;
-    int top = TH_CONTENT_Y + TH_PAD;
-    int dots_y = SCR_H - TH_SOFT_H - 9;
-    int grid_h;
-    int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
+    int const pages = tool_category_pages(category);
+    int grid_top = TH_CONTENT_Y + TH_PAD;
+    int const dots_y = SCR_H - TH_SOFT_H - 10;
+    int const grid_bottom = dots_y - 6;
+    int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / TILE_COLS;
     int tile_h;
     char const *const soft[6] = {
         "Study", "Math", "Science", "Tools", "Settings", "About",
@@ -211,12 +209,11 @@ void app_menu_draw(void)
 
     if (category == TOOL_CAT_STUDY)
     {
-        draw_dashboard(TH_PAD, top, SCR_W - 2 * TH_PAD, 18);
-        top += 18 + TH_GAP;
+        draw_dashboard(TH_PAD, TH_CONTENT_Y + TH_GAP, SCR_W - 2 * TH_PAD, 20);
+        grid_top = TH_CONTENT_Y + TH_GAP + 20 + 6;
     }
 
-    grid_h = dots_y - top - 4;
-    tile_h = (grid_h - TH_GAP) / 2;
+    tile_h = (grid_bottom - grid_top - TH_GAP) / TILE_ROWS;
 
     for (int i = 0; i < TILES_PER_PAGE; i++)
     {
@@ -228,18 +225,16 @@ void app_menu_draw(void)
         if (!tool)
             continue;
         draw_tile(tool, TH_PAD + col * (tile_w + TH_GAP),
-                  top + row * (tile_h + TH_GAP), tile_w, tile_h, index == sel);
+                  grid_top + row * (tile_h + TH_GAP), tile_w, tile_h,
+                  index == sel);
     }
 
     /* A category with no tools still says something instead of a blank page. */
     if (size == 0)
-    {
-        w_message("Nothing here yet",
-                  "This category fills up as tools ship.");
-    }
+        w_message("Nothing here yet", "This category fills up as tools ship.");
 
-    if (tool_category_pages(category) > 1)
-        draw_dots(tool_category_pages(category), page, dots_y);
+    if (pages > 1)
+        draw_dots(pages, page, dots_y);
 
     w_softkeys(soft, category);
     scr_present();
@@ -257,6 +252,8 @@ static void set_category(tool_category_t c)
 
 app_result_t app_menu_key(bench_event_t ev)
 {
+    int const size = tool_category_size(category);
+
     for (int i = 0; i < 4; i++)
         if ((int)ev.key == category_keys[i])
         {
@@ -267,22 +264,24 @@ app_result_t app_menu_key(bench_event_t ev)
     switch (ev.key)
     {
     case BK_LEFT:
-        /* Left at the start of a page turns back to the previous page. */
-        if (sel % TILES_PER_PAGE == 0 && sel >= TILES_PER_PAGE)
-            sel -= 1;
-        else if (sel > 0)
+        /* Left at the start of a page turns back a page. */
+        if (sel > 0)
             sel--;
+        else if (size > 0)
+            sel = size - 1;
         break;
     case BK_RIGHT:
-        if (sel + 1 < tool_category_size(category))
+        if (sel + 1 < size)
             sel++;
+        else
+            sel = 0;
         break;
     case BK_UP:
         if (sel >= TILE_COLS)
             sel -= TILE_COLS;
         break;
     case BK_DOWN:
-        if (sel + TILE_COLS < tool_category_size(category))
+        if (sel + TILE_COLS < size)
             sel += TILE_COLS;
         break;
     case BK_MENU:

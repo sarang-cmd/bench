@@ -14,17 +14,17 @@
 
 static void icon_square(int x, int y, int fill, int edge)
 {
-    sh_square_icon(x + 1, y + 1, 16, fill, edge, 2);
+    sh_square_icon(x + 2, y + 2, 16, fill, edge, 2);
 }
 
 static void icon_circle(int x, int y, int fill, int edge)
 {
-    sh_circle_icon(x + 10, y + 10, 8, fill, edge, 2);
+    sh_circle_icon(x + 10, y + 10, 7, fill, edge, 2);
 }
 
 static void icon_triangle(int x, int y, int fill, int edge)
 {
-    sh_triangle_icon(x + 2, y + 2, 17, 16, fill, edge, 2);
+    sh_triangle_icon(x + 3, y + 2, 15, 15, fill, edge, 2);
 }
 
 static void icon_half_circle(int x, int y, int fill, int edge)
@@ -44,7 +44,15 @@ static void icon_ring(int x, int y, int fill, int edge)
 
 static void icon_frame(int x, int y, int fill, int edge)
 {
-    sh_square_frame_icon(x + 1, y + 1, 16, fill, edge, 2);
+    sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
+}
+
+/* Two rows of small cells: a table of values. */
+static void icon_grid(int x, int y, int fill, int edge)
+{
+    for (int r = 0; r < 2; r++)
+        for (int c = 0; c < 2; c++)
+            sh_square_icon(x + 3 + c * 8, y + 3 + r * 8, 5, fill, edge, 1);
 }
 
 /* ---- help text ----------------------------------------------------------
@@ -150,6 +158,29 @@ static char const help_about[] =
     "Mode the add-in does not run at\n"
     "all; that is the OS, not us.";
 
+
+static char const help_function[] =
+    "Function table\n"
+    "A table and a value for f(x).\n"
+    "\n"
+    "1. Pick a slot f, g, h, p, q, r.\n"
+    "2. EXE types the expression on the\n"
+    "   keyboard: x, pi, e, + - * / ^,\n"
+    "   sin cos tan ln log sqrt abs.\n"
+    "3. F1 opens the table.\n"
+    "\n"
+    "In the table: LEFT/RIGHT move the\n"
+    "start, F1 changes the step, F2 the\n"
+    "row count, EXE probes one value.\n"
+    "F4 switches degrees and radians;\n"
+    "the mode shows in the title bar.\n"
+    "\n"
+    "Slots are written to\n"
+    "Bench/state/exprs.txt when you\n"
+    "leave the tool.\n"
+    "\n"
+    "Keys: EXE edit, F1 table, F3 clear.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -167,7 +198,7 @@ static tool_t const tools[] = {
     {
         .id = "cards",
         .title = "Cards",
-        .subtitle = "Leitner drill",
+        .subtitle = "flashcards",
         .category = TOOL_CAT_STUDY,
         .accent = TH_YELLOW,
         .icon = icon_triangle,
@@ -178,13 +209,24 @@ static tool_t const tools[] = {
     {
         .id = "notes",
         .title = "Notes",
-        .subtitle = "text, Markdown",
+        .subtitle = "Markdown",
         .category = TOOL_CAT_STUDY,
         .accent = TH_TEAL,
         .icon = icon_half_circle,
         .screen = APP_SCREEN_NOTES,
         .needs_file = true,
         .help = help_notes,
+    },
+    {
+        .id = "function",
+        .title = "Function",
+        .subtitle = "x and f(x)",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_BLUE,
+        .icon = icon_grid,
+        .screen = APP_SCREEN_FUNCTION,
+        .needs_file = false,
+        .help = help_function,
     },
     {
         .id = "numtheory",
@@ -211,7 +253,7 @@ static tool_t const tools[] = {
     {
         .id = "settings",
         .title = "Settings",
-        .subtitle = "figures, wrap",
+        .subtitle = "options",
         .category = TOOL_CAT_TOOLS,
         .accent = TH_SHADE,
         .icon = icon_ring,
