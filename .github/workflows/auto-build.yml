@@ -20,6 +20,10 @@ name: Automatic build
 # exactly one automatic build, and it always matches `main`.
 
 on:
+  # TEMPORARY: one push-triggered run to prove the whole path works, then this
+  # block goes away again. The schedule is the real trigger.
+  push:
+    branches: [main]
   schedule:
     - cron: "30 3 * * *"
   workflow_dispatch:
