@@ -112,10 +112,16 @@ jobs:
           # giteapc asks before it installs a dependency, and a runner has no
           # stdin: without an answer it dies with "EOFError: EOF when reading a
           # line".  That is what killed the first four attempts of this job.
+          #
+          # The answers come from printf, not from yes: yes dies of SIGPIPE as
+          # soon as giteapc exits, and under pipefail that would report a
+          # successful install as a failure (141).
           step() {
             say "$*"
-            if ! yes | "$@" >>"$log" 2>&1; then
-              say "FAILED: $*"
+            local rc=0
+            printf 'y\n%.0s' $(seq 1 20) | "$@" >>"$log" 2>&1 || rc=$?
+            if [ "$rc" -ne 0 ]; then
+              say "FAILED: $* (exit $rc)"
               annotate
               exit 1
             fi
