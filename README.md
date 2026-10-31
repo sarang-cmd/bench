@@ -10,7 +10,7 @@ CRT. One `.g3a`, one menu, no second add-in to install.
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
-Live page: <https://bench-blond-eight.vercel.app> (source in `site/`).
+Live page: <https://bench-gdc.vercel.app> (source in `site/`).
 
 ```
 Bench-1.0.0.g3a     <- copy this to the calculator's storage root
