@@ -25,7 +25,10 @@ on:
 jobs:
   native-tests:
     name: Core tests (no gint)
-    runs-on: ubuntu-24.04
+    # Pinned on purpose: the fxSDK toolchain is built from source by GiteaPC,
+    # and that build is only tested by its author on the older LTS.  The g3a
+    # job uses the same image, so the two jobs cannot disagree about the host.
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -52,7 +55,7 @@ jobs:
 
   g3a:
     name: Build the add-in
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 90
     needs: native-tests
     steps:
@@ -84,15 +87,44 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install fxSDK, the SuperH toolchain and gint
+        shell: bash
         run: |
+          # Every install is logged, and a failure is reported as an annotation
+          # carrying the tail of the log: the raw job log lives on blob storage,
+          # which some clients (including the one that wrote this) cannot read,
+          # while annotations come back through the API.
+          set -uo pipefail
           export PATH="$HOME/.local/bin:$PATH"
-          printf 'y\n' | giteapc install Lephenixnoir/fxsdk:noudisks2
-          printf 'y\n' | giteapc install Lephenixnoir/sh-elf-binutils@dev
-          printf 'y\n' | giteapc install Lephenixnoir/sh-elf-gcc@dev
-          printf 'y\n' | giteapc install Lephenixnoir/OpenLibm Vhex-Kernel-Core/fxlibc
-          printf 'y\n' | giteapc install Lephenixnoir/gint
-          fxsdk --version || true
-          sh-elf-gcc --version | head -n 1
+          log=/tmp/toolchain.log
+          : > "$log"
+
+          say() { printf '\n=== %s ===\n' "$*" | tee -a "$log"; }
+
+          # Annotate the tail of the log, one line per annotation (GitHub keeps
+          # ten per step), with the characters that would break the syntax out.
+          annotate() {
+            local line
+            tail -n 10 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+              echo "::error title=toolchain install failed::${line:-<blank>}"
+            done
+          }
+
+          step() {
+            say "$*"
+            if ! "$@" >>"$log" 2>&1; then
+              say "FAILED: $*"
+              annotate
+              exit 1
+            fi
+          }
+
+          step giteapc install Lephenixnoir/fxsdk:noudisks2
+          step giteapc install Lephenixnoir/sh-elf-binutils@dev
+          step giteapc install Lephenixnoir/sh-elf-gcc@dev
+          step giteapc install Lephenixnoir/OpenLibm Vhex-Kernel-Core/fxlibc
+          step giteapc install Lephenixnoir/gint
+
+          { fxsdk --version || true; sh-elf-gcc --version | head -n 1; } | tee -a "$log"
 
       - name: Build Bench
         run: |
