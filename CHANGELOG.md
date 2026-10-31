@@ -51,6 +51,13 @@ next one.
   you type, marks worked-out values with a dot, and draws the flight path for a
   launch speed, angle and height. Unverified on device.
 
+- **Moles and solutions (F11)**: `src/core/chem.c` covers n = m / Mr, c = n / V,
+  pV = nRT with R in kPa dm3, dilution and the two percentages, refusing a zero
+  where a formula divides (47 native checks). `src/apps/app_moles.c` has one
+  mode per family, opens each on a worked example, and writes the substitution
+  out under the answer. Unverified on device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

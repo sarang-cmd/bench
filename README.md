@@ -2,11 +2,11 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Fourteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+**Fifteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
-statistics, SUVAT and projectiles, uncertainty and significant figures. One
+statistics, SUVAT and projectiles, moles, uncertainty and significant figures. One
 `.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
@@ -252,6 +252,22 @@ F2 draws the flight path for a launch speed, angle and height: `20 m/s` at `30`
 degrees from the ground gives `35.3 m` of range, a `5.10 m` peak and `2.04 s` in
 the air. F3 switches `g` between 9.81 and 10.
 
+### Moles and solutions
+One mode per calculation a paper asks for, each opening on a worked example so
+the shape of the answer is on screen before anything is typed.
+
+| Mode | Answers | Example |
+|---|---|---|
+| Moles | `n = m / Mr` | 4 g of NaOH, Mr 40 -> 0.1 mol, 6.02e22 particles |
+| Concentration | `c = n / V` | 0.1 mol in 0.25 dm3 -> 0.4 mol/dm3, that is 250 cm3 |
+| Gas equation | `n = pV / RT` | 100 kPa, 24 dm3, 298 K -> 0.969 mol |
+| Dilution | `c2 = c1 V1 / V2` | 20 cm3 of 0.5 into 250 cm3 -> 0.04 mol/dm3 |
+| Yield and atom economy | `% = actual / theory` | 3.5 g against 5 g -> 70% |
+
+Volumes are in dm3 because that is what `c = n / V` wants, so 25 cm3 is
+`0.025`; the screen says so under each field. `R` is 8.314, for p in kPa and V
+in dm3. A zero where a formula divides is refused, not printed as infinity.
+
 ## Keys
 
 | Key | Where | What |
@@ -271,6 +287,9 @@ the air. F3 switches `g` between 9.81 and 10.
 | F1 / F2 | Sig figs | clear the number / practice |
 | F3 / F4 | Sequences | previous / next screen |
 | F1 / F2 | Statistics | clear the list / single and pairs |
+| F3 / F4 | Moles | previous / next calculation |
+| UP / DOWN | Moles | pick a field |
+| F1 | Moles | the mode's worked example again |
 | F3 / F4 | Statistics | quartile method / the working |
 | F2 | SUVAT | the flight path |
 | F3 | SUVAT | g = 9.81 or 10 |

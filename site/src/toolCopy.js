@@ -375,6 +375,32 @@ export const toolCopy = {
     ],
   },
 
+  moles: {
+    rank: 4,
+    accent: "violet",
+    tag: "mass, gas, conc",
+    summary:
+      "Five chemistry calculations, each opening on a worked example with the substitution written out.",
+    body:
+      "Moles from a mass, concentration, the gas equation, dilution, and yield " +
+      "or atom economy. Every mode starts with numbers in place so the shape of " +
+      "the answer is visible before you type, and the panel shows the " +
+      "substitution the calculator did, not just the number.",
+    points: [
+      "4 g of NaOH, Mr 40: n = 4 / 40 = 0.1 mol, 6.02e22 particles.",
+      "0.1 mol in 0.25 dm3 is 0.4 mol/dm3; the panel restates it in cm3.",
+      "100 kPa, 24 dm3 and 298 K give 0.9686 mol from n = pV / RT.",
+      "Diluting 20 cm3 of 0.5 into 250 cm3 gives 0.04 mol/dm3.",
+    ],
+    lead: "59_moles_mass.png",
+    leadCaption: "Moles from a mass, with the substitution",
+    shots: [
+      ["59_moles_mass.png", "Moles from a mass, with the substitution"],
+      ["60_moles_gas.png", "The gas equation: n = pV / RT"],
+      ["61_moles_yield.png", "Yield against the theoretical mass"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

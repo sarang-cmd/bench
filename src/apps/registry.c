@@ -419,6 +419,30 @@ static char const help_suvat[] =
     "Keys: digits type, EXE keeps, DEL\n"
     "takes back, F1 starts again.";
 
+static char const help_moles[] =
+    "Moles and solutions\n"
+    "Five calculations, one per mode:\n"
+    "moles from a mass, concentration,\n"
+    "the gas equation, dilution, and\n"
+    "yield or atom economy.\n"
+    "\n"
+    "Each mode opens on a worked\n"
+    "example; F1 puts it back.\n"
+    "\n"
+    "The unit under each number is the\n"
+    "one the formula wants: volumes in\n"
+    "dm3, so 25 cm3 is 0.025, and\n"
+    "temperature in kelvin.\n"
+    "\n"
+    "R is 8.314, for p in kPa and V in\n"
+    "dm3. A zero where a formula divides\n"
+    "says so instead of printing an\n"
+    "infinity.\n"
+    "\n"
+    "Keys: UP/DOWN pick a field, digits\n"
+    "type, F3/F4 change mode, DEL takes\n"
+    "a digit back.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -575,6 +599,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_SUVAT,
         .needs_file = false,
         .help = help_suvat,
+    },
+    {
+        .id = "moles",
+        .title = "Moles",
+        .subtitle = "mass, gas, conc",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_VIOLET,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_MOLES,
+        .needs_file = false,
+        .help = help_moles,
     },
     {
         .id = "settings",

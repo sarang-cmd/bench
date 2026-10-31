@@ -1,0 +1,3 @@
+# tour step: 59_moles_mass
+# 4 g of NaOH, Mr 40: n = 0.1 mol, with the substitution written out.
+tool:moles
