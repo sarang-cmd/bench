@@ -103,7 +103,7 @@ const tones = {
   teal: "bg-teal text-paper",
 };
 
-export function BruteButton({ href, children, tone = "yellow", onClick, extra = "", type = "a" }) {
+export function BruteButton({ href, children, tone = "yellow", onClick, extra = "", type = "a", download = false }) {
   const className =
     "inline-flex items-center justify-center gap-2 border-3 border-ink px-5 py-3 text-base " +
     "font-black shadow-brute-sm transition-all hover:-translate-x-0.5 hover:-translate-y-0.5 " +
@@ -120,7 +120,7 @@ export function BruteButton({ href, children, tone = "yellow", onClick, extra = 
     );
   }
   return (
-    <a href={href} className={className}>
+    <a href={href} className={className} download={download || undefined}>
       {children}
     </a>
   );

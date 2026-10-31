@@ -1,7 +1,7 @@
 // Fails the build if the page points at a screenshot that does not exist.
 // The v1 static page shipped "24_numbertheory_gcd.png" while the file on disk
 // was "24_numtheory_gcd.png", so the Number theory picture never loaded.
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -37,3 +37,15 @@ if (missing.length) {
   console.error("missing screenshots:\n  " + missing.join("\n  "));
   process.exit(1);
 }
+
+// The download button points at a file on this site, so that file has to be in
+// public/. It is the release build, copied in here by hand (see README), not
+// something a visitor should have to fetch from GitHub.
+const data = readFileSync(join(root, "src/data.js"), "utf8");
+const version = data.match(/VERSION = "([^"]+)"/)?.[1];
+const addin = join(root, "public", `Bench-${version}.g3a`);
+if (!existsSync(addin)) {
+  console.error(`missing add-in for the download button: public/Bench-${version}.g3a`);
+  process.exit(1);
+}
+console.log(`download: public/Bench-${version}.g3a (${Math.round(statSync(addin).size / 1024)} KiB)`);

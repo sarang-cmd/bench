@@ -26,3 +26,6 @@ node_modules/
 site/node_modules/
 site/dist/
 site/public/images/
+
+# The release build, fetched at deploy time (scripts/fetch-addin.mjs)
+site/public/Bench-*.g3a

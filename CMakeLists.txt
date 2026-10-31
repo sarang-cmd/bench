@@ -88,6 +88,12 @@ endif()
 
 # A copy of the .g3a at the top of the build folder, for the "drag it to the
 # calculator" step in docs/toolchain.md.
+#
+# generate_g3a() writes the file next to the sources (its OUTPUT is resolved
+# against CMAKE_CURRENT_SOURCE_DIR), so the path here has to be absolute: the
+# command runs in the build directory, where a relative name does not exist and
+# copy_if_different fails the link step.
 add_custom_command(TARGET bench POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-          "Bench-${BENCH_VERSION}.g3a" "${CMAKE_BINARY_DIR}/Bench.g3a")
+          "${CMAKE_CURRENT_SOURCE_DIR}/Bench-${BENCH_VERSION}.g3a"
+          "${CMAKE_BINARY_DIR}/Bench.g3a")

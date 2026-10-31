@@ -4,7 +4,7 @@ import { BruteButton, Eyebrow, Heading, Blurb, Section } from "../ui.jsx";
 const steps = [
   [
     "Download the add-in",
-    "One file, Bench-" + VERSION + ".g3a. It is built from the tagged source by CI, not by hand.",
+    "One file, Bench-" + VERSION + ".g3a, right here on this page. No account, no detour.",
   ],
   [
     "Copy it into the storage root",
@@ -29,7 +29,7 @@ export default function Install() {
     <Section id="install" className="border-t-3 border-ink bg-ink py-14 text-paper sm:py-20">
       <Eyebrow accent="yellow" tone="light">Install</Eyebrow>
       <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-        <div>
+        <div className="min-w-0">
           <Heading className="text-paper">Three steps, no companion app.</Heading>
           <Blurb className="mt-4 text-paper/75">
             Bench is a single add-in for OS 3.81. Exam Mode disables add-ins
@@ -52,7 +52,7 @@ export default function Install() {
           </ol>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <BruteButton href={DOWNLOAD} tone="yellow" extra="w-full sm:w-auto">
+            <BruteButton href={DOWNLOAD} tone="yellow" extra="w-full sm:w-auto" download>
               Download Bench-{VERSION}.g3a
             </BruteButton>
             <BruteButton href={REPO} tone="ink" extra="border-paper bg-paper/10 text-paper hover:bg-paper/20 w-full sm:w-auto">
@@ -61,10 +61,10 @@ export default function Install() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div className="border-3 border-paper bg-paper/5 p-5">
             <h3 className="font-mono text-xs uppercase tracking-[0.18em] text-paper/60">On the calculator</h3>
-            <pre className="mt-3 overflow-x-auto font-mono text-xs leading-relaxed text-paper/85 sm:text-sm">
+            <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-paper/85 sm:whitespace-pre sm:text-sm">
               {tree.map(([path, note]) => (
                 <div key={path}>
                   <span className="text-yellow">{path}</span>

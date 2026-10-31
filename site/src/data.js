@@ -6,7 +6,12 @@ export const VERSION = "1.0.0";
 
 export const REPO = "https://github.com/sarang-cmd/bench";
 
-export const DOWNLOAD = `${REPO}/releases/download/v${VERSION}/Bench-${VERSION}.g3a`;
+// Served from this site, not from GitHub: the file sits in site/public and the
+// build refuses to pass without it, so the button can only point at a file
+// that is really there. The release carries the same bytes for anyone who
+// wants them.
+export const ADDIN_FILE = `Bench-${VERSION}.g3a`;
+export const DOWNLOAD = `./${ADDIN_FILE}`;
 
 export const tools = [
   {
@@ -26,6 +31,8 @@ export const tools = [
       "Run: F1 logs a mark, F2 pauses, F3 finishes. The gap line is the point.",
       "Done: total time and the final gap, nothing to write down.",
     ],
+    lead: "06_pacer_done.png",
+    leadCaption: "Finished: total time and final gap",
     shots: [
       ["02_pacer_setup.png", "Setup: minutes, marks, checkpoint size"],
       ["03_pacer_plan.png", "The plan: min/mark and every checkpoint time"],
@@ -51,6 +58,8 @@ export const tools = [
       "Rounding is half-up on decimal digits, never on the binary float: 0.15 goes to 0.2.",
       "One figure for the uncertainty, or two when its first digit is 1.",
     ],
+    lead: "10_uncert_result.png",
+    leadCaption: "15.0 \u00b1 0.3, which is 2.0 %",
     shots: [
       ["07_uncert_a.png", "First value and its error"],
       ["08_uncert_op.png", "Choosing the operation and the second operand"],
@@ -75,6 +84,8 @@ export const tools = [
       "Progress is keyed by a hash of the question, so editing an answer keeps its box.",
       "Saved once, when the session ends, never inside the loop.",
     ],
+    lead: "14_cards_answer.png",
+    leadCaption: "The answer, and F1 / F2 to grade it",
     shots: [
       ["11_cards_list.png", "Decks found in Bench/cards"],
       ["12_cards_deck.png", "A deck: cards per box and when it is due"],
@@ -101,6 +112,8 @@ export const tools = [
       "Characters the calculator font lacks are drawn as ? and counted in the footer.",
       "tools/md2bench.py maps typographic symbols down to ASCII before you copy.",
     ],
+    lead: "18_notes_markdown.png",
+    leadCaption: "A Markdown note: headings, bold, a list",
     shots: [
       ["17_notes_list.png", "The notes folder"],
       ["18_notes_markdown.png", "A Markdown note: headings, bold, a list"],
@@ -127,6 +140,8 @@ export const tools = [
       "Factor by trial division then Pollard rho, with a progress bar and EXIT to cancel.",
       "Euler's totient and the Chinese remainder theorem, one pair or a whole list.",
     ],
+    lead: "24_numtheory_gcd.png",
+    leadCaption: "gcd(84, 36) = 12, Euclid's steps underneath",
     shots: [
       ["22_numtheory_list.png", "The nine functions"],
       ["23_numtheory_form.png", "Arguments, with live validation"],
