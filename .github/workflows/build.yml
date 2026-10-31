@@ -35,6 +35,13 @@ concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
 
+# Creating the release needs a token that can write; without this the release
+# step fails with "Resource not accessible by integration" even though the build
+# itself succeeded.
+permissions:
+  contents: write
+  actions: read
+
 env:
   # The toolchain install tree. One key for both jobs; bump it to force a
   # rebuild after a toolchain or gint upgrade.
@@ -220,6 +227,27 @@ jobs:
             spike/Bench-spike-*.g3a
           if-no-files-found: error
 
+      # The release notes are the CHANGELOG section for this version, written by
+      # hand and committed: generate_release_notes calls a second API that the
+      # token in this repository cannot reach.
+      - name: Collect the release notes
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          version=$(cat version.txt)
+          python3 - "$version" <<'EOF' > /tmp/release-notes.md
+          import re, sys
+          version = sys.argv[1]
+          text = open("CHANGELOG.md", encoding="utf-8").read()
+          # The section runs from "## <version>" to the next "## " heading.
+          match = re.search(rf"^## {re.escape(version)}.*?(?=^## |\Z)", text, re.S | re.M)
+          if match:
+              print(match.group(0).strip())
+          else:
+              print(f"Bench {version}")
+          EOF
+          cat /tmp/release-notes.md
+
       - name: Put the .g3a on the release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
@@ -227,20 +255,27 @@ jobs:
           files: |
             Bench-*.g3a
             spike/Bench-spike-*.g3a
-          generate_release_notes: true
+          body_path: /tmp/release-notes.md
 
       # Artifact and release downloads go through blob storage, which some
       # networks cannot reach. A branch is plain git, so the same bytes are also
-      # force-pushed to `builds`: `git fetch origin builds` is enough. Runs last,
-      # because it rewrites the working tree.
+      # force-pushed to `builds`: `git fetch origin builds` is enough. This runs
+      # after the release and with always(), so a release hiccup cannot skip it;
+      # it is last because it rewrites the working tree.
       - name: Publish the .g3a to the builds branch
-        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main'
+        if: always() && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
         shell: bash
         run: |
+          shopt -s nullglob
+          files=(Bench-*.g3a)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "no .g3a was built; nothing to publish"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan builds-tmp
           git rm -rf --cached . >/dev/null
-          git add -f Bench-*.g3a
+          git add -f "${files[@]}"
           git commit -m "Bench $(cat version.txt) from ${GITHUB_SHA}"
           git push --force origin HEAD:builds
