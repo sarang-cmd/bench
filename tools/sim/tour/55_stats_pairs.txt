@@ -1,0 +1,4 @@
+# tour step: 55_stats_pairs
+# F2 reads the same numbers as (x, y) pairs and fits a line.
+tool:stats
+f2

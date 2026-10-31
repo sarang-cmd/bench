@@ -375,6 +375,123 @@ static char const help_roots[] =
     "Keys: EXE edits f or solves, F1 clears,\n"
     "F2 method, arrows move and scroll.";
 
+
+static char const help_stats[] =
+    "Statistics\n"
+    "Type a value, press EXE to add it,\n"
+    "and the summary is worked out as\n"
+    "you go. Up to 200 values.\n"
+    "\n"
+    "F2 switches between one list and\n"
+    "paired data (x, then y). Pairs give\n"
+    "the line y = a + bx, r and r squared.\n"
+    "\n"
+    "F3 picks the quartile method:\n"
+    "  median  halves split through the\n"
+    "          median\n"
+    "  sheet   (n-1)p + 1, interpolated\n"
+    "\n"
+    "F4 shows the working for the standard\n"
+    "deviation. F1 clears the list.\n"
+    "\n"
+    "Keys: digits type, EXE adds, DEL takes\n"
+    "back a digit or a value.";
+
+static char const help_suvat[] =
+    "SUVAT and projectiles\n"
+    "Type any three of s, u, v, a and t.\n"
+    "The other two are worked out, with\n"
+    "the equation that gave each one.\n"
+    "\n"
+    "Use the arrows to pick a quantity,\n"
+    "type the number, press EXE. DEL on\n"
+    "an empty field un-knows it.\n"
+    "\n"
+    "F2 draws the flight path: range,\n"
+    "greatest height and time in the air\n"
+    "for a launch speed, angle and height.\n"
+    "\n"
+    "F3 switches g between 9.81 and 10.\n"
+    "Where a quadratic gives two times,\n"
+    "the first is shown and the second\n"
+    "is mentioned under it.\n"
+    "\n"
+    "Keys: digits type, EXE keeps, DEL\n"
+    "takes back, F1 starts again.";
+
+static char const help_moles[] =
+    "Moles and solutions\n"
+    "Five calculations, one per mode:\n"
+    "moles from a mass, concentration,\n"
+    "the gas equation, dilution, and\n"
+    "yield or atom economy.\n"
+    "\n"
+    "Each mode opens on a worked\n"
+    "example; F1 puts it back.\n"
+    "\n"
+    "The unit under each number is the\n"
+    "one the formula wants: volumes in\n"
+    "dm3, so 25 cm3 is 0.025, and\n"
+    "temperature in kelvin.\n"
+    "\n"
+    "R is 8.314, for p in kPa and V in\n"
+    "dm3. A zero where a formula divides\n"
+    "says so instead of printing an\n"
+    "infinity.\n"
+    "\n"
+    "Keys: UP/DOWN pick a field, digits\n"
+    "type, F3/F4 change mode, DEL takes\n"
+    "a digit back.";
+
+static char const help_base[] =
+    "Bases and bits\n"
+    "One number in base 2 to 36, and\n"
+    "the same number as two's complement\n"
+    "at 8, 16 and 32 bits.\n"
+    "\n"
+    "F1 switches between converting\n"
+    "and the bitwise operators.\n"
+    "\n"
+    "F3 changes the entry base, or the\n"
+    "operator: AND, OR, XOR, shift left\n"
+    "and shift right. A shift uses the\n"
+    "count in b and refuses 63 or more.\n"
+    "\n"
+    "F2 opens the letter keyboard for\n"
+    "digits above 9, since the keypad\n"
+    "has no A to F keys this add-in may\n"
+    "count on. Digits can still be\n"
+    "typed straight in.\n"
+    "\n"
+    "Keys: digits type, DEL takes one\n"
+    "back, F4 swaps a and b.";
+
+static char const help_graph[] =
+    "Lab graph\n"
+    "Type a measured pair and its error,\n"
+    "press EXE, and repeat. F2 draws\n"
+    "the graph with a bar up and down\n"
+    "through every point and the line of\n"
+    "best fit.\n"
+    "\n"
+    "The gradient comes with its standard\n"
+    "error, from the residuals, and r\n"
+    "squared says how well the line\n"
+    "fits. Fewer than three points leave\n"
+    "nothing to measure the error against,\n"
+    "so it is left off.\n"
+    "\n"
+    "The axes hold the whole bar, not\n"
+    "just the centre, so a measurement\n"
+    "never runs off the top.\n"
+    "\n"
+    "Up to twelve points. F1 clears,\n"
+    "F3 puts the example back, DEL on an\n"
+    "empty field drops the last point.\n"
+    "\n"
+    "Keys: digits type, LEFT/RIGHT pick\n"
+    "a field, EXE adds the point.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -478,6 +595,17 @@ static tool_t const tools[] = {
         .help = help_triangle,
     },
     {
+        .id = "base",
+        .title = "Base and bits",
+        .subtitle = "hex, shifts",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_BASE,
+        .needs_file = false,
+        .help = help_base,
+    },
+    {
         .id = "numtheory",
         .title = "Number theory",
         .subtitle = "gcd to CRT",
@@ -487,6 +615,28 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NUMTHEORY,
         .needs_file = false,
         .help = help_numtheory,
+    },
+    {
+        .id = "stats",
+        .title = "Statistics",
+        .subtitle = "mean to regression",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_STATS,
+        .needs_file = false,
+        .help = help_stats,
+    },
+    {
+        .id = "graph",
+        .title = "Lab graph",
+        .subtitle = "error bars",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_BLUE,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_GRAPH,
+        .needs_file = false,
+        .help = help_graph,
     },
     {
         .id = "uncert",
@@ -509,6 +659,28 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_SIGFIG,
         .needs_file = false,
         .help = help_sigfig,
+    },
+    {
+        .id = "suvat",
+        .title = "SUVAT",
+        .subtitle = "motion, projectiles",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_YELLOW,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_SUVAT,
+        .needs_file = false,
+        .help = help_suvat,
+    },
+    {
+        .id = "moles",
+        .title = "Moles",
+        .subtitle = "mass, gas, conc",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_VIOLET,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_MOLES,
+        .needs_file = false,
+        .help = help_moles,
     },
     {
         .id = "settings",

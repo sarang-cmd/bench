@@ -1,0 +1,3 @@
+# tour step: 65_graph_points
+# Five spring readings with a tenth of a newton on each: gradient 0.49.
+tool:graph

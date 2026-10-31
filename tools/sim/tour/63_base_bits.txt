@@ -1,0 +1,4 @@
+# tour step: 63_base_bits
+# The operator tab: 12 AND 10 is 8, which is 1000 in binary.
+tool:base
+f1

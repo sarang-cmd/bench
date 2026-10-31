@@ -2,10 +2,13 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Five study tools in one add-in for the Casio fx-CG 50.** Pacer times a
-practice paper, Uncertainty does error arithmetic, Cards drills flashcards with
-a Leitner schedule, Notes reads text and Markdown, Number theory covers gcd to
-CRT. One `.g3a`, one menu, no second add-in to install.
+**Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
+Markdown, and the maths and science screens cover function tables, triangles,
+polynomials, root finding, sequences, complex numbers, number theory,
+statistics, SUVAT and projectiles, moles, bases and bits, uncertainty and
+significant figures. One
+`.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
@@ -41,6 +44,8 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
 | ![Complex numbers](docs/images/44_cplx_mul.png) | ![Complex power](docs/images/46_cplx_pow.png) |
 | ![Newton's method](docs/images/49_roots_newton.png) | ![Bisection](docs/images/50_roots_bisect.png) |
+| ![Statistics](docs/images/53_stats_list.png) | ![The working](docs/images/54_stats_work.png) |
+| ![SUVAT](docs/images/56_suvat_three.png) | ![Projectile](docs/images/58_suvat_path.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -215,6 +220,88 @@ on.
 Rounding is half-up on the decimal digits, never on the binary float, so
 `1.2345` to 3 figures is `1.23` and `1.2355` is `1.24`.
 
+### Statistics
+Type the values; the summary, the box plot and the fences update as you go.
+Both quartile conventions are one key apart, because the IB and the spreadsheet
+disagree and the student should see which one they are being marked against.
+
+| Shown | For `2 4 4 4 5 5 7 9` |
+|---|---|
+| n, mean, range | 8, 5, 7 |
+| median, mode | 4.5, 4 (three times) |
+| sd | 2.000 population, 2.138 sample |
+| Q1, Q3, IQR | 4 / 6 (median method), 5.5 (linear), IQR 2 |
+| fences | 1 .. 9, outliers counted |
+| box plot | whiskers to the fences, box Q1 to Q3, median line |
+
+F2 turns the list into paired data, taken in x, y order: five points give
+`y = 2.2 + 0.6x`, `r = 0.775` and `r^2 = 0.600`. F4 writes the standard
+deviation out step by step; F3 swaps the quartile method.
+
+### SUVAT and projectiles
+Any three of `s`, `u`, `v`, `a`, `t` fix the other two. The screen fills the
+grid as you type and lists the equation behind each value, so the working is on
+the screen and not in your head.
+
+| Given | Worked out |
+|---|---|
+| `s = 45`, `u = 0`, `a = 10` | `v = 30 m/s`, `t = 3 s` |
+| `s = 75`, `u = 20`, `a = -2` | `v = 10 m/s`, `t = 5 s` (the other root is 15 s) |
+| `u = 20`, `v = 10`, `t = 5` | `a = -2 m/s^2`, `s = 75 m` |
+
+F2 draws the flight path for a launch speed, angle and height: `20 m/s` at `30`
+degrees from the ground gives `35.3 m` of range, a `5.10 m` peak and `2.04 s` in
+the air. F3 switches `g` between 9.81 and 10.
+
+### Moles and solutions
+One mode per calculation a paper asks for, each opening on a worked example so
+the shape of the answer is on screen before anything is typed.
+
+| Mode | Answers | Example |
+|---|---|---|
+| Moles | `n = m / Mr` | 4 g of NaOH, Mr 40 -> 0.1 mol, 6.02e22 particles |
+| Concentration | `c = n / V` | 0.1 mol in 0.25 dm3 -> 0.4 mol/dm3, that is 250 cm3 |
+| Gas equation | `n = pV / RT` | 100 kPa, 24 dm3, 298 K -> 0.969 mol |
+| Dilution | `c2 = c1 V1 / V2` | 20 cm3 of 0.5 into 250 cm3 -> 0.04 mol/dm3 |
+| Yield and atom economy | `% = actual / theory` | 3.5 g against 5 g -> 70% |
+
+Volumes are in dm3 because that is what `c = n / V` wants, so 25 cm3 is
+`0.025`; the screen says so under each field. `R` is 8.314, for p in kPa and V
+in dm3. A zero where a formula divides is refused, not printed as infinity.
+
+### Base and bits
+One number in every base, and the same number as a two's complement pattern at
+the three widths a paper uses.
+
+| Base 10 | 255 | -1 |
+|---|---|---|
+| hex | FF | -1 |
+| octal | 377 | -1 |
+| binary | 11111111 | -1 |
+| 8-bit | 1111 1111 = FF | 1111 1111 = FF |
+| 16-bit | 0000 0000 1111 1111 = 00FF | 1111 1111 1111 1111 = FFFF |
+| 32-bit | ... 0000 1111 1111 = 000000FF | ... 1111 1111 = FFFFFFFF |
+
+F1 switches to the operators: `12 AND 10 = 8`, `12 XOR 10 = 6`, and shifts with
+the count in `b`, shown in binary, decimal and hex with the bits set. A shift of
+63 or more is refused rather than undefined. F3 changes the entry base (2, 8,
+10, 16, 36) or the operator; F2 opens the letter keyboard, because the keypad
+has no A-F keys this add-in may count on.
+
+### Lab graph
+Type a measured pair and its uncertainty, then look at the picture rather than
+the numbers.
+
+| Points (x, y, +-err) | Fit |
+|---|---|
+| (1, 0.52, 0.1) (2, 0.98, 0.1) (3, 1.51, 0.1) (4, 2.03, 0.1) (5, 2.47, 0.1) | gradient 0.495 +- 0.009, intercept 0.017, r^2 0.999 |
+
+The gradient carries its standard error, worked out from the residuals:
+`s = sqrt(sum of residuals^2 / (n - 2))`, `dm = s / sqrt(Sxx)`. Fewer than
+three points leave nothing to measure the error against, so it is left off
+rather than faked. The axes hold the whole error bar, not just the centre, so a
+measurement can never run off the top of the graph.
+
 ## Keys
 
 | Key | Where | What |
@@ -233,6 +320,21 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
 | F1 / F2 | Sig figs | clear the number / practice |
 | F3 / F4 | Sequences | previous / next screen |
+| F1 / F2 | Statistics | clear the list / single and pairs |
+| F3 / F4 | Moles | previous / next calculation |
+| UP / DOWN | Moles | pick a field |
+| F1 | Moles | the mode's worked example again |
+| F1 | Base and bits | convert / operators |
+| F2 | Base and bits | the letter keyboard for A-F |
+| F3 | Base and bits | entry base / the operator |
+| F4 | Base and bits | swap a and b |
+| EXE | Lab graph | add the point |
+| F2 | Lab graph | the graph |
+| F3 | Lab graph | the example data |
+| F3 / F4 | Statistics | quartile method / the working |
+| F2 | SUVAT | the flight path |
+| F3 | SUVAT | g = 9.81 or 10 |
+| LEFT / RIGHT | SUVAT | pick a quantity |
 | F3 / F4 | Triangle | degrees / radians (re-solves) |
 | F2 | Triangle | the other triangle, when SSA has two |
 | F3 / F4 | Polynomials | previous / next screen |
@@ -369,6 +471,19 @@ answer (file API behaviour, float printing, font coverage, redraw time, heap).
 `RELEASING.md` has the steps. Short version: bump `version.txt`, tag `vX.Y.Z`,
 push the tag; the workflow runs the tests, builds `Bench-X.Y.Z.g3a` with the
 real fxSDK and attaches it to the release.
+
+There is a second, rolling release, tagged `auto`. Once a day at 03:30 UTC
+`auto-build.yml` asks whether the last automatic build is at least three days
+old; if it is, it builds the tip of `main` and **replaces** that release - same
+tag, same file name - so the releases page never grows a pile of nightly
+builds. It also keeps the 1.5 GB toolchain cache alive (GitHub evicts a cache
+after seven days, and rebuilding it takes about fifty minutes) and proves that
+`main` still compiles. To run one by hand: Actions -> Automatic build -> Run
+workflow.
+
+The `bench-spike` artifact in CI is the M1 diagnostic add-in, not Bench: it
+answers the hardware questions in `docs/spike.md` and has never been a release
+asset.
 
 ## Credits
 

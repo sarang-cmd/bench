@@ -37,6 +37,44 @@ next one.
   zero slope and a parse error each get their own sentence and column. 40
   native checks. Unverified on device.
 
+- **Statistics with working (F7)**: `src/core/stats.c` gives n, sum, mean,
+  median, mode, range, both quartile methods, the outlier fences and the
+  population and sample standard deviations (53 native checks). Paired data
+  gets the least squares line, r and r squared. `src/apps/app_stats.c` adds
+  values as you type them, shows the summary and a box plot, has a screen for
+  the working and a screen for the regression. Unverified on device.
+
+- **SUVAT and projectiles (F10)**: `src/core/suvat.c` solves any three of s, u,
+  v, a and t, one table entry per triple, and reports the equation each answer
+  came from; when a quadratic gives two sensible times it keeps the first and
+  names the second (73 native checks). `src/apps/app_suvat.c` fills the grid as
+  you type, marks worked-out values with a dot, and draws the flight path for a
+  launch speed, angle and height. Unverified on device.
+
+- **Moles and solutions (F11)**: `src/core/chem.c` covers n = m / Mr, c = n / V,
+  pV = nRT with R in kPa dm3, dilution and the two percentages, refusing a zero
+  where a formula divides (47 native checks). `src/apps/app_moles.c` has one
+  mode per family, opens each on a worked example, and writes the substitution
+  out under the answer. Unverified on device.
+
+
+- **Base and bits (F12)**: `src/core/base.c` parses and prints any base from 2
+  to 36, writes two's complement at 8, 16 and 32 bits (hex padded to the width,
+  binary grouped in fours), and does AND, OR, XOR and logical shifts, refusing a
+  shift of 63 or more (78 native checks). `src/apps/app_base.c` shows one value
+  in five bases with all three widths, and a second tab for the operators; F2
+  opens the letter keyboard because the keypad has no A-F keys. Unverified on
+  device.
+
+
+- **Lab graph (F8)**: `src/core/graph.c` fits a line to measured points and
+  quotes the standard error of the gradient and the intercept from the
+  residuals, plus a round axis range for the plot (42 native checks).
+  `src/apps/app_graph.c` takes x, y and an error per point, lists them with the
+  fit, and draws the graph with a bar through each point and the line of best
+  fit. Unverified on device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

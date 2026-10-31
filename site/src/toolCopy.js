@@ -322,6 +322,137 @@ export const toolCopy = {
       ["36_sigfig_practice.png", "Practice: a question, marked"],
     ],
   },
+  suvat: {
+    rank: 3,
+    accent: "yellow",
+    tag: "motion, projectiles",
+    summary:
+      "Give any three of s, u, v, a and t, and the other two appear with the equation that produced them.",
+    body:
+      "A constant-acceleration solver that shows its working rather than just " +
+      "the answer: every derived value is marked with a dot, and the equations " +
+      "are listed under the grid. The projectile screen draws the path for a " +
+      "launch speed, angle and height, with the range, the peak and the time in " +
+      "the air.",
+    points: [
+      "s = 45, u = 0, a = 10: v = 30 m/s and t = 3 s, from v = u + at.",
+      "s = 75, u = 20, a = -2: v = 10 m/s, and t = 5 s rather than 15 s.",
+      "Where a quadratic gives two times, the second is named under the answer.",
+      "20 m/s at 30 degrees from the ground: 35.3 m in 2.04 s.",
+    ],
+    lead: "58_suvat_path.png",
+    leadCaption: "The flight path for 20 m/s at 30 degrees",
+    shots: [
+      ["56_suvat_three.png", "Three values in, two out, with the equations"],
+      ["57_suvat_typed.png", "Typed by hand, with the two-time case flagged"],
+      ["58_suvat_path.png", "The flight path for 20 m/s at 30 degrees"],
+    ],
+  },
+
+  stats: {
+    rank: 8,
+    accent: "teal",
+    tag: "mean to regression",
+    summary:
+      "Type the numbers, read n, mean, median, mode, both quartile methods, the outlier fences and a box plot.",
+    body:
+      "The summary updates as you type, which makes a typo visible before you " +
+      "trust the answer. Paired data gives the least squares line, r and r " +
+      "squared; F4 writes the standard deviation out step by step, the way it " +
+      "is marked.",
+    points: [
+      "2 4 4 4 5 5 7 9: mean 5, median 4.5, sd 2.000 pop / 2.138 sample.",
+      "Quartiles by halves (4 and 6) or by the spreadsheet rule (5.5), one key apart.",
+      "Fences at 1 and 9: nothing outside them here, and the count says so.",
+      "Pairs (1,2) (2,4) (3,5) (4,4) (5,5): y = 2.2 + 0.6x, r 0.775.",
+    ],
+    lead: "53_stats_list.png",
+    leadCaption: "Eight values, summarised, with a box plot",
+    shots: [
+      ["53_stats_list.png", "Eight values, summarised, with a box plot"],
+      ["55_stats_pairs.png", "Pairs: the least squares line, r and r squared"],
+      ["54_stats_work.png", "The working behind the standard deviation"],
+    ],
+  },
+
+  moles: {
+    rank: 4,
+    accent: "violet",
+    tag: "mass, gas, conc",
+    summary:
+      "Five chemistry calculations, each opening on a worked example with the substitution written out.",
+    body:
+      "Moles from a mass, concentration, the gas equation, dilution, and yield " +
+      "or atom economy. Every mode starts with numbers in place so the shape of " +
+      "the answer is visible before you type, and the panel shows the " +
+      "substitution the calculator did, not just the number.",
+    points: [
+      "4 g of NaOH, Mr 40: n = 4 / 40 = 0.1 mol, 6.02e22 particles.",
+      "0.1 mol in 0.25 dm3 is 0.4 mol/dm3; the panel restates it in cm3.",
+      "100 kPa, 24 dm3 and 298 K give 0.9686 mol from n = pV / RT.",
+      "Diluting 20 cm3 of 0.5 into 250 cm3 gives 0.04 mol/dm3.",
+    ],
+    lead: "59_moles_mass.png",
+    leadCaption: "Moles from a mass, with the substitution",
+    shots: [
+      ["59_moles_mass.png", "Moles from a mass, with the substitution"],
+      ["60_moles_gas.png", "The gas equation: n = pV / RT"],
+      ["61_moles_yield.png", "Yield against the theoretical mass"],
+    ],
+  },
+
+  base: {
+    rank: 9,
+    accent: "red",
+    tag: "hex, shifts",
+    summary:
+      "One number in five bases and as two's complement at 8, 16 and 32 bits, plus the bitwise operators.",
+    body:
+      "The converting tab shows a value in decimal, hex, octal, binary and base " +
+      "36 at once, then the same value as a two's complement pattern at the " +
+      "three widths a paper uses. The operator tab puts two numbers side by side " +
+      "in binary and shows the result in decimal and hex, with the bits set.",
+    points: [
+      "255 is FF, 377, 11111111 and 73 in base 36.",
+      "-1 at 8 bits is 1111 1111, and at 32 bits eight F's.",
+      "12 AND 10 is 8; 12 XOR 10 is 6; 10 << 2 is 40.",
+      "A shift of 63 or more is refused rather than undefined.",
+    ],
+    lead: "62_base_convert.png",
+    leadCaption: "255 in five bases and at three widths",
+    shots: [
+      ["62_base_convert.png", "255 in five bases and at three widths"],
+      ["64_base_negative.png", "Minus one as two's complement"],
+      ["63_base_bits.png", "The operator tab: 12 AND 10"],
+    ],
+  },
+
+  graph: {
+    rank: 5,
+    accent: "blue",
+    tag: "error bars",
+    summary:
+      "Plot measured points with their uncertainties and read the gradient, its standard error and r squared.",
+    body:
+      "A lab graph is a scatter with bars, a line of best fit and the two " +
+      "numbers for the conclusion. Type x, y and the error for each point, then " +
+      "F2 draws the whole thing: the axes hold the full bar, so a measurement " +
+      "can never run off the top.",
+    points: [
+      "The gradient comes with its standard error, from the residuals, not a guess.",
+      "Fewer than three points leave nothing to check the fit against, so no error is quoted.",
+      "Rounded axes: the range is a whole number of 1, 2, 2.5 or 5 steps.",
+      "Up to twelve points, and the fit updates as each one is added.",
+    ],
+    lead: "66_graph_plot.png",
+    leadCaption: "Five spring readings with bars and the line of best fit",
+    shots: [
+      ["65_graph_points.png", "The points, with the fit underneath them"],
+      ["66_graph_plot.png", "Five spring readings with bars and the line of best fit"],
+      ["67_graph_typed.png", "Typing a point by hand"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

@@ -1,0 +1,14 @@
+# tour step: 67_graph_typed
+# Clear the example and type one point by hand: x 6, y 3.1, err 0.2.
+tool:graph
+f1
+6
+right
+3
+dot
+1
+right
+0
+dot
+2
+exe

@@ -81,6 +81,15 @@
     "help": "Triangle\nThree sides and three angles. Fill\nin what you know and leave the rest\nblank.\n\nGive any three values, at least one\na side: SSS, SAS, ASA and AAS all\nsolve, and the fields fill in.\n\nSSA - two sides and an angle not\nbetween them - can have two answers.\nThe title bar then says so and F2\nswaps between the two triangles.\n\nArea and perimeter are under the\nfields.  F3 degrees, F4 radians.\n\nKeys: arrows move, digits type,\nEXE solves, F1 clears."
   },
   {
+    "id": "base",
+    "title": "Base and bits",
+    "subtitle": "hex, shifts",
+    "category": "Math",
+    "screen": 18,
+    "needs_file": false,
+    "help": "Bases and bits\nOne number in base 2 to 36, and\nthe same number as two's complement\nat 8, 16 and 32 bits.\n\nF1 switches between converting\nand the bitwise operators.\n\nF3 changes the entry base, or the\noperator: AND, OR, XOR, shift left\nand shift right. A shift uses the\ncount in b and refuses 63 or more.\n\nF2 opens the letter keyboard for\ndigits above 9, since the keypad\nhas no A to F keys this add-in may\ncount on. Digits can still be\ntyped straight in.\n\nKeys: digits type, DEL takes one\nback, F4 swaps a and b."
+  },
+  {
     "id": "numtheory",
     "title": "Number theory",
     "subtitle": "gcd to CRT",
@@ -88,6 +97,24 @@
     "screen": 5,
     "needs_file": false,
     "help": "Number theory\nNine functions, each with working.\n\ngcd, lcm, prime test, factorise,\nmodular inverse, CRT, divisors,\ntotient and base conversion.\n\nFactorisation shows a progress bar;\nEXIT cancels it.\n\nKeys: UP/DOWN choose, EXE open,\nEXIT back."
+  },
+  {
+    "id": "stats",
+    "title": "Statistics",
+    "subtitle": "mean to regression",
+    "category": "Math",
+    "screen": 15,
+    "needs_file": false,
+    "help": "Statistics\nType a value, press EXE to add it,\nand the summary is worked out as\nyou go. Up to 200 values.\n\nF2 switches between one list and\npaired data (x, then y). Pairs give\nthe line y = a + bx, r and r squared.\n\nF3 picks the quartile method:\n  median  halves split through the\n          median\n  sheet   (n-1)p + 1, interpolated\n\nF4 shows the working for the standard\ndeviation. F1 clears the list.\n\nKeys: digits type, EXE adds, DEL takes\nback a digit or a value."
+  },
+  {
+    "id": "graph",
+    "title": "Lab graph",
+    "subtitle": "error bars",
+    "category": "Science",
+    "screen": 19,
+    "needs_file": false,
+    "help": "Lab graph\nType a measured pair and its error,\npress EXE, and repeat. F2 draws\nthe graph with a bar up and down\nthrough every point and the line of\nbest fit.\n\nThe gradient comes with its standard\nerror, from the residuals, and r\nsquared says how well the line\nfits. Fewer than three points leave\nnothing to measure the error against,\nso it is left off.\n\nThe axes hold the whole bar, not\njust the centre, so a measurement\nnever runs off the top.\n\nUp to twelve points. F1 clears,\nF3 puts the example back, DEL on an\nempty field drops the last point.\n\nKeys: digits type, LEFT/RIGHT pick\na field, EXE adds the point."
   },
   {
     "id": "uncert",
@@ -103,9 +130,27 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 15,
+    "screen": 20,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
+  },
+  {
+    "id": "suvat",
+    "title": "SUVAT",
+    "subtitle": "motion, projectiles",
+    "category": "Science",
+    "screen": 16,
+    "needs_file": false,
+    "help": "SUVAT and projectiles\nType any three of s, u, v, a and t.\nThe other two are worked out, with\nthe equation that gave each one.\n\nUse the arrows to pick a quantity,\ntype the number, press EXE. DEL on\nan empty field un-knows it.\n\nF2 draws the flight path: range,\ngreatest height and time in the air\nfor a launch speed, angle and height.\n\nF3 switches g between 9.81 and 10.\nWhere a quadratic gives two times,\nthe first is shown and the second\nis mentioned under it.\n\nKeys: digits type, EXE keeps, DEL\ntakes back, F1 starts again."
+  },
+  {
+    "id": "moles",
+    "title": "Moles",
+    "subtitle": "mass, gas, conc",
+    "category": "Science",
+    "screen": 17,
+    "needs_file": false,
+    "help": "Moles and solutions\nFive calculations, one per mode:\nmoles from a mass, concentration,\nthe gas equation, dilution, and\nyield or atom economy.\n\nEach mode opens on a worked\nexample; F1 puts it back.\n\nThe unit under each number is the\none the formula wants: volumes in\ndm3, so 25 cm3 is 0.025, and\ntemperature in kelvin.\n\nR is 8.314, for p in kPa and V in\ndm3. A zero where a formula divides\nsays so instead of printing an\ninfinity.\n\nKeys: UP/DOWN pick a field, digits\ntype, F3/F4 change mode, DEL takes\na digit back."
   },
   {
     "id": "settings",

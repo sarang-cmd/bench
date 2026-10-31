@@ -1,0 +1,9 @@
+# tour step: 64_base_negative
+# Clear the 255 that the screen opens on, then type -1: at 8 bits it is
+# 1111 1111 and at 32 bits it is eight F's.
+tool:base
+del
+del
+del
+minus
+1
