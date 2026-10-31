@@ -375,6 +375,28 @@ static char const help_roots[] =
     "Keys: EXE edits f or solves, F1 clears,\n"
     "F2 method, arrows move and scroll.";
 
+
+static char const help_stats[] =
+    "Statistics\n"
+    "Type a value, press EXE to add it,\n"
+    "and the summary is worked out as\n"
+    "you go. Up to 200 values.\n"
+    "\n"
+    "F2 switches between one list and\n"
+    "paired data (x, then y). Pairs give\n"
+    "the line y = a + bx, r and r squared.\n"
+    "\n"
+    "F3 picks the quartile method:\n"
+    "  median  halves split through the\n"
+    "          median\n"
+    "  sheet   (n-1)p + 1, interpolated\n"
+    "\n"
+    "F4 shows the working for the standard\n"
+    "deviation. F1 clears the list.\n"
+    "\n"
+    "Keys: digits type, EXE adds, DEL takes\n"
+    "back a digit or a value.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -487,6 +509,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NUMTHEORY,
         .needs_file = false,
         .help = help_numtheory,
+    },
+    {
+        .id = "stats",
+        .title = "Statistics",
+        .subtitle = "mean to regression",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_STATS,
+        .needs_file = false,
+        .help = help_stats,
     },
     {
         .id = "uncert",

@@ -36,6 +36,7 @@ typedef enum {
     VIEW_ROOTS,
     VIEW_TRIANGLE,
     VIEW_SEQ,
+    VIEW_STATS,
     VIEW_SIGFIG,
     VIEW_COUNT,
 } view_t;
@@ -83,6 +84,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
     [VIEW_TRIANGLE] = { app_triangle_init, app_triangle_draw,
                         app_triangle_key, app_triangle_timeout },
     [VIEW_SEQ] = { app_seq_init, app_seq_draw, app_seq_key, app_seq_timeout },
+    [VIEW_STATS] = { app_stats_init, app_stats_draw, app_stats_key,
+                     app_stats_timeout },
     [VIEW_SIGFIG] = { app_sigfig_init, app_sigfig_draw, app_sigfig_key,
                       app_sigfig_timeout },
 };
@@ -119,6 +122,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_ROOTS: set_view(VIEW_ROOTS); break;
     case APP_SCREEN_TRIANGLE: set_view(VIEW_TRIANGLE); break;
     case APP_SCREEN_SEQ: set_view(VIEW_SEQ); break;
+    case APP_SCREEN_STATS: set_view(VIEW_STATS); break;
     case APP_SCREEN_SIGFIG: set_view(VIEW_SIGFIG); break;
     default: set_view(VIEW_MENU); break;
     }

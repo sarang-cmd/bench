@@ -90,6 +90,15 @@
     "help": "Number theory\nNine functions, each with working.\n\ngcd, lcm, prime test, factorise,\nmodular inverse, CRT, divisors,\ntotient and base conversion.\n\nFactorisation shows a progress bar;\nEXIT cancels it.\n\nKeys: UP/DOWN choose, EXE open,\nEXIT back."
   },
   {
+    "id": "stats",
+    "title": "Statistics",
+    "subtitle": "mean to regression",
+    "category": "Math",
+    "screen": 15,
+    "needs_file": false,
+    "help": "Statistics\nType a value, press EXE to add it,\nand the summary is worked out as\nyou go. Up to 200 values.\n\nF2 switches between one list and\npaired data (x, then y). Pairs give\nthe line y = a + bx, r and r squared.\n\nF3 picks the quartile method:\n  median  halves split through the\n          median\n  sheet   (n-1)p + 1, interpolated\n\nF4 shows the working for the standard\ndeviation. F1 clears the list.\n\nKeys: digits type, EXE adds, DEL takes\nback a digit or a value."
+  },
+  {
     "id": "uncert",
     "title": "Uncertainty",
     "subtitle": "value and error",
@@ -103,7 +112,7 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 15,
+    "screen": 16,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
   },

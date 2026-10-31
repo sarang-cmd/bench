@@ -37,6 +37,13 @@ next one.
   zero slope and a parse error each get their own sentence and column. 40
   native checks. Unverified on device.
 
+- **Statistics with working (F7)**: `src/core/stats.c` gives n, sum, mean,
+  median, mode, range, both quartile methods, the outlier fences and the
+  population and sample standard deviations (53 native checks). Paired data
+  gets the least squares line, r and r squared. `src/apps/app_stats.c` adds
+  values as you type them, shows the summary and a box plot, has a screen for
+  the working and a screen for the regression. Unverified on device.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

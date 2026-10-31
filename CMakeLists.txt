@@ -48,6 +48,7 @@ set(SOURCES
   src/core/roots.c
   src/core/pacer.c
   src/core/seq.c
+  src/core/stats.c
   src/core/settings.c
   src/core/sigfig.c
   src/core/triangle.c
@@ -75,6 +76,7 @@ set(SOURCES
   src/apps/app_poly.c
   src/apps/app_roots.c
   src/apps/app_seq.c
+  src/apps/app_stats.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
   src/apps/app_triangle.c
