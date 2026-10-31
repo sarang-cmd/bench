@@ -91,7 +91,7 @@ export default function Tour() {
         aria-labelledby={`tab-${tool.id}`}
         className="mt-6 grid gap-6 lg:grid-cols-[1.35fr_1fr] lg:items-start"
       >
-        <figure className="order-2 lg:order-1">
+        <figure className="order-1">
           <div className="relative">
             <div className={`absolute -inset-2 -z-10 translate-x-2 translate-y-2 border-3 border-ink ${accent.dot}`} aria-hidden="true" />
             <Screen file={file} alt={caption} />
@@ -102,7 +102,7 @@ export default function Tour() {
           </figcaption>
         </figure>
 
-        <div className="order-1 lg:order-2">
+        <div className="order-2">
           <h3 className="text-2xl font-black sm:text-3xl">{tool.name}</h3>
           <p className="mt-2 font-mono text-xs uppercase tracking-widest text-ink/60">{tool.tag}</p>
           <p className="mt-4 text-base leading-relaxed text-ink/80">{tool.summary}</p>

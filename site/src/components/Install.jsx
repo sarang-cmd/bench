@@ -27,7 +27,7 @@ const tree = [
 export default function Install() {
   return (
     <Section id="install" className="border-t-3 border-ink bg-ink py-14 text-paper sm:py-20">
-      <Eyebrow accent="yellow">Install</Eyebrow>
+      <Eyebrow accent="yellow" tone="light">Install</Eyebrow>
       <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
         <div>
           <Heading className="text-paper">Three steps, no companion app.</Heading>
