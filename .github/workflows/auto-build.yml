@@ -12,8 +12,16 @@ name: Automatic build
 #
 # How it decides:
 #   - daily at 03:30 UTC, so "every three days" is three days, not 72h ± jitter
-#   - build only if the last automatic build is at least 3 days old
-#   - and only if `main` has moved since that build (same code = same file)
+#   - build when the last automatic build is at least 3 days old
+#   - the reasons are printed in the run and in its notice, so a quiet day says
+#     why it did nothing
+#
+# It builds on the cadence even when `main` has not moved. A rebuild is about
+# two minutes on a warm cache and it keeps the 1.5 GB toolchain cache alive
+# (GitHub evicts a cache after seven days without a hit, and rebuilding it takes
+# about fifty minutes); an unchanged `main` produces the same .g3a, so the
+# release is identical rather than wrong. The release body always names the
+# commit it came from, so nobody has to guess what "automatic build" means.
 #
 # The release is rebuilt, not added to: build.yml deletes the `auto` release and
 # its tag, then recreates them at the commit it just built. There is always
@@ -99,10 +107,9 @@ jobs:
           if days < min_days:
               decide(False, f"the last automatic build is {days:.1f} days old, "
                             f"under the {min_days}-day interval")
-          if built == head:
-              decide(False, f"main has not moved since the build at {built[:10]}")
-          decide(True, f"the last automatic build is {days:.1f} days old and main "
-                       f"moved ({built[:10] if built else 'unknown'} -> {head[:10]})")
+          moved = "main has" if built != head else "main has not"
+          decide(True, f"the last automatic build is {days:.1f} days old; "
+                       f"{moved} moved since it")
           EOF
 
   build:
