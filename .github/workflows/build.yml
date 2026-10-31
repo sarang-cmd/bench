@@ -468,3 +468,41 @@ jobs:
       - name: Build the site
         working-directory: site
         run: npm run build
+
+      # The plan's browser-width sweep: every route at 320, 390, 768, 1024 and
+      # 1440 pixels, failing on a horizontal scrollbar or an element that
+      # crosses the right edge.
+      - name: Browser widths
+        working-directory: site
+        run: |
+          npx playwright install --with-deps chromium
+          npx vite preview --port 4173 --strictPort &
+          sleep 3
+          node scripts/check-widths.mjs --url http://localhost:4173
+
+  wasm:
+    name: WebAssembly simulator (optional)
+    runs-on: ubuntu-22.04
+    # The repository is complete without this job: the site's simulator page
+    # shows the screenshot gallery whenever no binary is deployed. A failure
+    # here is a missing extra, not a broken build, so it does not fail the run.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.61
+
+      - name: Build bench.wasm from the same sources as the screenshots
+        run: sh tools/wasm/build.sh
+
+      - name: Keep the binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-wasm
+          path: |
+            build-wasm/bench.js
+            build-wasm/bench.wasm
+            build-wasm/bench.data
+          if-no-files-found: warn

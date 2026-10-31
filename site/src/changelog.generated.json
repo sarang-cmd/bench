@@ -5,6 +5,18 @@
       "date": "unreleased",
       "entries": [
         {
+          "title": "Demo content (V2, workstream D)",
+          "body": "`demo/` holds three notes, three decks and a fortnight study log so a fresh install is not three empty screens. The text is written from scratch, not copied from a booklet or a past paper, and `demo/README.md` says in its first section that it needs human proofreading. `tests/test_demo_files.c` reads every demo file with the add-in's own parsers (108 checks) and fails on a single skipped line, so the sample cannot rot into something the calculator refuses to read."
+        },
+        {
+          "title": "The site is eight pages, not one (V2)",
+          "body": "`/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the landing page, which keeps its layout. `src/router.jsx` is a 120-line path switch with real `<a href>`s, so back, forward, middle-click and a shared link all work; `vercel.json` rewrites every path to `index.html`. Every route sets its own title, description, canonical and Open Graph image. `scripts/gen-stats.mjs` and `scripts/gen-changelog.mjs` write the numbers and the changelog from `CHANGELOG.md`, `docs/tools.json` and `src/`, and `scripts/check-pages.mjs` renders all eight routes in Node and fails the build if one throws. Eight 1200x630 Open Graph cards come from `tools/brand/make_brand.py`. The canonical URL is now `bench-sarang-dev.vercel.app` everywhere; `sitemap.xml` lists all eight routes."
+        },
+        {
+          "title": "The simulator page is honest about the simulator",
+          "body": "the interactive WebAssembly build (workstream G) is not done, and the page says so instead of pretending. What it shows today is the real frame buffer: 75 captures made by the add-in's own simulator."
+        },
+        {
           "title": "Settings, five rows (V2)",
           "body": "`src/core/settings.c` gains two keys, `angle_unit` (0 degrees, 1 radians) and `tour_done` (0 or 1). The screen now lists the unit the Triangle tool opens in and whether the first-run line on the home screen has been read; `app_triangle_init()` takes its starting unit from the setting, and F3/F4 still switch for that session only, without writing the file. A settings file from 1.0.0 still loads: the new keys fall back to their defaults. 687 native checks in `tests/test_settings.c`. Unverified on device."
         },

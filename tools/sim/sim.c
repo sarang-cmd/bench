@@ -18,6 +18,13 @@
 
 #include <gint/gint.h>
 
+#ifdef __EMSCRIPTEN__
+/* The browser build of this same file.  Emscripten compiles the add-in and this
+ * stand-in exactly as the desktop build does; the only difference is where keys
+ * come from and where the frame goes.  See tools/wasm/build.sh. */
+#include <emscripten.h>
+#endif
+
 #include <dirent.h>
 #include <glob.h>
 #include <stdio.h>
@@ -598,6 +605,27 @@ static key_event_t finish(void)
     exit(0);
 }
 
+#ifdef __EMSCRIPTEN__
+/* ---- browser keys -------------------------------------------------------
+ *
+ * JS pushes keys with bench_wasm_key(); getkey() blocks (Asyncify turns the
+ * sleep into a return to the browser) until one arrives.  No key script, no
+ * screenshot target: the frame is pulled by bench_wasm_frame(). */
+
+static int wasm_queue[16];
+static int wasm_head, wasm_tail;
+
+EMSCRIPTEN_KEEPALIVE void bench_wasm_key(int key)
+{
+    int next = (wasm_tail + 1) % (int)(sizeof wasm_queue / sizeof wasm_queue[0]);
+
+    if (next == wasm_head)
+        return;                     /* the queue is full; drop the press */
+    wasm_queue[wasm_tail] = key;
+    wasm_tail = next;
+}
+#endif
+
 static key_event_t next_event(void)
 {
     for (;;)
@@ -605,6 +633,23 @@ static key_event_t next_event(void)
         char const *tok;
         int k;
 
+#ifdef __EMSCRIPTEN__
+        /* A key from the page, else wait for one.  The key script is empty in
+         * the browser, so this is the only path. */
+        while (wasm_head == wasm_tail)
+            emscripten_sleep(16);
+        {
+            key_event_t e;
+
+            k = wasm_queue[wasm_head];
+            wasm_head = (wasm_head + 1) % (int)(sizeof wasm_queue / sizeof wasm_queue[0]);
+            memset(&e, 0, sizeof e);
+            e.type = KEYEV_DOWN;
+            e.key = (sim_uint)k;
+            e.mod = 1;
+            return e;
+        }
+#endif
         if (script_at >= script_len)
             return finish();
 
@@ -1104,6 +1149,47 @@ static void load_script(char const *path)
     }
     fclose(f);
 }
+
+#ifdef __EMSCRIPTEN__
+/* Called once from the page.  bench_main() never returns: it is the add-in's
+ * own event loop, parked inside getkey(). */
+EMSCRIPTEN_KEEPALIVE int bench_wasm_run(void)
+{
+    snprintf(root, sizeof root, "%s", "/benchfs");
+    script_len = 0;
+    script_at = 0;
+    dclear(C_RGB(30, 60, 29));
+    bench_main();
+    return 0;
+}
+
+/* The framebuffer as RGBA, one byte per channel, top row first. */
+EMSCRIPTEN_KEEPALIVE void bench_wasm_frame(unsigned char *out)
+{
+    for (int y = 0; y < DHEIGHT; y++)
+        for (int x = 0; x < DWIDTH; x++)
+        {
+            color_t c = fb[y][x];
+            unsigned char *p = out + ((size_t)y * DWIDTH + (size_t)x) * 4;
+
+            p[0] = (unsigned char)(((c >> 11) & 0x1F) * 255 / 31);
+            p[1] = (unsigned char)(((c >> 5) & 0x3F) * 255 / 63);
+            p[2] = (unsigned char)((c & 0x1F) * 255 / 31);
+            p[3] = 255;
+        }
+}
+
+EMSCRIPTEN_KEEPALIVE int bench_wasm_width(void)
+{
+    return DWIDTH;
+}
+
+EMSCRIPTEN_KEEPALIVE int bench_wasm_height(void)
+{
+    return DHEIGHT;
+}
+
+#endif /* __EMSCRIPTEN__ */
 
 int main(void)
 {
