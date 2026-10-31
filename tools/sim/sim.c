@@ -26,6 +26,11 @@
 
 #include "sim_font.h"
 
+#include "apps/registry.h"
+#include "core/color.h"
+#include "platform/screen.h"
+#include "theme.h"
+
 /* ---- framebuffer -------------------------------------------------------- */
 
 static color_t fb[DHEIGHT][DWIDTH];
@@ -39,11 +44,71 @@ static void put(int x, int y, color_t c)
     fb[y][x] = c;
 }
 
+/* ---- frame trace --------------------------------------------------------
+ *
+ * src/platform/screen.c reports every rectangle it draws when BENCH_TRACE is
+ * defined.  Two checks read that trace: nothing overlaps, and every label is
+ * readable on what is behind it.  See docs/design.md section 5. */
+
+enum { TRACE_MAX = 4000 };
+
+typedef struct {
+    int kind;
+    int x;
+    int y;
+    int w;
+    int h;
+    int fg;
+    int bg;
+    char text[48];
+} trace_rec_t;
+
+static trace_rec_t trace[TRACE_MAX];
+static int trace_n;
+static int trace_dropped;
+
+static int trace_is_text(int kind)
+{
+    return kind == SCR_TR_TEXT || kind == SCR_TR_TITLE ||
+           kind == SCR_TR_SOFTKEY || kind == SCR_TR_TILE_TITLE;
+}
+
+void scr_trace(int kind, int x, int y, int w, int h, int fg, int bg,
+               char const *text)
+{
+    trace_rec_t *r;
+
+    if (trace_n >= TRACE_MAX)
+    {
+        trace_dropped++;
+        return;
+    }
+    r = &trace[trace_n++];
+    r->kind = kind;
+    r->x = x;
+    r->y = y;
+    r->w = w;
+    r->h = h;
+    r->fg = fg;
+    r->bg = bg;
+    r->text[0] = 0;
+    if (text)
+    {
+        int i = 0;
+
+        for (; text[i] && i < (int)sizeof r->text - 1; i++)
+            r->text[i] = text[i];
+        r->text[i] = 0;
+    }
+}
+
 void dclear(color_t color)
 {
     for (int y = 0; y < DHEIGHT; y++)
         for (int x = 0; x < DWIDTH; x++)
             fb[y][x] = color;
+    trace_n = 0;
+    trace_dropped = 0;
 }
 
 void drect(int x1, int y1, int x2, int y2, color_t color)
@@ -192,6 +257,262 @@ char const *drsize(char const *str, font_t const *font, int width, int *w)
     return str + n;
 }
 
+
+/* ---- the overlap and contrast checks -------------------------------------
+ *
+ * Run on the last frame of every key script when BENCH_CHECK=1:
+ *
+ *   1. no two labels overlap
+ *   2. no label leaves the visible window
+ *   3. no label sits in the title bar or the softkey strip
+ *   4. no softkey label is wider than its cell
+ *   5. a label is never painted over by a later panel
+ *   6. every label clears WCAG AA against the pixels actually under it
+ *      (3:1 for the title, which is the largest type on the screen)
+ *   7. every tile icon is a different colour from its tile, by at least
+ *      1.5:1 - the bug this check exists for
+ *
+ * The checks work on the frame as drawn, so they catch what the eye misses on
+ * a 384x216 screen. */
+
+static int findings;
+
+static void finding(char const *rule, char const *text, int x, int y, int w,
+                    int h)
+{
+    findings++;
+    printf("  FAIL [%s] \"%s\" at %d,%d %dx%d\n", rule, text ? text : "", x, y,
+           w, h);
+}
+
+static int rect_inside(int ax, int ay, int aw, int ah, int bx, int by, int bw,
+                       int bh)
+{
+    return ax >= bx && ay >= by && ax + aw <= bx + bw && ay + ah <= by + bh;
+}
+
+static int rect_overlap(int ax, int ay, int aw, int ah, int bx, int by, int bw,
+                        int bh)
+{
+    return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
+}
+
+/* The two colours actually present in a rectangle, most common first.  A
+ * one-bit font means there are at most a handful. */
+static int colours_in(int wx, int wy, int w, int h, int *first, int *second)
+{
+    static int seen[16];
+    static int count[16];
+    int n = 0;
+    /* The add-in draws in window coordinates; the framebuffer is inset by the
+     * OS strip, so sample where the pixels really are. */
+    int const x = wx + SCR_X;
+    int const y = wy + SCR_Y;
+
+    for (int yy = y; yy < y + h; yy++)
+    {
+        if (yy < 0 || yy >= DHEIGHT)
+            continue;
+        for (int xx = x; xx < x + w; xx++)
+        {
+            int c;
+            int i;
+
+            if (xx < 0 || xx >= DWIDTH)
+                continue;
+            c = fb[yy][xx];
+            for (i = 0; i < n; i++)
+                if (seen[i] == c)
+                    break;
+            if (i == n)
+            {
+                if (n == 16)
+                    continue;
+                seen[n] = c;
+                count[n] = 0;
+                n++;
+            }
+            count[i]++;
+        }
+    }
+
+    {
+        int best = -1;
+        int best_n = 0;
+        int second_c = -1;
+        int second_n = 0;
+
+        for (int i = 0; i < n; i++)
+            if (count[i] > best_n)
+            {
+                best_n = count[i];
+                best = seen[i];
+            }
+        for (int i = 0; i < n; i++)
+            if (seen[i] != best && count[i] > second_n)
+            {
+                second_n = count[i];
+                second_c = seen[i];
+            }
+        if (first)
+            *first = best;
+        if (second)
+            *second = second_c;
+        return n;
+    }
+}
+
+static void check_palette(void)
+{
+    /* theme.h and docs/design.md must agree with the hex values, or every
+     * measurement below is about a colour nobody chose. */
+    struct { char const *name; int got; int r, g, b; } const want[] = {
+        { "paper", TH_PAPER, 0xf4, 0xf3, 0xee },
+        { "ink", TH_INK, 0x2f, 0x2d, 0x2e },
+        { "red", TH_RED, 0xd9, 0x2d, 0x27 },
+        { "yellow", TH_YELLOW, 0xf2, 0xc2, 0x30 },
+        { "blue", TH_BLUE, 0x2f, 0x5f, 0xd0 },
+        { "teal", TH_TEAL, 0x1f, 0x9c, 0x8a },
+        { "violet", TH_VIOLET, 0x8b, 0x5c, 0xf6 },
+        { "shade", TH_SHADE, 0xd9, 0xd7, 0xcd },
+    };
+
+    for (unsigned int i = 0; i < sizeof want / sizeof want[0]; i++)
+        if (want[i].got != col_rgb565(want[i].r, want[i].g, want[i].b))
+        {
+            findings++;
+            printf("  FAIL [palette] %s is 0x%04X, design.md says 0x%04X\n",
+                   want[i].name, want[i].got,
+                   col_rgb565(want[i].r, want[i].g, want[i].b));
+        }
+}
+
+static int check_frame(char const *label)
+{
+    int alive[TRACE_MAX];
+    int alive_n = 0;
+
+    findings = 0;
+    check_palette();
+
+    /* Pass one: drop labels that a later panel painted over, and complain when
+     * a panel only half covers one. */
+    for (int i = 0; i < trace_n; i++)
+    {
+        trace_rec_t const *r = &trace[i];
+
+        if (trace_is_text(r->kind))
+        {
+            alive[alive_n++] = i;
+            continue;
+        }
+        if (r->kind != SCR_TR_FILL)
+            continue;
+        for (int a = 0; a < alive_n;)
+        {
+            trace_rec_t const *t = &trace[alive[a]];
+
+            if (rect_inside(t->x, t->y, t->w, t->h, r->x, r->y, r->w, r->h))
+            {
+                alive[a] = alive[--alive_n];
+                continue;
+            }
+            if (rect_overlap(t->x, t->y, t->w, t->h, r->x, r->y, r->w, r->h))
+                finding("label painted over", t->text, t->x, t->y, t->w, t->h);
+            a++;
+        }
+    }
+
+    /* Pass two: placement. */
+    for (int a = 0; a < alive_n; a++)
+    {
+        trace_rec_t const *t = &trace[alive[a]];
+        int const in_title = t->y < TH_CONTENT_Y;
+        int const in_soft = t->y + t->h > SCR_H - TH_SOFT_H;
+
+        if (!rect_inside(t->x, t->y, t->w, t->h, 0, 0, SCR_W, SCR_H))
+            finding("outside the window", t->text, t->x, t->y, t->w, t->h);
+
+        if (t->kind == SCR_TR_TEXT && (in_title || in_soft))
+            finding("label in the title bar or softkey strip", t->text, t->x,
+                    t->y, t->w, t->h);
+
+        if (t->kind == SCR_TR_SOFTKEY && t->w > TH_SOFT_W - 4)
+            finding("softkey label wider than its cell", t->text, t->x, t->y,
+                    t->w, t->h);
+    }
+
+    /* Pass three: two labels in the same pixels. */
+    for (int a = 0; a < alive_n; a++)
+        for (int b = a + 1; b < alive_n; b++)
+        {
+            trace_rec_t const *p = &trace[alive[a]];
+            trace_rec_t const *q = &trace[alive[b]];
+
+            if (rect_overlap(p->x, p->y, p->w, p->h, q->x, q->y, q->w, q->h))
+                finding("labels overlap", p->text, p->x, p->y, p->w, p->h);
+        }
+
+    /* Pass four: readability, measured from the pixels, not from the constants. */
+    for (int a = 0; a < alive_n; a++)
+    {
+        trace_rec_t const *t = &trace[alive[a]];
+        int c1 = -1;
+        int blank = 1;
+
+        /* A label of spaces is a spacer, not something to read. */
+        for (char const *p = t->text; *p; p++)
+            if (*p != ' ')
+                blank = 0;
+        if (blank)
+            continue;
+        int c2 = -1;
+        int n = colours_in(t->x, t->y, t->w, t->h, &c1, &c2);
+        int const big = t->kind == SCR_TR_TITLE || t->kind == SCR_TR_TILE_TITLE;
+        int const floor = big ? COL_TITLE_MIN_CONTRAST : COL_TEXT_MIN_CONTRAST;
+
+        if (n < 2 || c1 < 0 || c2 < 0)
+        {
+            finding("label and background are the same colour", t->text, t->x,
+                    t->y, t->w, t->h);
+            continue;
+        }
+        if (col_contrast(c1, c2) < floor)
+        {
+            finding("label under the contrast floor", t->text, t->x, t->y, t->w,
+                    t->h);
+            printf("        %.2f:1 between 0x%04X and 0x%04X, floor %d, kind %d\n",
+                   col_contrast(c1, c2), c1, c2, floor, t->kind);
+        }
+    }
+
+    /* Pass five: icons. */
+    for (int i = 0; i < trace_n; i++)
+    {
+        trace_rec_t const *r = &trace[i];
+
+        if (r->kind != SCR_TR_ICON)
+            continue;
+        if (r->fg == r->bg)
+            finding("icon colour equals its tile", r->text, r->x, r->y, r->w,
+                    r->h);
+        else if (col_contrast(r->fg, r->bg) < COL_ICON_MIN_CONTRAST)
+            finding("icon under the 1.5:1 floor", r->text, r->x, r->y, r->w,
+                    r->h);
+    }
+
+    if (trace_dropped)
+    {
+        findings++;
+        printf("  FAIL [trace] %d records dropped, raise TRACE_MAX\n",
+               trace_dropped);
+    }
+
+    if (findings)
+        printf("  %s: %d finding%s\n", label, findings, findings == 1 ? "" : "s");
+    return findings;
+}
+
 /* ---- screenshots -------------------------------------------------------- */
 
 static void capture(char const *path)
@@ -255,12 +576,22 @@ static int key_for_token(char const *tok)
     return -1;
 }
 
+static int check_frame(char const *label);
+
 static key_event_t finish(void)
 {
     char const *out = getenv("BENCH_SHOT");
+    char const *check = getenv("BENCH_CHECK");
 
     if (out)
         capture(out);
+    if (check && *check)
+    {
+        char const *name = getenv("BENCH_NAME");
+
+        if (check_frame(name ? name : "frame"))
+            exit(3);
+    }
     exit(0);
 }
 
@@ -665,6 +996,55 @@ void gint_osmenu(void)
 {
 }
 
+/* ---- registry dump ------------------------------------------------------
+ *
+ * `BENCH_DUMP_TOOLS=1 build/sim/bench` writes the tool registry as JSON and
+ * exits.  tools/gen_tools_json.py runs it to write docs/tools.json, so the JSON
+ * the site and the README read is the same table the menu draws - never a
+ * hand-edited copy. */
+
+static void json_string(char const *s)
+{
+    putchar('"');
+    for (; s && *s; s++)
+    {
+        switch (*s)
+        {
+        case '"': fputs("\\\"", stdout); break;
+        case '\\': fputs("\\\\", stdout); break;
+        case '\n': fputs("\\n", stdout); break;
+        case '\t': fputs("\\t", stdout); break;
+        default: putchar(*s); break;
+        }
+    }
+    putchar('"');
+}
+
+static int dump_tools(void)
+{
+    printf("[\n");
+    for (int i = 0; i < tool_count(); i++)
+    {
+        tool_t const *t = tool_at(i);
+
+        printf("  {\n    \"id\": ");
+        json_string(t->id);
+        printf(",\n    \"title\": ");
+        json_string(t->title);
+        printf(",\n    \"subtitle\": ");
+        json_string(t->subtitle);
+        printf(",\n    \"category\": ");
+        json_string(tool_category_name(t->category));
+        printf(",\n    \"screen\": %d", (int)t->screen);
+        printf(",\n    \"needs_file\": %s", t->needs_file ? "true" : "false");
+        printf(",\n    \"help\": ");
+        json_string(t->help);
+        printf("\n  }%s\n", i + 1 < tool_count() ? "," : "");
+    }
+    printf("]\n");
+    return 0;
+}
+
 /* ---- entry -------------------------------------------------------------- */
 
 int bench_main(void);
@@ -703,6 +1083,9 @@ int main(void)
 {
     char const *fs = getenv("BENCH_FS");
     char const *keys = getenv("BENCH_KEYS");
+
+    if (getenv("BENCH_DUMP_TOOLS"))
+        return dump_tools();
 
     snprintf(root, sizeof root, "%s", fs ? fs : "/tmp/benchfs");
     load_script(keys ? keys : "tools/sim/tour.txt");

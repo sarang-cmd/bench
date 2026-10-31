@@ -13,11 +13,20 @@
 void w_title(char const *title, char const *hint)
 {
     scr_fill(0, 0, SCR_W, TH_TITLE_H, TH_INK);
-    scr_text(TH_PAD, (TH_TITLE_H - scr_text_h()) / 2, title, TH_PAPER);
+    /* Cut the title so it can never run into the hint or the red square: a
+     * 57-character file name used to cross the whole bar. */
+    int const reserve = (hint && *hint ? scr_text_w(hint) + TH_PAD : 0) +
+                        TH_PAD + 8;
+    int const room = SCR_W - 2 * TH_PAD - reserve;
+
+    scr_text_ellipsis_as(SCR_TR_TITLE, TH_PAD, (TH_TITLE_H - scr_text_h()) / 2,
+                         title, TH_PAPER, room);
     if (hint && *hint)
     {
-        scr_text_right(SCR_W - TH_PAD, (TH_TITLE_H - scr_text_h()) / 2, hint,
-                       TH_YELLOW);
+        int const y = (TH_TITLE_H - scr_text_h()) / 2;
+
+        scr_text_as(SCR_TR_TITLE, SCR_W - TH_PAD - scr_text_w(hint), y, hint,
+                    TH_YELLOW);
     }
     /* Bauhaus: a 4-pixel red square after the title, always in the same place. */
     scr_fill(SCR_W - TH_PAD - 4, TH_TITLE_H - 6, 4, 4, TH_RED);
@@ -39,9 +48,10 @@ void w_softkeys(char const *const labels[6], int active)
             scr_fill(x + 1, y + 1, TH_SOFT_W - 1, TH_SOFT_H - 1, TH_INK);
         if (!labels[i] || !*labels[i])
             continue;
-        scr_text_center(x + 1, TH_SOFT_W - 2,
-                        y + (TH_SOFT_H - scr_text_h()) / 2, labels[i],
-                        active == i ? TH_PAPER : TH_INK);
+        scr_text_as(SCR_TR_SOFTKEY,
+                    x + 1 + (TH_SOFT_W - 2 - scr_text_w(labels[i])) / 2,
+                    y + (TH_SOFT_H - scr_text_h()) / 2, labels[i],
+                    active == i ? TH_PAPER : TH_INK);
     }
 }
 
@@ -82,7 +92,7 @@ void w_modal(char const *title, char const *const *lines, int count,
         scr_text(x + TH_PAD, y + TH_TITLE_H + TH_PAD - 2 + i * TH_LINE,
                  lines[i], TH_INK);
     if (hint && *hint)
-        scr_text(x + TH_PAD, y + h - TH_PAD - scr_text_h(), hint, TH_RED);
+        scr_text(x + TH_PAD, y + h - TH_PAD - scr_text_h(), hint, TH_INK);
 }
 
 /* ---- lists -------------------------------------------------------------- */
@@ -148,8 +158,10 @@ void w_field(int x, int y, int w, int h, char const *label, char const *value,
     {
         int vw = scr_text_w(value);
 
+        /* Ink, not red: red on the yellow active field is 2.9:1, which the
+         * contrast check in tools/sim rejects. */
         scr_text(x + TH_PAD + lw + TH_PAD + vw, y + (h - scr_text_h()) / 2, "_",
-                 TH_RED);
+                 TH_INK);
     }
 }
 
@@ -179,6 +191,9 @@ int w_keyboard(char *buf, int size, char const *title)
         int x = TH_PAD;
         int y = TH_CONTENT_Y + (TH_CONTENT_H - box_h) / 2;
 
+        /* Modal: erase everything behind it.  Half a line of the note
+         * showing above and below the panel read as a drawing bug. */
+        scr_fill(0, TH_CONTENT_Y, SCR_W, TH_CONTENT_H, TH_PAPER);
         scr_fill(x, y, box_w, box_h, TH_PAPER);
         scr_frame(x, y, box_w, box_h, TH_INK, 2);
         scr_fill(x + 2, y + 2, box_w - 4, TH_TITLE_H - 4, TH_INK);
@@ -193,7 +208,7 @@ int w_keyboard(char *buf, int size, char const *title)
             scr_text_ellipsis(x + TH_PAD, ty + 1, len ? buf : "", TH_INK,
                               avail);
             scr_text(x + TH_PAD + (len ? scr_text_w(buf) : 0), ty + 1, "_",
-                     TH_RED);
+                     TH_INK);
         }
 
         /* The grid. */
@@ -215,6 +230,16 @@ int w_keyboard(char *buf, int size, char const *title)
                     continue;
                 if (i == sel)
                     scr_fill(cx, cy, cell_w - 1, cell_h, TH_INK);
+                /* The space key has no glyph to show; mark it with a bar so
+                 * it does not read as an empty, broken cell. */
+                if (keyboard_cells[i] == ' ')
+                {
+                    scr_hline(cx + cell_w / 4,
+                              cy + cell_h - 2,
+                              cell_w / 2 - 1,
+                              i == sel ? TH_PAPER : TH_INK);
+                    continue;
+                }
                 scr_text_center(cx, cell_w - 1, cy + 1,
                                 keyboard_cells[i] == '<' ? "DEL"
                                 : keyboard_cells[i] == '>' ? "OK" : label,
@@ -223,7 +248,7 @@ int w_keyboard(char *buf, int size, char const *title)
         }
 
         scr_text_center(0, SCR_W, y + box_h - TH_PAD - scr_text_h(),
-                        "arrows move  EXE picks  EXIT back", TH_RED);
+                        "arrows move  EXE picks  EXIT back", TH_INK);
         scr_present();
 
         {

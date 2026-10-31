@@ -1,6 +1,5 @@
 # tour step: 23_numtheory_form
 # starts at the home screen; see tools/sim/run_tour.sh
-down
-down
+f2
 exe
 exe

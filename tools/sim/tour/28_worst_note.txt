@@ -1,0 +1,7 @@
+# tour step: 28_worst_note
+# Worst case: a 57-character file name and 89-character table cells.
+# starts at the home screen; see tools/sim/run_tour.sh
+right
+right
+exe
+exe

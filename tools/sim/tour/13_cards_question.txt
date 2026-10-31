@@ -1,6 +1,6 @@
 # tour step: 13_cards_question
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 exe
 exe
 f1

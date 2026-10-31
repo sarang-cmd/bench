@@ -46,6 +46,41 @@ void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w);
 void scr_text_right(int x_right, int y, char const *s, int color);
 void scr_text_center(int x_left, int w, int y, char const *s, int color);
 
+/* ---- frame trace (host preview only) ------------------------------------
+ *
+ * tools/sim records every rectangle the add-in draws so it can check two
+ * things the eye misses on a tiny screen: nothing overlaps, and every text
+ * colour is readable on what is behind it.  In the calculator build BENCH_TRACE
+ * is not defined, so all of this compiles to nothing and the .g3a is
+ * unchanged. */
+
+enum {
+    SCR_TR_TEXT = 0,   /* content text */
+    SCR_TR_TITLE,      /* the title bar */
+    SCR_TR_SOFTKEY,    /* a softkey label */
+    SCR_TR_FILL,       /* a filled rectangle */
+    SCR_TR_FRAME,      /* a rectangle outline */
+    SCR_TR_ICON,       /* a tile icon: fg drawn on bg */
+    SCR_TR_TILE_TITLE  /* a tile's title: large text, 3:1 floor */
+};
+
+#ifdef BENCH_TRACE
+void scr_trace(int kind, int x, int y, int w, int h, int fg, int bg,
+               char const *text);
+#define SCR_TRACE(kind, x, y, w, h, fg, bg, text) \
+    scr_trace((kind), (x), (y), (w), (h), (fg), (bg), (text))
+#else
+#define SCR_TRACE(kind, x, y, w, h, fg, bg, text) \
+    do { (void)(x); (void)(y); } while (0)
+#endif
+
+/* Text drawn with a specific trace kind (the title bar, softkeys, tile
+ * titles).  The kind only matters to the host preview's contrast check, which
+ * holds large text to 3:1 and body text to 4.5:1. */
+void scr_text_as(int kind, int x, int y, char const *s, int color);
+void scr_text_ellipsis_as(int kind, int x, int y, char const *s, int color,
+                          int max_w);
+
 /* UTF-8: code point width in pixels, 0 when the font has no glyph. */
 int scr_glyph_w(unsigned int codepoint);
 bool scr_has_glyph(unsigned int codepoint);

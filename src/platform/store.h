@@ -37,7 +37,7 @@
 #define STORE_ERR_TOO_BIG (-5)  /* the file does not fit the caller's buffer */
 #define STORE_ERR_EXISTS (-6)
 
-#define STORE_NAME_MAX 48
+#define STORE_NAME_MAX 72
 #define STORE_LIST_MAX 32
 
 typedef struct {

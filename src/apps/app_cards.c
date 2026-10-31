@@ -252,7 +252,7 @@ static void draw_deck(void)
     nt_u64((uint64_t)issue_lines, num, (int)sizeof num);
     strcpy(line, "Problem lines: ");
     nt_append(line, (int)sizeof line, num);
-    scr_text(TH_PAD, y, line, issue_lines ? TH_RED : TH_INK);
+    scr_text(TH_PAD, y, line, issue_lines ? TH_INK : TH_INK);
     y += TH_LINE + 2;
 
     for (int i = 0; i < issue_count && i < rows; i++)
@@ -261,7 +261,7 @@ static void draw_deck(void)
     y += rows * TH_LINE;
 
     if (deck->count == 0)
-        scr_text(TH_PAD, y, "Nothing to drill in this deck.", TH_RED);
+        scr_text(TH_PAD, y, "Nothing to drill in this deck.", TH_INK);
 
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "F1 start   EXIT back", TH_INK);
@@ -306,7 +306,7 @@ static void draw_session(void)
     }
     else
     {
-        scr_text(TH_PAD, y, "EXE to reveal the answer", TH_RED);
+        scr_text(TH_PAD, y, "EXE to reveal the answer", TH_INK);
     }
 
     w_softkeys((char const *const[6]){ revealed ? "Right" : "", "",
@@ -330,13 +330,13 @@ static void draw_summary(void)
     nt_u64((uint64_t)right_count, num, (int)sizeof num);
     strcpy(line, "Right  ");
     nt_append(line, (int)sizeof line, num);
-    scr_text(TH_PAD, y, line, TH_TEAL);
+    scr_text(TH_PAD, y, line, TH_BLUE);
     y += TH_LINE;
 
     nt_u64((uint64_t)wrong_count, num, (int)sizeof num);
     strcpy(line, "Wrong  ");
     nt_append(line, (int)sizeof line, num);
-    scr_text(TH_PAD, y, line, TH_RED);
+    scr_text(TH_PAD, y, line, TH_INK);
     y += TH_LINE + 2;
 
     scr_text(TH_PAD, y, "Progress saved to state/cards.sav", TH_INK);

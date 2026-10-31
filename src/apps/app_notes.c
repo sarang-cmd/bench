@@ -448,7 +448,7 @@ static void draw_view(void)
                         tmp[n++] = text[q];
                     tmp[n] = 0;
                     w = scr_text_w(tmp);
-                    scr_fill(x - 1, y, w + 2, scr_text_h() + 1, TH_MD_CODE_BG);
+                    scr_fill(x, y, w + 2, scr_text_h() + 1, TH_MD_CODE_BG);
                 }
                 w = draw_span(x, y, sp, color, max_x);
                 if (sp->style == MD_SPAN_ITALIC)
@@ -489,7 +489,7 @@ static void draw_view(void)
             }
             else
                 nt_append(line, (int)sizeof line, "none");
-            scr_text_right(SCR_W - TH_PAD, fy, line, TH_RED);
+            scr_text_right(SCR_W - TH_PAD, fy, line, TH_INK);
         }
 
         fy += TH_LINE;
@@ -499,7 +499,7 @@ static void draw_view(void)
             strcpy(line, "? ");
             nt_append(line, (int)sizeof line, num);
             nt_append(line, (int)sizeof line, " character(s) not in the font");
-            scr_text_ellipsis(TH_PAD, fy, line, TH_RED, SCR_W - 2 * TH_PAD);
+            scr_text_ellipsis(TH_PAD, fy, line, TH_INK, SCR_W - 2 * TH_PAD);
         }
         else if (overflow)
             scr_text(TH_PAD, fy, "Note truncated: too long for the viewer",

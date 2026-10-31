@@ -1,6 +1,6 @@
 # tour step: 16_cards_boxes
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 exe
 exe
 f1

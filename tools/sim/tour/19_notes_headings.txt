@@ -1,6 +1,6 @@
 # tour step: 19_notes_headings
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 right
 exe
 exe

@@ -1,6 +1,6 @@
 # tour step: 10_uncert_result
 # starts at the home screen; see tools/sim/run_tour.sh
-right
+f3
 exe
 exe
 exe

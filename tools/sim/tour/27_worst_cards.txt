@@ -1,0 +1,7 @@
+# tour step: 27_worst_cards
+# Worst case: a deck whose every side is 120 characters.
+# starts at the home screen; see tools/sim/run_tour.sh
+right
+exe
+down
+exe

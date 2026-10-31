@@ -1,6 +1,6 @@
 # tour step: 15_cards_summary
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 exe
 exe
 f1

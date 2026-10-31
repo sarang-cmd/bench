@@ -34,7 +34,7 @@ void app_about_draw(void)
     scr_clear(TH_PAPER);
     w_title("About Bench", "");
     y = TH_CONTENT_Y + TH_PAD;
-    scr_text(TH_PAD, y, BENCH_NAME, TH_RED);
+    scr_text(TH_PAD, y, BENCH_NAME, TH_INK);
     scr_text_right(SCR_W - TH_PAD, y, "v" BENCH_VERSION, TH_INK);
     y += TH_LINE + 2;
     scr_text(TH_PAD, y, "Pacer, Uncertainty, Cards, Notes, Number theory",

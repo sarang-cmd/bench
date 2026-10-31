@@ -22,9 +22,13 @@ fs=/tmp/bench-tour-fs
 
 rm -rf "$fs"
 mkdir -p "$fs/notes" "$fs/cards" "$fs/state"
-cp "$root/docs/samples/markdown.md" "$fs/notes/" 2>/dev/null || true
-cp "$root/docs/samples/note.txt" "$fs/notes/" 2>/dev/null || true
-cp "$root/docs/samples/cards.txt" "$fs/cards/" 2>/dev/null || true
+# Every sample, so the worst-case screens have their files too.
+for f in "$root"/docs/samples/*; do
+    case "$f" in
+        *cards*.txt) cp "$f" "$fs/cards/" 2>/dev/null || true ;;
+        *) cp "$f" "$fs/notes/" 2>/dev/null || true ;;
+    esac
+done
 mkdir -p "$out"
 
 for step in "$root"/tools/sim/tour/*.txt; do

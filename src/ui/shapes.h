@@ -15,4 +15,21 @@ void sh_triangle(int x, int y, int w, int h, int color);
 void sh_bars(int x, int y, int w, int h, int color);
 void sh_ring(int cx, int cy, int r, int thickness, int color);
 
+/* ---- icons --------------------------------------------------------------
+ *
+ * Every tile icon is the same shape drawn twice: once in `edge`, grown by `ol`
+ * pixels, then in `fill` at its nominal size.  That is the outline from
+ * docs/design.md - it keeps a shape visible on any fill, which is the bug this
+ * replaced (an icon painted in the tile's own colour disappeared). */
+
+void sh_square_icon(int x, int y, int size, int fill, int edge, int ol);
+void sh_circle_icon(int cx, int cy, int r, int fill, int edge, int ol);
+void sh_half_circle_icon(int cx, int cy, int r, int fill_h, int fill, int edge,
+                         int ol);
+void sh_triangle_icon(int x, int y, int w, int h, int fill, int edge, int ol);
+void sh_bars_icon(int x, int y, int w, int h, int fill, int edge, int ol);
+void sh_ring_icon(int cx, int cy, int r, int thickness, int fill, int edge,
+                  int ol);
+void sh_square_frame_icon(int x, int y, int size, int fill, int edge, int ol);
+
 #endif /* BENCH_SHAPES_H */

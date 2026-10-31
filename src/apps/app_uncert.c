@@ -143,7 +143,7 @@ static void draw_pair(char const *title, char const *sub)
     y += fh + TH_GAP + 2;
 
     if (err[0])
-        scr_text_ellipsis(TH_PAD, y, err, TH_RED, w);
+        scr_text_ellipsis(TH_PAD, y, err, TH_INK, w);
     else
         scr_text(TH_PAD, y, "Same units for value and uncertainty.", TH_INK);
 
@@ -160,10 +160,10 @@ static void draw_op(void)
 
     nt_fit(a.value, 3, 10, num, (int)sizeof num);
     scr_text(TH_PAD, y, "A =", TH_INK);
-    scr_text(TH_PAD + 26, y, num, TH_RED);
+    scr_text(TH_PAD + 26, y, num, TH_INK);
     nt_fit(a.unc, 3, 10, num, (int)sizeof num);
     scr_text(TH_PAD + 26 + 62, y, "+/-", TH_INK);
-    scr_text(TH_PAD + 26 + 62 + 24, y, num, TH_RED);
+    scr_text(TH_PAD + 26 + 62 + 24, y, num, TH_INK);
     y += TH_LINE + 4;
 
     for (int i = 0; i < 6; i++)
@@ -201,7 +201,7 @@ static void draw_b(void)
         w_field(TH_PAD, y, w, fh, "n       ", b_val, true);
         y += fh + TH_GAP + 2;
         if (err[0])
-            scr_text_ellipsis(TH_PAD, y, err, TH_RED, w);
+            scr_text_ellipsis(TH_PAD, y, err, TH_INK, w);
         else
             scr_text(TH_PAD, y, "unc = |a^n| * |n| * da / |a|", TH_INK);
         w_softkeys((char const *const[6]){ "", "", "", "", "", "" }, -1);
@@ -234,7 +234,7 @@ static void draw_result(void)
         strcpy(line, shown.value);
         nt_append(line, (int)sizeof line, "  +/-  ");
         nt_append(line, (int)sizeof line, shown.unc);
-        scr_text_center(TH_PAD, w, y + 4, line, TH_RED);
+        scr_text_center(TH_PAD, w, y + 4, line, TH_INK);
         strcpy(line, "(");
         nt_append(line, (int)sizeof line, shown.pct_valid ? shown.pct : "n/a");
         nt_append(line, (int)sizeof line, " %)");

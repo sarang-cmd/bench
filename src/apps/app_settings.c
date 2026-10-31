@@ -126,7 +126,7 @@ void app_settings_draw(void)
     y += TH_LINE + 2;
     scr_text(TH_PAD, y, saved_ok ? "Saved to state/settings.cfg"
                                  : "Could not write the settings file",
-             saved_ok ? TH_TEAL : TH_RED);
+             TH_INK);
     if (ignored_lines > 0)
     {
         char line[48];

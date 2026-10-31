@@ -370,7 +370,7 @@ static void draw_form(fn_t fn)
     int w = SCR_W - 2 * TH_PAD;
     int fh = TH_LINE + 7;
 
-    scr_text(TH_PAD, y, fn_name[fn], TH_RED);
+    scr_text(TH_PAD, y, fn_name[fn], TH_INK);
     y += TH_LINE + 2;
     for (int i = 0; i < fn_args[fn]; i++)
     {
@@ -379,7 +379,7 @@ static void draw_form(fn_t fn)
     }
     y += 2;
     if (err[0])
-        scr_text_ellipsis(TH_PAD, y, err, TH_RED, w);
+        scr_text_ellipsis(TH_PAD, y, err, TH_INK, w);
     else
         scr_text(TH_PAD, y, "Up to 18 digits, no sign.", TH_INK);
 
@@ -409,7 +409,7 @@ static void draw_result(fn_t fn)
     {
         scr_fill(TH_PAD, y, w, TH_LINE + 10, TH_PAPER);
         scr_frame(TH_PAD, y, w, TH_LINE + 10, TH_INK, 2);
-        scr_text_ellipsis(TH_PAD + 4, y + 5, result, TH_RED, w - 8);
+        scr_text_ellipsis(TH_PAD + 4, y + 5, result, TH_INK, w - 8);
         y += TH_LINE + 16;
     }
 

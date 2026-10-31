@@ -98,6 +98,11 @@ void scr_fill(int x, int y, int w, int h, int color)
      * window on the right/bottom there is nothing to draw. */
     if (x >= SCR_W || y >= SCR_H)
         return;
+    /* Only panels and rows are worth tracing: a shape is rasterised from
+     * one-pixel spans and a line cannot hide a label anyway. */
+    if (w >= 8 && h >= 4)
+        SCR_TRACE(SCR_TR_FILL, x0, y0, x1 - x0 + 1, y1 - y0 + 1, color, color,
+                  NULL);
     drect(x0 + SCR_X, y0 + SCR_Y, x1 + SCR_X, y1 + SCR_Y, color);
 }
 
@@ -147,13 +152,19 @@ void scr_pixel(int x, int y, int color)
     dpixel(x + SCR_X, y + SCR_Y, color);
 }
 
-void scr_text(int x, int y, char const *s, int color)
+void scr_text_as(int kind, int x, int y, char const *s, int color)
 {
     if (!s || !*s)
         return;
     if (y < -line_h || y >= SCR_H)
         return;
+    SCR_TRACE(kind, x, y, scr_text_w(s), line_h, color, C_NONE, s);
     dtext(x + SCR_X, y + SCR_Y, color, s);
+}
+
+void scr_text(int x, int y, char const *s, int color)
+{
+    scr_text_as(SCR_TR_TEXT, x, y, s, color);
 }
 
 void scr_text_bg(int x, int y, char const *s, int fg, int bg)
@@ -162,10 +173,12 @@ void scr_text_bg(int x, int y, char const *s, int fg, int bg)
         return;
     if (y < -line_h || y >= SCR_H)
         return;
+    SCR_TRACE(SCR_TR_TEXT, x, y, scr_text_w(s), line_h, fg, bg, s);
     dtext_opt(x + SCR_X, y + SCR_Y, fg, bg, DTEXT_LEFT, DTEXT_TOP, s, -1);
 }
 
-void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w)
+void scr_text_ellipsis_as(int kind, int x, int y, char const *s, int color,
+                          int max_w)
 {
     int fit;
 
@@ -173,15 +186,25 @@ void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w)
         return;
     if (scr_text_w(s) <= max_w)
     {
-        scr_text(x, y, s, color);
+        scr_text_as(kind, x, y, s, color);
         return;
     }
     fit = scr_text_fit(s, max_w - scr_text_w("..."));
     if (fit < 0)
         fit = 0;
+    /* One record for the whole label, then draw the cut text and the dots
+     * without going through scr_text(), which would record them again and
+     * make the overlap check complain about a label overlapping itself. */
+    SCR_TRACE(kind, x, y, text_w_prefix(s, fit) + scr_text_w("..."), line_h,
+              color, C_NONE, s);
     dtext_opt(x + SCR_X, y + SCR_Y, color, C_NONE, DTEXT_LEFT, DTEXT_TOP, s,
               fit);
-    scr_text(x + text_w_prefix(s, fit), y, "...", color);
+    dtext(x + SCR_X + text_w_prefix(s, fit), y + SCR_Y, color, "...");
+}
+
+void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w)
+{
+    scr_text_ellipsis_as(SCR_TR_TEXT, x, y, s, color, max_w);
 }
 
 void scr_text_right(int x_right, int y, char const *s, int color)
