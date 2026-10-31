@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import Nav from "./components/Nav.jsx";
 import Hero from "./components/Hero.jsx";
 import Tour from "./components/Tour.jsx";
@@ -25,6 +26,7 @@ export default function App() {
         <Keys />
       </main>
       <Footer />
+      <Analytics />
     </>
   );
 }
