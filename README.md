@@ -40,6 +40,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Triangle](docs/images/40_triangle_sss.png) | ![Two triangles](docs/images/41_triangle_ssa.png) |
 | ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
 | ![Complex numbers](docs/images/44_cplx_mul.png) | ![Complex power](docs/images/46_cplx_pow.png) |
+| ![Newton's method](docs/images/49_roots_newton.png) | ![Bisection](docs/images/50_roots_bisect.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -166,6 +167,21 @@ and the ALPHA mapping is one of the things only the device can settle. The
 rational root theorem does the searching, so `2x^2 - 3x + 1` finds `1/2` and
 `1`, while `x^2 + 1` honestly reports none.
 
+### Root finder
+`f(x) = 0`, three ways, and the table that shows the method working:
+
+| Method | Needs | Reaches `x^2 - 2` from |
+|---|---|---|
+| Bisection | a bracket with a sign change | `[1, 2]` in 20 steps |
+| Newton | one guess (slope from a step of 1e-6) | `x0 = 1`: 1.5, 1.416667, 1.414216 |
+| Secant | two guesses, no derivative | `1, 2` in 5 steps |
+
+The table lists n, x, f(x) and how far the estimate moved, and a small plot of
+the curve marks every iterate in red, so a student can see the error fall rather
+than be told that it does. A bracket without a sign change says so instead of
+inventing a root, and so does a zero slope. Everything is in radians whatever
+the angle setting says, and the title bar says which method is running.
+
 ### Complex numbers
 `a` and `b`, one operation at a time, and the answer in all three forms at once
 so a student can see that they are the same number.
@@ -222,6 +238,9 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F3 / F4 | Polynomials | previous / next screen |
 | F2 | Complex numbers | the operation: +, -, x, /, ^ |
 | F3 / F4 | Complex numbers | argument in degrees / radians |
+| F2 / F3 | Root finder | next method / solve |
+| EXE | Root finder | edit f, or solve from a number field |
+| UP/DOWN | Root finder | move between fields, then scroll the table |
 | F2 | Polynomials, roots | one more coefficient |
 | UP/DOWN | Sig figs | pick one of the six modes |
 | F4 / F3 | Sig figs | next / previous mode |

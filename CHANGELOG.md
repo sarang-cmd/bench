@@ -29,6 +29,14 @@ next one.
   `Bench-<version>.g3a` and nothing else; the spike is in `bench-spike`. It was
   never a release asset and still is not.
 
+- **Root finder (F4)**: `src/core/roots.c` does bisection, Newton (numeric
+  derivative, step 1e-6) and the secant method, keeping every iterate so the
+  screen can show n, x, f(x) and the step size. `src/apps/app_roots.c` solves
+  from the shared expression engine, F2 cycles the method, F3 solves, and a
+  small plot marks each iterate on the curve. A bracket with no sign change, a
+  zero slope and a parse error each get their own sentence and column. 40
+  native checks. Unverified on device.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

@@ -45,6 +45,7 @@ set(SOURCES
   src/core/numparse.c
   src/core/numtheory.c
   src/core/poly.c
+  src/core/roots.c
   src/core/pacer.c
   src/core/seq.c
   src/core/settings.c
@@ -72,6 +73,7 @@ set(SOURCES
   src/apps/app_numtheory.c
   src/apps/app_pacer.c
   src/apps/app_poly.c
+  src/apps/app_roots.c
   src/apps/app_seq.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c

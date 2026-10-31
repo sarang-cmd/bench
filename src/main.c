@@ -33,6 +33,7 @@ typedef enum {
     VIEW_CPLX,
     VIEW_FUNCTION,
     VIEW_POLY,
+    VIEW_ROOTS,
     VIEW_TRIANGLE,
     VIEW_SEQ,
     VIEW_SIGFIG,
@@ -77,6 +78,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                         app_function_timeout },
     [VIEW_POLY] = { app_poly_init, app_poly_draw, app_poly_key,
                     app_poly_timeout },
+    [VIEW_ROOTS] = { app_roots_init, app_roots_draw, app_roots_key,
+                     app_roots_timeout },
     [VIEW_TRIANGLE] = { app_triangle_init, app_triangle_draw,
                         app_triangle_key, app_triangle_timeout },
     [VIEW_SEQ] = { app_seq_init, app_seq_draw, app_seq_key, app_seq_timeout },
@@ -113,6 +116,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_CPLX: set_view(VIEW_CPLX); break;
     case APP_SCREEN_FUNCTION: set_view(VIEW_FUNCTION); break;
     case APP_SCREEN_POLY: set_view(VIEW_POLY); break;
+    case APP_SCREEN_ROOTS: set_view(VIEW_ROOTS); break;
     case APP_SCREEN_TRIANGLE: set_view(VIEW_TRIANGLE); break;
     case APP_SCREEN_SEQ: set_view(VIEW_SEQ); break;
     case APP_SCREEN_SIGFIG: set_view(VIEW_SIGFIG); break;
