@@ -43,6 +43,11 @@ next one.
   tool's accent as its fill, a 3 px border and a hard shadow; everything on it
   is coloured by measurement, and a subtitle the palette cannot carry gets a
   paper plate hugging the words. Unverified on device.
+- **Sequences and binomials (F5)**: `src/core/seq.c` does arithmetic and
+  geometric terms and sums, the sum to infinity, exact `C(n,k)` (cancelling
+  before multiplying, so it can answer up to n = 62 instead of wrapping) and
+  Pascal's rows. `src/apps/app_seq.c` is three screens with the first few terms
+  listed under the answers. 41 native checks. Unverified on device.
 - **Triangle solver (F2)**: `src/core/triangle.c` solves SSS, SAS, ASA/AAS and
   SSA from whatever is given, with the ambiguous SSA case reporting two
   triangles rather than silently picking one. `src/apps/app_triangle.c` is six

@@ -2,6 +2,8 @@
 # a = 10, b = 15, A = 30 degrees: two triangles, and F2 offers the other one.
 f2
 right
+right
+right
 exe
 1
 0

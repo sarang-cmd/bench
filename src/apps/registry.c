@@ -82,6 +82,14 @@ static void icon_tri_outline(int x, int y, int fill, int edge)
     (void)edge;
 }
 
+/* Steps that get further apart: a sequence. */
+static void icon_steps_up(int x, int y, int fill, int edge)
+{
+    for (int i = 0; i < 3; i++)
+        scr_fill(x + 3 + i * 5, y + 17 - (i + 1) * 4, 4, (i + 1) * 4, fill);
+    (void)edge;
+}
+
 /* Two rows of small cells: a table of values. */
 static void icon_grid(int x, int y, int fill, int edge)
 {
@@ -283,6 +291,30 @@ static char const help_triangle[] =
     "Keys: arrows move, digits type,\n"
     "EXE solves, F1 clears.";
 
+
+static char const help_seq[] =
+    "Sequences\n"
+    "Arithmetic and geometric terms,\n"
+    "their sums, and binomials.\n"
+    "\n"
+    "Three screens, F4 next and F3 back.\n"
+    "\n"
+    "  Arithmetic  a, d, n: the nth term\n"
+    "              and the sum, then the\n"
+    "              first few terms.\n"
+    "  Geometric   a, r, n: as above, plus\n"
+    "              the sum to infinity when\n"
+    "              |r| < 1.\n"
+    "  Binomial    n choose k exactly, and\n"
+    "              row n of Pascal.\n"
+    "\n"
+    "Terms count from 1, so the first term\n"
+    "is n = 1.  C(n,k) is refused rather\n"
+    "than rounded when it passes 64 bits.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "EXE solves, F1 clears.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -331,15 +363,15 @@ static tool_t const tools[] = {
         .help = help_function,
     },
     {
-        .id = "triangle",
-        .title = "Triangle",
-        .subtitle = "sides, angles",
+        .id = "seq",
+        .title = "Sequences",
+        .subtitle = "terms, sums",
         .category = TOOL_CAT_MATH,
-        .accent = TH_TEAL,
-        .icon = icon_tri_outline,
-        .screen = APP_SCREEN_TRIANGLE,
+        .accent = TH_YELLOW,
+        .icon = icon_steps_up,
+        .screen = APP_SCREEN_SEQ,
         .needs_file = false,
-        .help = help_triangle,
+        .help = help_seq,
     },
     {
         .id = "poly",
@@ -351,6 +383,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_POLY,
         .needs_file = false,
         .help = help_poly,
+    },
+    {
+        .id = "triangle",
+        .title = "Triangle",
+        .subtitle = "sides, angles",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_tri_outline,
+        .screen = APP_SCREEN_TRIANGLE,
+        .needs_file = false,
+        .help = help_triangle,
     },
     {
         .id = "numtheory",

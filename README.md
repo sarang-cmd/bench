@@ -38,6 +38,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Function table](docs/images/32_function_table.png) | ![Sig figs](docs/images/35_sigfig_modes.png) |
 | ![Polynomials](docs/images/37_poly_quad.png) | ![Expand](docs/images/38_poly_expand.png) |
 | ![Triangle](docs/images/40_triangle_sss.png) | ![Two triangles](docs/images/41_triangle_ssa.png) |
+| ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -131,6 +132,15 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | totient | Euler phi |
 | CRT | one pair or a list of congruences |
 
+### Sequences and binomials
+Arithmetic and geometric terms, the sum of the first n, the sum to infinity when
+`|r| < 1`, and binomials.
+
+`C(n,k)` is computed exactly and the factors are cancelled before they are
+multiplied, so `C(52,5)` is right and `C(62,31)` still fits; a coefficient that
+would pass 64 bits is refused rather than printed wrong. Row n of Pascal's
+triangle is listed underneath.
+
 ### Triangle solver
 Give any three of the six values, at least one a side, and the rest fills in.
 SSS, SAS, ASA and AAS go through the law of cosines and the law of sines; SSA
@@ -190,6 +200,7 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F1..F4 | home | the four categories: Study, Math, Science, Tools |
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
 | F1 / F2 | Sig figs | clear the number / practice |
+| F3 / F4 | Sequences | previous / next screen |
 | F3 / F4 | Triangle | degrees / radians (re-solves) |
 | F2 | Triangle | the other triangle, when SSA has two |
 | F3 / F4 | Polynomials | previous / next screen |
