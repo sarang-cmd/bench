@@ -57,9 +57,9 @@ typedef struct {
     char const *formula;    /* the equation, as text */
     slot_t slot[4];
     int slots;
-} mode_t;
+} mode_info_t;
 
-static mode_t const modes[MO_COUNT] = {
+static mode_info_t const modes[MO_COUNT] = {
     [MO_MOLES] = {
         "moles", "n = m / Mr",
         { { "mass", "g", "4" }, { "Mr", "g/mol", "40" } }, 2
