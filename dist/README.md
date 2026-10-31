@@ -15,7 +15,8 @@ they ever disagree.
 | `dist/` | a snapshot of one green build, with `BUILD.txt` recording exactly which |
 | `builds` branch | the same file, force-pushed on every build: `git fetch origin builds` |
 | releases | `v<version>` is the released build; `auto` is replaced every few days |
-| `bench-g3a` artifact | each CI run's output, plus the M1 spike add-in |
+| `bench-g3a` artifact | each CI run's output: `Bench-<version>.g3a` |
+| `bench-spike` artifact | the M1 diagnostic add-in, separate on purpose (see `docs/spike.md`) |
 
 CI refreshes this folder for tagged builds and automatic builds, as a commit
 marked `[skip ci]`, so the copy cannot drift far. If it and a release disagree,

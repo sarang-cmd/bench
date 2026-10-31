@@ -99,12 +99,13 @@ Read the `g3a` job log. The usual causes, in order:
 ## What ends up on a release
 
 Only `Bench-<version>.g3a`. The M1 spike add-in (`spike/`) is a diagnostic tool
-built in the same run and kept in the `bench-g3a` artifact, but it is not a
-release asset: it is not part of Bench and shipping it next to the add-in only
+built in the same run and kept in its own `bench-spike` artifact, but it is not
+a release asset and not part of Bench: shipping it next to the add-in only
 confuses the download.
 
 ```sh
-gh run download --name bench-g3a --dir dist   # contains both files
+gh run download --name bench-g3a   --dir dist   # Bench-<version>.g3a
+gh run download --name bench-spike --dir dist   # Bench-spike-0.0.2.g3a
 ```
 
 ## Checking a release before you publish it

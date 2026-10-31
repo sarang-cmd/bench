@@ -23,6 +23,12 @@ next one.
   at once, F2 cycles the operation, F3/F4 pick degrees or radians in the title
   bar. 37 native checks. Unverified on device.
 
+- **The M1 spike has its own artifact.** It used to ride inside `bench-g3a`,
+  next to the add-in, so the thing you download to get Bench offered two
+  `.g3a` files and one of them printed diagnostics. `bench-g3a` now holds
+  `Bench-<version>.g3a` and nothing else; the spike is in `bench-spike`. It was
+  never a release asset and still is not.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

@@ -8,10 +8,13 @@ rate, heap, drawable area, redraw cost, empty-add-in size). Bench does not call
 it and does not need it at runtime.
 
 It is still built by CI, so it stays compiled and available when a hardware
-session needs it, but it travels in the `bench-g3a` artifact only:
+session needs it, but it travels in its own `bench-spike` artifact. The
+`bench-g3a` artifact holds the add-in and nothing else, so downloading "the
+build" cannot hand anyone the wrong file:
 
 ```sh
-gh run download --name bench-g3a --dir dist    # Bench-spike-*.g3a is in there
+gh run download --name bench-g3a   --dir dist   # Bench-<version>.g3a
+gh run download --name bench-spike --dir dist   # Bench-spike-0.0.2.g3a
 ```
 
 Keeping it off the release page is deliberate: two `.g3a` files with similar

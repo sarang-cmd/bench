@@ -274,10 +274,18 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bench-g3a
-          path: |
-            Bench-*.g3a
-            spike/Bench-spike-*.g3a
+          path: Bench-*.g3a
           if-no-files-found: error
+
+      # The spike in its own artifact, so the add-in artifact holds one file and
+      # nobody can mistake the diagnostic add-in for Bench. It is never a
+      # release asset; see docs/spike.md.
+      - name: Attach the M1 spike
+        uses: actions/upload-artifact@v4
+        with:
+          name: bench-spike
+          path: spike/Bench-spike-*.g3a
+          if-no-files-found: ignore
 
       # The release notes are the CHANGELOG section for this version, written by
       # hand and committed: generate_release_notes calls a second API that the
