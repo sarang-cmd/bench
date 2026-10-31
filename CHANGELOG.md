@@ -16,6 +16,27 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **Complex numbers (F6)**: `src/core/cplx.c` adds, subtracts, multiplies,
+  divides (division by zero is a NaN, not a wrong number), raises to an integer
+  power and reports the modulus, the argument (with `bm_atan2`, new in
+  `src/core/mathfn.c`) and the polar form. `src/apps/app_cplx.c` shows all three
+  at once, F2 cycles the operation, F3/F4 pick degrees or radians in the title
+  bar. 37 native checks. Unverified on device.
+
+- **The M1 spike has its own artifact.** It used to ride inside `bench-g3a`,
+  next to the add-in, so the thing you download to get Bench offered two
+  `.g3a` files and one of them printed diagnostics. `bench-g3a` now holds
+  `Bench-<version>.g3a` and nothing else; the spike is in `bench-spike`. It was
+  never a release asset and still is not.
+
+- **Root finder (F4)**: `src/core/roots.c` does bisection, Newton (numeric
+  derivative, step 1e-6) and the secant method, keeping every iterate so the
+  screen can show n, x, f(x) and the step size. `src/apps/app_roots.c` solves
+  from the shared expression engine, F2 cycles the method, F3 solves, and a
+  small plot marks each iterate on the curve. A bracket with no sign change, a
+  zero slope and a parse error each get their own sentence and column. 40
+  native checks. Unverified on device.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every
@@ -37,6 +58,16 @@ next one.
   code is ink on shade.
 
 ### Added
+- **The .g3a lives in the repository**, at `dist/Bench-<version>.g3a`, with
+  `BUILD.txt` recording the commit, size and SHA-256. Release assets and
+  artifacts both come from blob storage, which some networks cannot reach; a git
+  remote is plain git. CI refreshes `dist/` for tagged and automatic builds with
+  a `[skip ci]` commit, so the copy does not go stale.
+- **The M1 spike as one patch**: `spike/spike.diff` holds the whole diagnostic
+  add-in, generated from `spike/` by `tools/gen_spike_patch.py`
+  (`make spike-patch`). `git apply spike/spike.diff` on a tree without `spike/`
+  reproduces it byte for byte; CI fails if the patch and the sources disagree.
+  The spike still is not on any release.
 - **Home screen v2**: four categories on F1..F4, a 3 x 2 page of tiles, page
   dots when a category has more than one page, and a dashboard strip on Study
   that counts the decks and notes on the card. The selected tile keeps the

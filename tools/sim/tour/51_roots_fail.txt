@@ -1,0 +1,10 @@
+# tour step: 51_roots_fail
+# The bracket 2 to 3 has no sign change for x^2 - 2, and the screen says so.
+tool:roots
+down
+del
+2
+right
+del
+3
+f3

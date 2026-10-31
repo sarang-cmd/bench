@@ -41,6 +41,10 @@ test: $(TEST_BIN) check-screens
 	 if [ $$fail -ne 0 ]; then echo "NATIVE TESTS FAILED"; exit 1; fi; \
 	 echo "NATIVE TESTS PASSED ($(words $(TEST_BIN)) test programs)"
 
+# The spike add-in as one patch file (see docs/spike.md).
+spike-patch:
+	@$(PYTHON) tools/gen_spike_patch.py
+
 py-test:
 	@echo "== python tool tests =="
 	$(PYTHON) -m unittest discover -s tools -p "test_*.py" -v

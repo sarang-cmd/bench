@@ -1,0 +1,4 @@
+# tour step: 50_roots_bisect
+# Bisection is the default: F3 halves [1, 2] twenty times.
+tool:roots
+f3

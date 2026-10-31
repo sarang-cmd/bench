@@ -8,15 +8,36 @@ rate, heap, drawable area, redraw cost, empty-add-in size). Bench does not call
 it and does not need it at runtime.
 
 It is still built by CI, so it stays compiled and available when a hardware
-session needs it, but it travels in the `bench-g3a` artifact only:
+session needs it, but it travels in its own `bench-spike` artifact. The
+`bench-g3a` artifact holds the add-in and nothing else, so downloading "the
+build" cannot hand anyone the wrong file:
 
 ```sh
-gh run download --name bench-g3a --dir dist    # Bench-spike-*.g3a is in there
+gh run download --name bench-g3a   --dir dist   # Bench-<version>.g3a
+gh run download --name bench-spike --dir dist   # Bench-spike-0.0.2.g3a
 ```
 
 Keeping it off the release page is deliberate: two `.g3a` files with similar
 names, one of which prints debug numbers, is a trap for anyone who just wants
-the add-in.
+the add-in. `dist/` in this repository holds Bench's `.g3a` and only that, for
+the same reason.
+
+## The patch
+
+`spike/spike.diff` is the whole spike - `spike/main.c` and
+`spike/CMakeLists.txt` - as one patch, so it can be carried into a checkout, a
+toolchain container or a support thread without the rest of the repository:
+
+```sh
+git apply spike/spike.diff     # from the repository root, on a tree without spike/
+cd spike && fxsdk build-cg
+```
+
+It is generated from the sources (`make spike-patch`, which runs
+`tools/gen_spike_patch.py`) and CI fails when the committed copy is stale, so
+the two cannot drift apart. Applying it to a tree that already has `spike/`
+fails on purpose rather than overwriting anything: `git apply` refuses to touch
+existing files.
 
 ---
 

@@ -1,5 +1,4 @@
 # tour step: 37_poly_quad
 # a=1, b=-5, c=6: discriminant, both roots, the vertex and the factor pair.
-f2
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:poly

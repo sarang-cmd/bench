@@ -1,6 +1,5 @@
 # tour step: 38_poly_expand
 # (x + 2)^3, one screen further on.
-f2
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:poly
 f4

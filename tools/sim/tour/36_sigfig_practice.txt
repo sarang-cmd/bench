@@ -1,8 +1,7 @@
 # tour step: 36_sigfig_practice
 # The practice question, marked wrong, with the score on the right.
-f3
-right
-exe
+# opens the tool by name, so reordering the home screen cannot change this shot
+tool:sigfig
 f2
 1
 exe

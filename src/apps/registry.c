@@ -42,6 +42,13 @@ static void icon_ring(int x, int y, int fill, int edge)
     sh_ring_icon(x + 10, y + 10, 8, 3, fill, edge, 2);
 }
 
+/* A target: a ring with a solid centre, for the root finder. */
+static void icon_target(int x, int y, int fill, int edge)
+{
+    sh_ring_icon(x + 10, y + 10, 8, 3, fill, edge, 1);
+    sh_circle_icon(x + 10, y + 10, 3, fill, edge, 1);
+}
+
 static void icon_frame(int x, int y, int fill, int edge)
 {
     sh_square_frame_icon(x + 2, y + 2, 16, fill, edge, 2);
@@ -88,6 +95,17 @@ static void icon_steps_up(int x, int y, int fill, int edge)
     for (int i = 0; i < 3; i++)
         scr_fill(x + 3 + i * 5, y + 17 - (i + 1) * 4, 4, (i + 1) * 4, fill);
     (void)edge;
+}
+
+/* An "i" in dots: two squares, the dot over the stem. */
+static void icon_i(int x, int y, int fill, int edge)
+{
+    /* The dot: a square outlined, then filled. */
+    scr_fill(x + 7, y + 1, 6, 6, edge);
+    scr_fill(x + 8, y + 2, 4, 4, fill);
+    /* The stem, twice as tall as it is wide. */
+    scr_fill(x + 7, y + 9, 6, 10, edge);
+    scr_fill(x + 8, y + 10, 4, 8, fill);
 }
 
 /* Two rows of small cells: a table of values. */
@@ -315,6 +333,48 @@ static char const help_seq[] =
     "Keys: arrows move, digits type,\n"
     "EXE solves, F1 clears.";
 
+
+static char const help_cplx[] =
+    "Complex numbers\n"
+    "Two numbers a and b, one operation\n"
+    "at a time.\n"
+    "\n"
+    "F2 picks the operation: a + b,\n"
+    "a - b, a x b, a / b and a ^ n, where\n"
+    "n is the real part of b.\n"
+    "\n"
+    "The result is written three ways:\n"
+    "rectangular (-1 + 2i), its modulus\n"
+    "and argument, and polar form.\n"
+    "\n"
+    "F3 shows the argument in degrees,\n"
+    "F4 in radians.\n"
+    "\n"
+    "Keys: arrows move, digits type,\n"
+    "DEL deletes, F1 clears, EXIT home.";
+
+
+static char const help_roots[] =
+    "Root finder\n"
+    "Solves f(x) = 0 one step at a time,\n"
+    "so the convergence is visible.\n"
+    "\n"
+    "F2 picks the method:\n"
+    "  bisection needs a and b with a\n"
+    "    sign change between them\n"
+    "  Newton needs one guess x0\n"
+    "  secant needs two guesses x0, x1\n"
+    "\n"
+    "F3 solves. The table lists n, x and\n"
+    "f(x); the plot marks every iterate.\n"
+    "\n"
+    "Radians always, whatever the angle\n"
+    "setting says. Tolerance 1e-6, at most\n"
+    "50 steps.\n"
+    "\n"
+    "Keys: EXE edits f or solves, F1 clears,\n"
+    "F2 method, arrows move and scroll.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -352,6 +412,17 @@ static tool_t const tools[] = {
         .help = help_notes,
     },
     {
+        .id = "cplx",
+        .title = "Complex",
+        .subtitle = "a + bi",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_RED,
+        .icon = icon_i,
+        .screen = APP_SCREEN_CPLX,
+        .needs_file = false,
+        .help = help_cplx,
+    },
+    {
         .id = "function",
         .title = "Function",
         .subtitle = "x and f(x)",
@@ -383,6 +454,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_POLY,
         .needs_file = false,
         .help = help_poly,
+    },
+    {
+        .id = "roots",
+        .title = "Root finder",
+        .subtitle = "bisect, Newton",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_VIOLET,
+        .icon = icon_target,
+        .screen = APP_SCREEN_ROOTS,
+        .needs_file = false,
+        .help = help_roots,
     },
     {
         .id = "triangle",
