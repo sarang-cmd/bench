@@ -75,9 +75,15 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
+          # fxSDK's CMakeLists asks pkg-config for libpng16, libusb-1.0,
+          # ncurses and SDL2 (udisks2 is switched off by the :noudisks2
+          # config).  The rest is what the SuperH binutils and GCC need.
           sudo apt-get install -y ca-certificates curl git python3 python3-pil \
-            build-essential cmake pkg-config libpng-dev libusb-1.0-0-dev \
-            libudev-dev libncurses-dev libgmp-dev libmpfr-dev libmpc-dev
+            build-essential cmake pkg-config \
+            libpng-dev libusb-1.0-0-dev libudev-dev libncurses-dev \
+            libsdl2-dev zlib1g-dev \
+            libgmp-dev libmpfr-dev libmpc-dev libisl-dev \
+            flex bison gawk texinfo gperf libtool-bin autoconf
 
       - name: Install GiteaPC
         run: |
@@ -104,7 +110,13 @@ jobs:
           # ten per step), with the characters that would break the syntax out.
           annotate() {
             local line
-            tail -n 10 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+            # The interesting line is usually a few above the end ("No package
+            # 'sdl2' found"), so match on the error words first and fall back to
+            # a plain tail when nothing matches.
+            {
+              tail -n 60 "$log" | grep -iE "no package|not found|cannot find|error:|failed" | tail -n 8
+              tail -n 2 "$log"
+            } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
               echo "::error title=toolchain install failed::${line:-<blank>}"
             done
           }

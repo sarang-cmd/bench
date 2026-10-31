@@ -19,10 +19,15 @@ export function Section({ id, children, className = "" }) {
   );
 }
 
-export function Eyebrow({ children, accent = "red" }) {
+export function Eyebrow({ children, accent = "red", tone = "dark" }) {
   return (
-    <p className="mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em]">
-      <span className={`inline-block h-3 w-3 border border-ink ${accents[accent].dot}`} />
+    <p
+      className={
+        "mb-3 flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] " +
+        (tone === "light" ? "text-paper/70" : "text-ink/70")
+      }
+    >
+      <span className={`inline-block h-3 w-3 border border-current ${accents[accent].dot}`} />
       {children}
     </p>
   );
@@ -66,10 +71,24 @@ export function Screen({ file, alt, className = "" }) {
   );
 }
 
-export function Chip({ children, className = "" }) {
+// tone instead of a className merge: Tailwind cannot resolve two competing
+// background utilities on one element, and the first chip came out invisible
+// (dark text on a paper background that won the cascade).
+const chipTones = {
+  paper: "bg-paper text-ink",
+  ink: "bg-ink text-paper",
+  yellow: "bg-yellow text-ink",
+};
+
+export function Chip({ children, tone = "paper", className = "" }) {
   return (
     <span
-      className={`inline-block border-3 border-ink bg-paper px-3 py-1 font-mono text-xs uppercase tracking-widest ${className}`}
+      className={
+        "inline-block border-3 border-ink px-3 py-1 font-mono text-xs uppercase tracking-widest " +
+        (chipTones[tone] || chipTones.paper) +
+        " " +
+        className
+      }
     >
       {children}
     </span>

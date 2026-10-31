@@ -153,9 +153,12 @@ def wordmark() -> "Image.Image":
     d.rectangle([0, 0, w - 5, h - 5], fill=PAPER)
     d.rectangle([0, 0, w - 5, h - 5], outline=INK, width=6)
 
-    # Red square: the one accent, aligned to the cap height.
-    d.rectangle([pad - 8, top + pad - 8, pad + 8, top + pad + 8], fill=RED)
-    d.rectangle([pad - 8, top + pad - 8, pad + 8, top + pad + 8], outline=INK,
+    # Red square: the one accent, centred on the middle of the cap height so
+    # it reads as a mark next to the word and not as a raised apostrophe.
+    mid = pad + th // 2
+    half = 16
+    d.rectangle([pad - 6, mid - half, pad - 6 + 2 * half, mid + half], fill=RED)
+    d.rectangle([pad - 6, mid - half, pad - 6 + 2 * half, mid + half], outline=INK,
                 width=4)
 
     d.text((pad + 46 - left, pad - top), text, font=font, fill=INK)
@@ -170,7 +173,7 @@ role="img" aria-label="Bench">
   <rect x="6" y="6" width="606" height="176" fill="#1a1818"/>
   <rect x="0" y="0" width="606" height="176" fill="#f4f3ee" stroke="#1a1818" \
 stroke-width="6"/>
-  <rect x="26" y="52" width="34" height="34" fill="#d92d27" stroke="#1a1818" \
+  <rect x="24" y="58" width="36" height="36" fill="#d92d27" stroke="#1a1818" \
 stroke-width="4"/>
   <text x="78" y="132" fill="#1a1818"
         font-family="'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif"
