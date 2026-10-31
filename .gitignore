@@ -1,0 +1,17 @@
+# Calculator build output
+/build-cg
+/build-fx
+/build-cg-push
+/*.g1a
+/*.g3a
+
+# Native test binaries
+/build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor
+.vscode
+*.sublime-workspace
