@@ -42,10 +42,30 @@ py-test:
 	@echo "== python tool tests =="
 	$(PYTHON) -m unittest discover -s tools -p "test_*.py" -v
 
-test-all: test py-test
+# Type-check the platform sources against real gint headers.  Needs the gint
+# include folder, which the fxSDK installs (fxsdk path shows where).
+# This is not a build: it checks names, signatures and warnings only.
+# gint's headers use __VA_OPT__ (a C23/C++20 feature also available in gnu17),
+# so this check uses the fxSDK's own language level and no -pedantic.
+GINT_WARN := -Wall -Wextra -Werror
+GINT_INC ?= $(HOME)/.local/include
+gint-check:
+	@test -d "$(GINT_INC)/gint" || { \
+	  echo "gint headers not found in $(GINT_INC)/gint"; \
+	  echo "set GINT_INC=/path/to/gint/include (see docs/toolchain.md)"; \
+	  exit 2; }
+	@mkdir -p build/gintstub/gint
+	@printf '%s\n' \
+	  '#ifndef GINT_CONFIG' \
+	  '#define GINT_CONFIG' \
+	  '#include <gint/defs/types.h>' \
+	  '#define GINT_VERSION "2.10.0"' \
+	  '#define GINT_HASH 0x0000000' \
+	  '#endif' > build/gintstub/gint/config.h
+	$(CC) -fsyntax-only -std=gnu17 $(GINT_WARN) -DFXCG50 \
+	  -Ibuild/gintstub -I$(GINT_INC) src/main.c
+	$(CC) -fsyntax-only -std=gnu17 $(GINT_WARN) -DFXCG50 \
+	  -Ibuild/gintstub -I$(GINT_INC) spike/main.c
+	@echo "gint header check passed: src/main.c and spike/main.c"
 
-clean:
-	rm -rf build
-	rm -rf tools/__pycache__
-
-.PHONY: all test test-all py-test clean
+.PHONY: all test test-all py-test gint-check clean
