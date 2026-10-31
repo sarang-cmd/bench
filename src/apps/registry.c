@@ -397,6 +397,28 @@ static char const help_stats[] =
     "Keys: digits type, EXE adds, DEL takes\n"
     "back a digit or a value.";
 
+static char const help_suvat[] =
+    "SUVAT and projectiles\n"
+    "Type any three of s, u, v, a and t.\n"
+    "The other two are worked out, with\n"
+    "the equation that gave each one.\n"
+    "\n"
+    "Use the arrows to pick a quantity,\n"
+    "type the number, press EXE. DEL on\n"
+    "an empty field un-knows it.\n"
+    "\n"
+    "F2 draws the flight path: range,\n"
+    "greatest height and time in the air\n"
+    "for a launch speed, angle and height.\n"
+    "\n"
+    "F3 switches g between 9.81 and 10.\n"
+    "Where a quadratic gives two times,\n"
+    "the first is shown and the second\n"
+    "is mentioned under it.\n"
+    "\n"
+    "Keys: digits type, EXE keeps, DEL\n"
+    "takes back, F1 starts again.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -542,6 +564,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_SIGFIG,
         .needs_file = false,
         .help = help_sigfig,
+    },
+    {
+        .id = "suvat",
+        .title = "SUVAT",
+        .subtitle = "motion, projectiles",
+        .category = TOOL_CAT_SCIENCE,
+        .accent = TH_YELLOW,
+        .icon = icon_circle,
+        .screen = APP_SCREEN_SUVAT,
+        .needs_file = false,
+        .help = help_suvat,
     },
     {
         .id = "settings",

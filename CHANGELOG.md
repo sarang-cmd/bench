@@ -44,6 +44,13 @@ next one.
   values as you type them, shows the summary and a box plot, has a screen for
   the working and a screen for the regression. Unverified on device.
 
+- **SUVAT and projectiles (F10)**: `src/core/suvat.c` solves any three of s, u,
+  v, a and t, one table entry per triple, and reports the equation each answer
+  came from; when a quadratic gives two sensible times it keeps the first and
+  names the second (73 native checks). `src/apps/app_suvat.c` fills the grid as
+  you type, marks worked-out values with a dot, and draws the flight path for a
+  launch speed, angle and height. Unverified on device.
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

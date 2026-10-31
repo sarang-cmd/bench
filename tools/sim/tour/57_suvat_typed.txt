@@ -1,0 +1,15 @@
+# tour step: 57_suvat_typed
+# From nothing, type s = 75, u = 20, a = -2 in that order: v = 10 m/s and
+# t = 5 s follow.  EXE moves on to the next unknown by itself.
+tool:suvat
+f1
+7
+5
+exe
+2
+0
+exe
+right
+minus
+2
+exe

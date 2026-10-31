@@ -37,6 +37,7 @@ typedef enum {
     APP_SCREEN_TRIANGLE,
     APP_SCREEN_SEQ,
     APP_SCREEN_STATS,
+    APP_SCREEN_SUVAT,
     APP_SCREEN_SIGFIG,
 } app_screen_t;
 
@@ -76,6 +77,7 @@ DECLARE_APP(roots);
 DECLARE_APP(triangle);
 DECLARE_APP(seq);
 DECLARE_APP(stats);
+DECLARE_APP(suvat);
 DECLARE_APP(sigfig);
 
 #endif /* BENCH_APP_H */

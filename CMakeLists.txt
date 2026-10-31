@@ -51,6 +51,7 @@ set(SOURCES
   src/core/stats.c
   src/core/settings.c
   src/core/sigfig.c
+  src/core/suvat.c
   src/core/triangle.c
   src/core/textsearch.c
   src/core/uncert.c
@@ -79,6 +80,7 @@ set(SOURCES
   src/apps/app_stats.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
+  src/apps/app_suvat.c
   src/apps/app_triangle.c
   src/apps/app_uncert.c
   src/apps/registry.c

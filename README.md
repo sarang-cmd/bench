@@ -2,10 +2,12 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Five study tools in one add-in for the Casio fx-CG 50.** Pacer times a
-practice paper, Uncertainty does error arithmetic, Cards drills flashcards with
-a Leitner schedule, Notes reads text and Markdown, Number theory covers gcd to
-CRT. One `.g3a`, one menu, no second add-in to install.
+**Fourteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
+Markdown, and the maths and science screens cover function tables, triangles,
+polynomials, root finding, sequences, complex numbers, number theory,
+statistics, SUVAT and projectiles, uncertainty and significant figures. One
+`.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
@@ -41,6 +43,8 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | ![Sequences](docs/images/42_seq_arith.png) | ![Binomials](docs/images/43_seq_binom.png) |
 | ![Complex numbers](docs/images/44_cplx_mul.png) | ![Complex power](docs/images/46_cplx_pow.png) |
 | ![Newton's method](docs/images/49_roots_newton.png) | ![Bisection](docs/images/50_roots_bisect.png) |
+| ![Statistics](docs/images/53_stats_list.png) | ![The working](docs/images/54_stats_work.png) |
+| ![SUVAT](docs/images/56_suvat_three.png) | ![Projectile](docs/images/58_suvat_path.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,
 rendered on a PC by `make sim` (see [Working on the code](#working-on-the-code)).
@@ -215,6 +219,39 @@ on.
 Rounding is half-up on the decimal digits, never on the binary float, so
 `1.2345` to 3 figures is `1.23` and `1.2355` is `1.24`.
 
+### Statistics
+Type the values; the summary, the box plot and the fences update as you go.
+Both quartile conventions are one key apart, because the IB and the spreadsheet
+disagree and the student should see which one they are being marked against.
+
+| Shown | For `2 4 4 4 5 5 7 9` |
+|---|---|
+| n, mean, range | 8, 5, 7 |
+| median, mode | 4.5, 4 (three times) |
+| sd | 2.000 population, 2.138 sample |
+| Q1, Q3, IQR | 4 / 6 (median method), 5.5 (linear), IQR 2 |
+| fences | 1 .. 9, outliers counted |
+| box plot | whiskers to the fences, box Q1 to Q3, median line |
+
+F2 turns the list into paired data, taken in x, y order: five points give
+`y = 2.2 + 0.6x`, `r = 0.775` and `r^2 = 0.600`. F4 writes the standard
+deviation out step by step; F3 swaps the quartile method.
+
+### SUVAT and projectiles
+Any three of `s`, `u`, `v`, `a`, `t` fix the other two. The screen fills the
+grid as you type and lists the equation behind each value, so the working is on
+the screen and not in your head.
+
+| Given | Worked out |
+|---|---|
+| `s = 45`, `u = 0`, `a = 10` | `v = 30 m/s`, `t = 3 s` |
+| `s = 75`, `u = 20`, `a = -2` | `v = 10 m/s`, `t = 5 s` (the other root is 15 s) |
+| `u = 20`, `v = 10`, `t = 5` | `a = -2 m/s^2`, `s = 75 m` |
+
+F2 draws the flight path for a launch speed, angle and height: `20 m/s` at `30`
+degrees from the ground gives `35.3 m` of range, a `5.10 m` peak and `2.04 s` in
+the air. F3 switches `g` between 9.81 and 10.
+
 ## Keys
 
 | Key | Where | What |
@@ -233,6 +270,11 @@ Rounding is half-up on the decimal digits, never on the binary float, so
 | F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
 | F1 / F2 | Sig figs | clear the number / practice |
 | F3 / F4 | Sequences | previous / next screen |
+| F1 / F2 | Statistics | clear the list / single and pairs |
+| F3 / F4 | Statistics | quartile method / the working |
+| F2 | SUVAT | the flight path |
+| F3 | SUVAT | g = 9.81 or 10 |
+| LEFT / RIGHT | SUVAT | pick a quantity |
 | F3 / F4 | Triangle | degrees / radians (re-solves) |
 | F2 | Triangle | the other triangle, when SSA has two |
 | F3 / F4 | Polynomials | previous / next screen |

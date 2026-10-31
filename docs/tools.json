@@ -112,9 +112,18 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 16,
+    "screen": 17,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
+  },
+  {
+    "id": "suvat",
+    "title": "SUVAT",
+    "subtitle": "motion, projectiles",
+    "category": "Science",
+    "screen": 16,
+    "needs_file": false,
+    "help": "SUVAT and projectiles\nType any three of s, u, v, a and t.\nThe other two are worked out, with\nthe equation that gave each one.\n\nUse the arrows to pick a quantity,\ntype the number, press EXE. DEL on\nan empty field un-knows it.\n\nF2 draws the flight path: range,\ngreatest height and time in the air\nfor a launch speed, angle and height.\n\nF3 switches g between 9.81 and 10.\nWhere a quadratic gives two times,\nthe first is shown and the second\nis mentioned under it.\n\nKeys: digits type, EXE keeps, DEL\ntakes back, F1 starts again."
   },
   {
     "id": "settings",
