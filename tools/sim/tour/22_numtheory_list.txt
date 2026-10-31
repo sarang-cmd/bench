@@ -1,5 +1,4 @@
 # tour step: 22_numtheory_list
 # starts at the home screen; see tools/sim/run_tour.sh
-down
-down
+f2
 exe

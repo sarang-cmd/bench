@@ -5,6 +5,12 @@ from the first line of the core to version 1.0.0 in the source tree.
 A fresh session should read this file first, then `AGENTS.md`, `docs/plan.md`
 and the task file for the milestone it is about to start.
 
+## V2 progress
+
+The V2 master prompt is a multi-session job: eleven workstreams, fifteen new
+tools, a WebAssembly simulator and an eight-page site. What is done so far, and
+what is not, is in the table at the end of this file.
+
 ## One sentence
 
 Bench is finished, tested on a PC, documented **and built**: `v1.0.0` carries
@@ -169,3 +175,63 @@ spike answers land:
 None pending from the milestone list: M0 to M9 are all written. The next real
 step is the hardware pass in "What needs the calculator", then, if the spike
 answers change anything, TASK-M2's file layer plus the eight assumptions above.
+
+
+## V2 workstream state
+
+| Workstream | State |
+|---|---|
+| A1 tile colour bug | **done**: measured foregrounds, 2 px icon outline, check in `make test` |
+| A2 tool registry | **done**: `src/apps/registry.c` is the only list; `docs/tools.json` is generated from it |
+| A3 home categories and pages | **done in source**, unverified on device: F1..F4, 3 x 2 grid, page dots, Study dashboard |
+| A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons |
+| A5 shared services | **not started**: expression engine, number entry, working lines, history, settings v2, help |
+| B overlap hunt | **done for every existing screen**: 28 scripts, 0 findings; worst cases added |
+| C fifteen tools | **not started** (F1..F15) |
+| D demo content | **not started** |
+| E settings v2 | **not started** |
+| F tutorial and help | **partly**: help text lives in the registry; the help screen itself is not built |
+| G WebAssembly simulator | **not started** |
+| H website v2 | **not started** |
+| I README and metadata | **not started** |
+| J spike docs | **done**: `docs/spike.md` says what it is and why it is not released |
+| K CI and release | **partly**: the screen checks run in `make test`; version stays 1.0.0 until 1.1.0 is cut |
+
+### Decisions taken without asking
+
+- **Text on paper is ink or blue.** Red is 4.46:1 on paper and teal 3.00:1, so
+  neither may carry body text. Alerts are ink; "good news" is blue.
+- **A paper plate instead of a darker colour.** The palette is fixed, so where
+  no palette colour reaches 4.5:1 on a tile the label sits on flat paper rather
+  than inventing a tint. This shows on the selected red, teal and violet tiles.
+- **The title floor is 3.0:1, body is 4.5:1.** Tile titles and the title bar are
+  treated as WCAG large text; they are the biggest, boldest labels on the
+  screen and the only way to keep ink on red.
+- **`STORE_NAME_MAX` 48 -> 72.** A 57-character name was silently left out of
+  every list. No storage layout change.
+- **The Study dashboard shows deck and note counts, not cards due and streak.**
+  Those need the Study log (F13) and Cards v2 (F15); the strip grows with them.
+- **The Tools category holds Settings and About** until F12 and the help screen
+  exist.
+
+### Found by the checks, fixed
+
+| Screen | Finding | Fix |
+|---|---|---|
+| Home | icon in the tile's own colour | measured foreground + outline |
+| Home | ink on red (2.75:1), small subtitle | paper plate |
+| Pacer run | paper on teal (3.00:1) gap line | plate inside the coloured band |
+| Pacer, Cards, Number theory | red cursor on the yellow field (2.91:1) | ink cursor |
+| Settings | teal "Saved to ..." (3.00:1) | ink |
+| Markdown | code span painted over the space before it | background starts after the previous span |
+| Markdown | code in teal on shade (2.28:1) | ink on shade |
+| Notes search | keyboard half-erased the note behind it | modal clears the content area first |
+| Notes search | the space key was an empty cell | marked with a bar |
+| Notes | a 57-character file name crossed the title bar | title cut to the room it has |
+| everywhere | 21 labels drawn in red or teal on paper | ink or blue |
+
+### Unverified on device
+
+Everything in this session. The hardware is the user's: the new home screen,
+the plates, the shadows, the keyboard change and the title-bar cut have been
+looked at in the host preview only.

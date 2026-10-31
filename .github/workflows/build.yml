@@ -83,6 +83,14 @@ jobs:
       - name: Python tool tests
         run: make py-test
 
+      # docs/tools.json is generated from the add-in's own registry; a
+      # hand-edited copy, or a tool added without regenerating it, fails here.
+      - name: The generated tool list matches the registry
+        run: |
+          make sim
+          python3 tools/gen_tools_json.py
+          git diff --exit-code docs/tools.json
+
       - name: Host preview of the screens
         run: |
           sudo apt-get update

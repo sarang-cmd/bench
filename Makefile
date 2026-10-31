@@ -34,7 +34,7 @@ build/tests:
 build/tests/%: tests/%.c $(CORE_SRC) $(CORE_HDR) tests/test_util.h | build/tests
 	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -o $@ $< $(CORE_SRC) $(LDLIBS)
 
-test: $(TEST_BIN)
+test: $(TEST_BIN) check-screens
 	@echo
 	@echo "== native core tests =="
 	@fail=0; for t in $(TEST_BIN); do ./$$t || fail=1; done; \
@@ -56,6 +56,7 @@ test-all: test py-test
 SIM_SRC := $(wildcard src/core/*.c) $(wildcard src/platform/*.c) \
            $(wildcard src/ui/*.c) $(wildcard src/apps/*.c) tools/sim/sim.c
 SIM_CFLAGS := -std=gnu11 -O1 -g -Wall -Wextra -Wno-missing-field-initializers \
+              -DBENCH_TRACE \
               -Wno-missing-braces \
               -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include
 SIM_HDR := $(wildcard src/*.h src/ui/*.h src/platform/*.h src/apps/*.h \
@@ -69,6 +70,14 @@ build/sim:
 	@mkdir -p build/sim
 
 sim: build/sim/bench
+
+# Overlap and contrast checks on every screen, run through the host preview.
+# tools/sim records every rectangle the add-in draws and fails on: two labels
+# overlapping, a label outside the window, a label in the title bar or softkey
+# strip, a label a later panel paints over, a label under WCAG AA, a softkey
+# label wider than its cell, or a tile icon that matches its tile.
+check-screens: sim
+	@tools/sim/check_screens.sh
 
 shots: sim
 	@tools/sim/run_tour.sh $(CURDIR)/docs/images

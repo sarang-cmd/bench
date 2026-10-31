@@ -1,4 +1,4 @@
 # tour step: 07_uncert_a
 # starts at the home screen; see tools/sim/run_tour.sh
-right
+f3
 exe

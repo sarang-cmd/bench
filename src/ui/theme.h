@@ -15,22 +15,17 @@
 
 /* ---- palette ------------------------------------------------------------ */
 
-/* #f4f3ee */
+/* The palette from docs/design.md, converted with col_rgb565() and checked
+ * against the hex values by tools/sim on every run (the "palette" check), so a
+ * hand-edited constant cannot drift. */
 #define TH_PAPER 0xF79D   /* #f4f3ee */
-/* #2f2d2e */
-#define TH_INK 0x2965     /* #2f2d2e */
-/* #d92d27 */
-#define TH_RED 0xD964     /* #d92d27 */
-/* #d9d7cd, panels and softkey strip */
-#define TH_SHADE 0xDEB9   /* #d9d7cd */
-/* #f2c230 */
-#define TH_YELLOW 0xF606  /* #f2c230 */
-/* #2f5fd0 */
-#define TH_BLUE 0x2AFA    /* #2f5fd0 */
-/* #1f9c8a */
-#define TH_TEAL 0x1CF1    /* #1f9c8a */
-/* #8b5cf6 */
+#define TH_INK 0x3166     /* #2f2d2e */
+#define TH_RED 0xD165     /* #d92d27 */
+#define TH_YELLOW 0xEE06  /* #f2c230 */
+#define TH_BLUE 0x32F9    /* #2f5fd0 */
+#define TH_TEAL 0x24F1    /* #1f9c8a */
 #define TH_VIOLET 0x8AFE  /* #8b5cf6 */
+#define TH_SHADE 0xD6B9   /* #d9d7cd */
 
 /* ---- layout ------------------------------------------------------------- */
 
@@ -41,6 +36,14 @@
 #define TH_PAD 6
 #define TH_GAP 4
 #define TH_LINE (scr_text_h() + 3)
+
+/* Neobrutalist rules from docs/design.md section 3: flat fills, square
+ * corners, hard offset shadows.  These are the only border widths and shadow
+ * offsets the add-in may use. */
+#define TH_BORDER 2       /* panel outline */
+#define TH_BORDER_SEL 3   /* the selected tile */
+#define TH_SHADOW 3       /* offset shadow, right and bottom */
+#define TH_ICON_OL 2      /* icon outline on a selected tile, 1 when not */
 #define TH_SOFT_W (SCR_W / 6)
 
 /* ---- Markdown style map (Phase A: colour and underline only) ------------ */
@@ -53,7 +56,7 @@
 #define TH_MD_BOLD TH_INK
 #define TH_MD_BOLD_BG TH_SHADE
 #define TH_MD_ITALIC TH_INK
-#define TH_MD_CODE TH_TEAL
+#define TH_MD_CODE TH_INK
 #define TH_MD_CODE_BG TH_SHADE
 #define TH_MD_QUOTE_BAR TH_RED
 #define TH_MD_RULE TH_SHADE

@@ -93,7 +93,7 @@ static void draw_setup(void)
 
     y += fh + TH_GAP + 2;
     if (err[0])
-        scr_text(TH_PAD, y, err, TH_RED);
+        scr_text(TH_PAD, y, err, TH_INK);
     else
     {
         scr_text(TH_PAD, y, "Enter: time and marks, then EXE.", TH_INK);
@@ -165,7 +165,7 @@ static void draw_plan(void)
 
     scr_text(TH_PAD, y, "Minutes per mark", TH_INK);
     nt_fit(pacer_mpm(&setup), 4, 12, num, (int)sizeof num);
-    scr_text_right(SCR_W - TH_PAD, y, num, TH_RED);
+    scr_text_right(SCR_W - TH_PAD, y, num, TH_INK);
     y += TH_LINE;
 
     nt_u64(count, num, (int)sizeof num);
@@ -259,8 +259,13 @@ static void draw_run(void)
         strcpy(line, gs == PACER_GAP_BEHIND ? "Behind by " : "Ahead by ");
         nt_append(line, (int)sizeof line, num);
     }
+    /* The label sits on a paper plate inside the coloured band.  Paper on
+     * red is 4.46:1 and on teal 3.00:1 - both under AA for body text - so the
+     * band stays as the signal and the words get ink on paper (12.3:1). */
+    if (gs != PACER_GAP_ON_PACE)
+        scr_fill(TH_PAD + 2, y + 2, w - 4, TH_LINE, TH_PAPER);
     scr_text(TH_PAD + 4, y + 2, line,
-             gs == PACER_GAP_ON_PACE ? TH_INK : TH_PAPER);
+             gs == PACER_GAP_ON_PACE ? TH_INK : TH_INK);
 
     /* Next checkpoint and time left. */
     y += TH_LINE + 10;
@@ -287,7 +292,7 @@ static void draw_run(void)
     scr_text(TH_PAD, y + TH_LINE, line, TH_INK);
 
     if (paused)
-        scr_text_right(SCR_W - TH_PAD, y + TH_LINE, "PAUSED", TH_RED);
+        scr_text_right(SCR_W - TH_PAD, y + TH_LINE, "PAUSED", TH_INK);
 
     w_softkeys((char const *const[6]){ "Mark", paused ? "Resume" : "Pause",
                                        "Finish", "", "", "" }, -1);
@@ -305,7 +310,7 @@ static void draw_done(void)
 
     nt_clock(t, num, (int)sizeof num);
     scr_text(TH_PAD, y, "Total time", TH_INK);
-    scr_text_right(SCR_W - TH_PAD, y, num, TH_RED);
+    scr_text_right(SCR_W - TH_PAD, y, num, TH_INK);
     y += TH_LINE + 2;
 
     nt_u64(done_marks, num, (int)sizeof num);

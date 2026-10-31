@@ -1,6 +1,3 @@
 # tour step: 26_settings
 # starts at the home screen; see tools/sim/run_tour.sh
-down
-down
-right
-exe
+f5

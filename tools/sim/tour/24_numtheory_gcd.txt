@@ -1,7 +1,6 @@
 # tour step: 24_numtheory_gcd
 # starts at the home screen; see tools/sim/run_tour.sh
-down
-down
+f2
 exe
 exe
 8

@@ -1,6 +1,6 @@
 # tour step: 21_notes_keyboard
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 right
 exe
 exe

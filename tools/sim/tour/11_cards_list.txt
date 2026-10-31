@@ -1,4 +1,4 @@
 # tour step: 11_cards_list
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 exe

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "pacer",
+    "title": "Pacer",
+    "subtitle": "min per mark",
+    "category": "Study",
+    "screen": 1,
+    "needs_file": false,
+    "help": "Pacer\nTimes a practice paper against a plan.\n\n1. Enter minutes, marks and the\n   checkpoint size.\n2. EXE starts the clock.\n3. F1 logs a mark, F2 pauses.\n\nThe gap line says how far ahead or\nbehind the plan you are.\n\nKeys: EXE start/stop, F1 mark, F2\npause, F3 finish, EXIT back."
+  },
+  {
+    "id": "cards",
+    "title": "Cards",
+    "subtitle": "Leitner drill",
+    "category": "Study",
+    "screen": 3,
+    "needs_file": true,
+    "help": "Cards\nFlashcards with a Leitner schedule.\n\nA deck is one file in Bench/cards,\none card per line:\n   question | answer\n\nRight answers move a card to the\nnext box, wrong ones send it back.\nProgress is saved when the session\nends, never during it.\n\nKeys: EXE reveal/mark, F1 right,\nF2 wrong, EXIT back."
+  },
+  {
+    "id": "notes",
+    "title": "Notes",
+    "subtitle": "text, Markdown",
+    "category": "Study",
+    "screen": 4,
+    "needs_file": true,
+    "help": "Notes\nReads .md and .txt from Bench/notes.\n\nMarkdown headings, lists, quotes,\nbold and code are drawn in the\npalette. Long lines wrap; the wrap\nwidth is a setting.\n\nKeys: UP/DOWN scroll, EXE page down,\nALPHA search, F2 headings, EXIT."
+  },
+  {
+    "id": "numtheory",
+    "title": "Number theory",
+    "subtitle": "gcd to CRT",
+    "category": "Math",
+    "screen": 5,
+    "needs_file": false,
+    "help": "Number theory\nNine functions, each with working.\n\ngcd, lcm, prime test, factorise,\nmodular inverse, CRT, divisors,\ntotient and base conversion.\n\nFactorisation shows a progress bar;\nEXIT cancels it.\n\nKeys: UP/DOWN choose, EXE open,\nEXIT back."
+  },
+  {
+    "id": "uncert",
+    "title": "Uncertainty",
+    "subtitle": "value and error",
+    "category": "Science",
+    "screen": 2,
+    "needs_file": false,
+    "help": "Uncertainty\nArithmetic with errors, to 1 or 2\nsignificant figures.\n\nType a value and its absolute error,\npick an operation, type the second\nvalue and error.\n\nChain mode keeps the result as the\nfirst value of the next step.\n\nKeys: F1..F3 operation, EXE apply,\nEXIT back."
+  },
+  {
+    "id": "settings",
+    "title": "Settings",
+    "subtitle": "figures, wrap",
+    "category": "Tools",
+    "screen": 6,
+    "needs_file": false,
+    "help": "Settings\nUncertainty figures, the Pacer\ncheckpoint size and the Notes wrap\nwidth.\n\nEvery value is also a line in\nBench/state/settings.cfg, one per\nline, safe to edit by hand.\n\nThe file is written only when a\nvalue changes.\n\nKeys: UP/DOWN choose, LEFT/RIGHT\nchange, EXIT back."
+  },
+  {
+    "id": "about",
+    "title": "About",
+    "subtitle": "version",
+    "category": "Tools",
+    "screen": 7,
+    "needs_file": false,
+    "help": "About\nVersion, build date, target and the\nstorage Bench uses.\n\nBench never reads or changes Exam\nMode. If the calculator is in Exam\nMode the add-in does not run at\nall; that is the OS, not us."
+  }
+]

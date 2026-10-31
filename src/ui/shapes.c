@@ -96,3 +96,75 @@ void sh_ring(int cx, int cy, int r, int thickness, int color)
         }
     }
 }
+
+/* ---- icons -------------------------------------------------------------- */
+
+void sh_square_icon(int x, int y, int size, int fill, int edge, int ol)
+{
+    if (ol > 0)
+        sh_square(x - ol, y - ol, size + 2 * ol, edge);
+    sh_square(x, y, size, fill);
+}
+
+void sh_circle_icon(int cx, int cy, int r, int fill, int edge, int ol)
+{
+    if (ol > 0)
+        sh_circle(cx, cy, r + ol, edge);
+    sh_circle(cx, cy, r, fill);
+}
+
+void sh_half_circle_icon(int cx, int cy, int r, int fill_h, int fill, int edge,
+                         int ol)
+{
+    if (ol > 0)
+        sh_half_circle(cx, cy, r + ol, edge, fill_h + ol);
+    sh_half_circle(cx, cy, r, fill, fill_h);
+}
+
+void sh_triangle_icon(int x, int y, int w, int h, int fill, int edge, int ol)
+{
+    if (ol > 0)
+        sh_triangle(x - 2 * ol, y - ol, w + 4 * ol, h + 2 * ol, edge);
+    sh_triangle(x, y, w, h, fill);
+}
+
+void sh_bars_icon(int x, int y, int w, int h, int fill, int edge, int ol)
+{
+    int bw;
+    int gap;
+
+    if (ol > 0)
+    {
+        /* The outline is drawn per bar, so all three keep their shape. */
+        int const ow = w + 2 * ol;
+        int const obw = (ow / 5 > 1 ? ow / 5 : 1);
+        int const ogap = (ow - 3 * obw) / 3;
+
+        sh_square(x - ol, y + h / 2 - ol, obw + 2 * ol, edge);
+        sh_square(x + obw + ogap - ol, y + h / 4 - ol, obw + 2 * ol, edge);
+        sh_square(x + 2 * (obw + ogap) - ol, y - ol, obw + 2 * ol, edge);
+        (void)ogap;
+    }
+    bw = w / 5 > 1 ? w / 5 : 1;
+    gap = (w - 3 * bw) / 3;
+    scr_fill(x, y + h / 2, bw, h - h / 2, fill);
+    scr_fill(x + bw + gap, y + h / 4, bw, h - h / 4, fill);
+    scr_fill(x + 2 * (bw + gap), y, bw, h, fill);
+}
+
+void sh_ring_icon(int cx, int cy, int r, int thickness, int fill, int edge,
+                  int ol)
+{
+    if (ol > 0)
+        sh_ring(cx, cy, r + ol, thickness + 2 * ol, edge);
+    sh_ring(cx, cy, r, thickness, fill);
+}
+
+void sh_square_frame_icon(int x, int y, int size, int fill, int edge, int ol)
+{
+    int const t = 3;
+
+    if (ol > 0)
+        sh_square_frame(x - ol, y - ol, size + 2 * ol, t + 2 * ol, edge);
+    sh_square_frame(x, y, size, t, fill);
+}

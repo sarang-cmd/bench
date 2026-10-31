@@ -1,0 +1,117 @@
+# Design system
+
+Neobrutalist: flat colour, square corners, thick ink lines, one hard shadow.
+Nothing here is decorative guesswork — the numbers that matter are measured by
+`make test`, and a screen that breaks a rule fails the build.
+
+## 1. Palette
+
+Eight colours, no more. The 5-6-5 values are what the hardware stores; the hex
+is what the design means. `tools/sim` checks one against the other on every run
+(the `palette` check), so a hand-edited constant cannot drift.
+
+| Name | Hex | 5-6-5 | Role |
+|---|---|---|---|
+| paper | `#f4f3ee` | `0xF79D` | the page, tile body, plates |
+| ink | `#2f2d2e` | `0x3166` | text, borders, shadows |
+| red | `#d92d27` | `0xD165` | Pacer, headings, rules, alert blocks |
+| yellow | `#f2c230` | `0xEE06` | Cards, the active field, the title hint |
+| blue | `#2f5fd0` | `0x32F9` | Uncertainty, H2 headings, good news |
+| teal | `#1f9c8a` | `0x24F1` | Notes |
+| violet | `#8b5cf6` | `0x8AFE` | Number theory |
+| shade | `#d9d7cd` | `0xD6B9` | panels, the softkey strip, code background |
+
+Every colour goes through `col_rgb565()` in `src/core/color.c`. The table above
+is the output of that function, not a hand conversion — an earlier version was
+converted by hand and was wrong by one step in six of the eight colours.
+
+## 2. Shape
+
+- Flat fills only. No gradients, no rounded corners, no anti-aliasing.
+- Borders: `TH_BORDER` (2 px) on panels and unselected tiles,
+  `TH_BORDER_SEL` (3 px) on the selected tile.
+- Hard offset shadow: `TH_SHADOW` (3 px) right and bottom. Selected tiles and
+  modals only — a shadow on everything reads as noise at 384x216.
+- Icons: one shape per tool, drawn twice — `edge` grown by `TH_ICON_OL`, then
+  `fill`. That outline is why an icon can never disappear into its tile.
+
+## 3. Type
+
+One font, one size, `TH_LINE` of leading. Hierarchy comes from colour, weight
+and position, not from size. Tile titles are the largest thing on the home
+screen by position, not by pixels — which is why they are held to the
+large-text contrast floor and body text is not.
+
+## 4. Contrast
+
+Measured, not chosen. `col_contrast()` implements WCAG relative luminance with a
+generated sRGB table (`lin_table.h`), because the calculator build has no `pow`.
+
+Two floors:
+
+| Text | Floor | Why |
+|---|---|---|
+| title bar, tile title | 3.0:1 | WCAG AA large text; these are the biggest, boldest labels |
+| every other label | 4.5:1 | WCAG AA body text |
+| an icon against its tile | 1.5:1 | enough to see two colours apart in daylight; the real rule is "never the same colour" |
+
+The measurements that shaped the rules:
+
+| Pair | Ratio | Verdict |
+|---|---|---|
+| ink on paper | 12.27 | the body text |
+| ink on red | 2.75 | **not readable** |
+| paper on red | 4.46 | fine for a title, short of AA for a subtitle |
+| ink on teal | 4.09 | not readable |
+| paper on teal | 3.00 | not readable |
+| paper on violet | 3.79 | not readable |
+| paper on blue | 5.30 | the one accent that carries paper text |
+| ink on yellow / shade / ink | 8.02 / 9.33 / 12.27 | all fine |
+| paper icon on shade | 1.31 | the Settings tile, and the trap that started this |
+
+So the rule is not "ink, or paper on blue and violet". It is:
+
+1. **Choose by measurement.** `col_better_on(fill, ink, paper)` returns whichever
+   of the two reads better on that fill.
+2. **If the winner still misses its floor, put a paper plate under the line.**
+   The plate is flat paper, no border: a highlight mark, not an input field.
+   Ink on paper is 12.27:1, so the line is readable whatever the tile colour.
+3. **Never draw a foreground in the colour behind it.** No text on a fill of the
+   same colour, no icon on a tile of its own colour.
+
+This is what the home screen does, and it is why the Pacer tile's subtitle sits
+on a paper plate while its title sits straight on the red.
+
+## 5. The checks
+
+`make test` builds `tools/sim` and runs every key script in `tools/sim/tour`
+through two checks. They are the acceptance test for this document.
+
+The add-in reports each rectangle it draws (`SCR_TRACE` in
+`src/platform/screen.h`); on the calculator the macro compiles to nothing, so
+the `.g3a` is unchanged. The host preview then fails the run on:
+
+| Check | Rule |
+|---|---|
+| labels overlap | two labels in the same pixels |
+| outside the window | a label that leaves the 384x216 area |
+| title bar or softkey strip | a content label drawn in either |
+| softkey label wider than its cell | a softkey that does not fit 64 px |
+| label painted over | a later panel covering part of an earlier label |
+| label under the contrast floor | measured from the pixels, not the constants |
+| icon and tile the same | an icon at 1.5:1 or less against its fill |
+| palette | a `TH_*` constant that is not the documented hex |
+
+The contrast check samples the framebuffer, so it catches what the constants
+say *and* what actually got drawn — the first version of this check found that
+it had been sampling raw framebuffer coordinates instead of the add-in's window
+coordinates, and had been "measuring" the 6,4 px OS border.
+
+## 6. Applying the system
+
+- Home screen: `src/apps/app_menu.c`
+- Tiles and icons: `src/apps/registry.c`
+- Widgets: `src/ui/widgets.c`, flat fills and `TH_BORDER`
+- Shapes: `src/ui/shapes.c`, rasterised without libm
+- Site: the same palette, the same hard shadows, the same square corners
+- Brand files: `tools/brand/make_brand.py`

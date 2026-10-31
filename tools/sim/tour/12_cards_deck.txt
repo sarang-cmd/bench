@@ -1,5 +1,5 @@
 # tour step: 12_cards_deck
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 exe
 exe

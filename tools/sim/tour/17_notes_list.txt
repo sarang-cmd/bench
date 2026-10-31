@@ -1,5 +1,5 @@
 # tour step: 17_notes_list
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 right
 exe

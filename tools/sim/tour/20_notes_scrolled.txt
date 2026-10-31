@@ -1,6 +1,6 @@
 # tour step: 20_notes_scrolled
 # starts at the home screen; see tools/sim/run_tour.sh
-down
+right
 right
 exe
 exe
