@@ -2,12 +2,21 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Nineteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+<!-- BADGES:BEGIN -->
+[![version](https://img.shields.io/badge/version-1.0.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.0.0)
+[![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
+[![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
+[![tools](https://img.shields.io/badge/tools-18-d92d27)](docs/tools.json)
+[![screens](https://img.shields.io/badge/screens-75-1f9c8a)](docs/images)
+<!-- BADGES:END -->
+
+**Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
-statistics, SUVAT and projectiles, moles, bases and bits, uncertainty and
-significant figures. One
+statistics, lab graphs with error bars, SUVAT and projectiles, moles, bases and
+bits, uncertainty and significant figures, plus a study log that adds up the
+minutes you actually spent. One
 `.g3a`, one menu, no second add-in to install.
 
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
@@ -27,6 +36,17 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | Built with | fxSDK + gint 2.10, C11 |
 | Version | 1.0.0 |
 | Licence | MIT (see `LICENSE`) |
+
+<!-- STATS:BEGIN -->
+| | |
+|---|---|
+| Tools | 18 in 3 categories |
+| Screens captured | 75 |
+| Tour scripts | 75 |
+| Native test programs | 29 |
+| C source | 21,580 lines in 100 files |
+| Version | 1.0.0 |
+<!-- STATS:END -->
 
 ## Screens
 

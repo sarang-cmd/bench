@@ -80,6 +80,9 @@ jobs:
       - name: Build and run the native test suite
         run: make test
 
+      - name: The README's numbers match the repository
+        run: python3 tools/gen_readme_stats.py --check
+
       - name: Python tool tests
         run: make py-test
 
