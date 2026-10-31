@@ -6,8 +6,8 @@
 [![version](https://img.shields.io/badge/version-1.0.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.0.0)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
-[![tools](https://img.shields.io/badge/tools-18-d92d27)](docs/tools.json)
-[![screens](https://img.shields.io/badge/screens-75-1f9c8a)](docs/images)
+[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app%2Fbadge-tools.json)](docs/tools.json)
+[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app%2Fbadge-screens.json)](docs/images)
 <!-- BADGES:END -->
 
 **Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice

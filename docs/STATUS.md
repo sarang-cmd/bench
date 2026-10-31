@@ -186,12 +186,12 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy; the site's ink was brought back to `#2f2d2e` to match |
 | A5 shared services | **partly**: help screen and paging done; `core/expr.c` is the expression engine (123 checks, shunting-yard, column-numbered errors); `core/mathfn.c` gives core sqrt, exp, ln and trigonometry without libm. Number entry as a shared widget, working lines, result history and settings v2 are **not** started |
-| B overlap hunt | **done for every existing screen**: 75 tour scripts, 0 findings, worst cases included; the browser-width checks (320..1440 px) are **not** done |
+| B overlap hunt | **done**: 75 tour scripts, 0 findings, worst cases included; `site/scripts/check-widths.mjs` sweeps all eight routes at 320, 390, 768, 1024 and 1440 px in CI (horizontal scroll, right-edge crossings, over-wide boxes). Chromium could not be downloaded in this environment, so that sweep has run only in CI |
 | C fifteen tools | **15 of 15**: F1 Function table, F2 Triangle, F3 Polynomials, F4 Root finder, F5 Sequences, F6 Complex numbers, F7 Statistics, F8 Lab graph, F9 Sig figs, F10 SUVAT, F11 Moles, F12 Base and bits, F13 Study log, F14 Notes v2 (word count), F15 Cards v2 (mixed order) |
 | D demo content | **done**: `demo/` = 3 notes (headings, bold, lists, quotes, code fences), 3 decks (26 cards) and a 16-session study log, all in my own words and marked **needs human proofreading**; `tests/test_demo_files.c` parses every file with the add-in's parsers (108 checks). Copy instructions are in `demo/README.md` |
 | E settings v2 | **done**: five rows (uncertainty figures, pacer checkpoint, note width, angles default, first-run hint); `angle_unit` seeds the Triangle tool's unit and `tour_done` retires the home-screen hint; 687 native checks in `tests/test_settings.c`; files from 1.0.0 still load. Unverified on device |
 | F tutorial and help | **done for the written tour**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run hint and `tour_done` are in; `docs/TUTORIAL.md` walks the six steps the site's `/tutorial` page shows, with the key tables and the real empty-state strings. Not done: a multi-screen guided tour inside the add-in (the hint plus per-tool help is the whole of it) |
-| G WebAssembly simulator | **not started** (the PC simulator exists; there is no `bench.wasm`) |
+| G WebAssembly simulator | **built, not verified**: `tools/sim/sim.c` has an `__EMSCRIPTEN__` path (keys from the page, RGBA frame out), `tools/wasm/build.sh` builds it with Asyncify from the same sources as the screenshots, `/simulator` loads it when deployed and falls back to the gallery when not, and an optional CI job produces the artifact. **No emscripten here, so it has never been compiled, let alone run** |
 | H website v2 | **done**: eight routes (`/`, `/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog`, `/about`), a 120-line router with real links, per-route title/description/canonical/OG tags, eight generated Open Graph cards, About statistics and the SHA-256 from the build, changelog generated from `CHANGELOG.md`, `check-pages.mjs` rendering all eight routes in CI, `vercel.json` rewriting deep links, sitemap with all eight. The browser-width sweep (320..1440 px) is still **not** run: there is no browser here |
 | I README and metadata | **done**: badges and a generated stats block in the README (`make stats`, `tools/gen_readme_stats.py`, checked in CI), `CONTRIBUTING.md` with the check list and the generated-file table, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`, an issue template and an issue template config |
 | J spike docs | **done**: `docs/spike.md` says what the spike is and why it is not released, `spike/spike.diff` rebuilds it, CI ships it in its own `bench-spike` artifact. A hardware report template and the Settings "Hardware report" screen are **not** done |
@@ -260,3 +260,31 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 Everything in this session. The hardware is the user's: the new home screen,
 the inverted selection, the shadows, the help screen, the keyboard change and
 the title-bar cut have been looked at in the host preview only.
+
+## V2: where it stands
+
+| Workstream | State |
+|---|---|
+| A design system, tile bug, registry | done |
+| A5 shared services | partly: help, paging and the expression engine are in; the shared number-entry widget and result history are not |
+| B overlap and width sweeps | done, the width sweep in CI |
+| C fifteen tools | done |
+| D demo content | done, **needs human proofreading** |
+| E settings v2 | done |
+| F tutorial and help | done for the written tour; no in-app guided tour |
+| G WebAssembly simulator | built, **never compiled or run here** (no emscripten) |
+| H website v2 | done |
+| I README and metadata | done |
+| J hardware report | document ready, **no V2 run on a device** |
+| K CI and release | done except a signed release and a link checker |
+
+What is left is not code in this repository. It is:
+
+1. **A hardware pass on a real fx-CG 50** for every V2 feature, following
+   `docs/HARDWARE.md`. Until then those features stay "unverified on device".
+2. **An emscripten build of the simulator**, first compile included. The glue is
+   written and the CI job is there; nothing has run it.
+3. **The shared number-entry widget and result history** (A5), which are the only
+   parts of the V2 brief with no code at all.
+4. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
+   then update the badges that name the version.

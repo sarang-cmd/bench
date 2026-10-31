@@ -32,6 +32,23 @@ node scripts/check-pages.mjs
 npm run build
 ```
 
+The browser sweep needs Chromium and a preview server:
+
+```sh
+cd site
+npm run build
+npx vite preview --port 4173 &
+npx playwright install chromium
+node scripts/check-widths.mjs --url http://localhost:4173
+```
+
+The WebAssembly build is optional and needs emscripten:
+
+```sh
+sh tools/wasm/build.sh      # writes build-wasm/bench.js and bench.wasm
+cd site && npm run wasm     # copies it into public/sim for the simulator page
+```
+
 ## Generated files
 
 Do not edit these by hand; regenerate them and commit the result:

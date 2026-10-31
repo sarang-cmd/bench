@@ -58,4 +58,11 @@ const stats = {
 };
 
 writeFileSync(join(site, "src", "stats.generated.json"), JSON.stringify(stats, null, 2) + "\n");
+
+// shields.io endpoint documents, so a README badge can be live instead of a
+// number someone forgot to update. See [tools] and [screens] in the README.
+const badge = (label, message, color) =>
+  JSON.stringify({ schemaVersion: 1, label, message, color }, null, 2) + "\n";
+writeFileSync(join(site, "public", "badge-tools.json"), badge("tools", String(stats.tools), "d92d27"));
+writeFileSync(join(site, "public", "badge-screens.json"), badge("screens", String(stats.screens), "1f9c8a"));
 console.log(`site stats: ${stats.tools} tools, ${stats.screens} screens, ${stats.testPrograms} test programs`);

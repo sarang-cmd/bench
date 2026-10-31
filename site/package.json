@@ -6,9 +6,10 @@
   "description": "Landing page for Bench, the Casio fx-CG 50 study add-in.",
   "scripts": {
     "images": "node scripts/copy-images.mjs",
+    "wasm": "node scripts/copy-wasm.mjs",
     "check": "node scripts/check-images.mjs",
-    "dev": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/copy-images.mjs && vite",
-    "build": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/check-images.mjs && node scripts/copy-images.mjs && vite build",
+    "dev": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite",
+    "build": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/check-images.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "addin": "node scripts/fetch-addin.mjs",
     "gen-tools": "node scripts/gen-tools.mjs",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.1.2",
     "autoprefixer": "^10.4.20",
+    "playwright": "^1.64.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.5"

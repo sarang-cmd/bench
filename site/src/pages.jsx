@@ -12,6 +12,7 @@ import Tools from "./components/Tools.jsx";
 import Keys from "./components/Keys.jsx";
 import Tour from "./components/Tour.jsx";
 import Install from "./components/Install.jsx";
+import WasmSim from "./components/WasmSim.jsx";
 import { Link } from "./router.jsx";
 import { Blurb, BruteButton, BruteLink, Chip, Eyebrow, Heading, Screen, Section } from "./ui.jsx";
 
@@ -60,7 +61,7 @@ export function SimulatorPage() {
         eyebrow="In the browser"
         accent="violet"
         title="The screens, without the calculator."
-        lede="Every picture below came out of the add-in itself: the same C, compiled against a stand-in for gint, driven by a key script and captured from its frame buffer. Scroll the gallery to walk the whole menu."
+        lede="Every picture below came out of the add-in itself: the same C, compiled against a stand-in for gint, driven by a key script and captured from its frame buffer. Above them is the same binary compiled to WebAssembly, when this deployment carries one."
       >
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Card>
@@ -71,11 +72,11 @@ export function SimulatorPage() {
             </p>
           </Card>
           <Card>
-            <p className="font-mono text-xs uppercase tracking-widest text-ink/60">Not built yet</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-ink/60">Interactive</p>
             <p className="mt-2 text-sm leading-relaxed">
-              An interactive WebAssembly build, so the real add-in answers key presses in the
-              browser. It needs a toolchain this machine does not have; it is tracked as
-              workstream G and is honestly not done.
+              When the WebAssembly build is deployed, the add-in itself runs above: no
+              re-implementation, the same C, keys from the buttons. When it is not, this page says
+              so and the gallery below stands in.
             </p>
           </Card>
           <Card>
@@ -86,6 +87,7 @@ export function SimulatorPage() {
             </p>
           </Card>
         </div>
+        <WasmSim />
       </Page>
       <Tour />
     </>

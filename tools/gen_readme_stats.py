@@ -63,8 +63,13 @@ def badges(c):
         "(https://github.com/sarang-cmd/bench/actions/workflows/build.yml)",
         "[![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)]"
         "(https://github.com/sarang-cmd/bench/blob/main/LICENSE)",
-        f"[![tools](https://img.shields.io/badge/tools-{c['tools']}-d92d27)](docs/tools.json)",
-        f"[![screens](https://img.shields.io/badge/screens-{c['shots']}-1f9c8a)](docs/images)",
+        # Live badges: the numbers come from the site's shields endpoint files,
+        # which gen-stats.mjs writes from the repository, so a stale badge is
+        # impossible rather than merely unlikely.
+        "[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app"
+        "%2Fbadge-tools.json)](docs/tools.json)",
+        "[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app"
+        "%2Fbadge-screens.json)](docs/images)",
         BADGES_END,
     ])
 

@@ -16,6 +16,22 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **WebAssembly build, and the loader that copes without it (V2, workstream
+  G)**: `tools/sim/sim.c` gains an `__EMSCRIPTEN__` path - keys from the page,
+  the framebuffer handed back as RGBA - and `tools/wasm/build.sh` compiles the
+  same sources the screenshots come from with emscripten and Asyncify. The
+  binary is a build artifact and is not in git: the site's `/simulator` page
+  loads it when this deployment has one and says so in one line when it does
+  not, and the gallery stays underneath either way. CI has an optional job for
+  it. **Not built or run here**: there is no emscripten in this environment, so
+  the C is unverified by compilation.
+
+- **Browser widths in CI (V2, workstream B)**: `site/scripts/check-widths.mjs`
+  loads all eight routes at 320, 390, 768, 1024 and 1440 px and fails on a
+  horizontal scrollbar, an element that crosses the right edge or one wider than
+  the viewport. Chromium could not be downloaded here, so the sweep has only run
+  in CI; the result of that first run is in the pull request.
+
 - **Demo content (V2, workstream D)**: `demo/` holds three notes, three decks
   and a fortnight study log so a fresh install is not three empty screens. The
   text is written from scratch, not copied from a booklet or a past paper, and
