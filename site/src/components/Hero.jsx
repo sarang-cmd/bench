@@ -23,7 +23,7 @@ export default function Hero({ version }) {
             <Chip>MIT</Chip>
           </div>
 
-          <h1 className="text-5xl font-black leading-[0.95] tracking-tighter sm:text-6xl lg:text-7xl">
+          <h1 className="text-[2rem] font-black leading-[0.95] tracking-tighter sm:text-5xl lg:text-7xl">
             Five study tools
             <br />
             <span className="bg-yellow px-1 [box-decoration-break:clone]">in one</span> add-in.
@@ -49,7 +49,7 @@ export default function Hero({ version }) {
             {stats.map(([value, label]) => (
               <div key={label}>
                 <dt className="font-mono text-xs uppercase tracking-widest text-ink/60">{label}</dt>
-                <dd className="mt-1 text-2xl font-black sm:text-3xl">{value}</dd>
+                <dd className="mt-1 text-lg font-black sm:text-2xl lg:text-3xl">{value}</dd>
               </div>
             ))}
           </dl>

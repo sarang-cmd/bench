@@ -48,7 +48,7 @@ First release. One add-in, five tools, settings and an About screen.
   tests, the preview, and builds `Bench-<version>.g3a` with the real fxSDK,
   attaching it to the release on a `v*` tag.
 - **Docs**: `README.md`, `docs/STATUS.md`, `docs/toolchain.md`, `docs/spike.md`,
-  `site/index.html` (landing page).
+  `site/` (the landing page: React 18 + Vite + Tailwind, deployed on Vercel).
 
 ### Storage layout (new)
 ```

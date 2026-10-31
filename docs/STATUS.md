@@ -86,7 +86,8 @@ tools/          md2bench.py + test_md2bench.py
 spike/          the M1 add-in (throwaway, kept for the answers)
 assets-cg/      icon-uns.png, icon-sel.png, fxconv-metadata.txt
 docs/           plan, tasks/, toolchain, spike, STATUS, samples/, images/
-site/           landing page (index.html, style.css), old guide kept
+site/           landing page, React + Vite + Tailwind (source in site/src,
+                screenshots copied from docs/images at build time)
 .github/        workflows/build.yml  (native tests, preview, .g3a, release)
 ```
 

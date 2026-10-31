@@ -53,7 +53,7 @@ export default function Tour() {
     <Section id="tour" className="py-14 sm:py-20">
       <Eyebrow accent={tool.accent}>The tour</Eyebrow>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <Heading>Twenty-six screens, all of them real.</Heading>
+        <Heading>Twenty-six screens, every one of them real.</Heading>
         <Blurb className="max-w-md text-base sm:text-base">
           Every picture here was drawn by the add-in&rsquo;s own code, rendered on
           a PC by <code className="font-mono">make sim</code>. No mock-ups.
@@ -75,7 +75,7 @@ export default function Tour() {
               className={
                 "border-3 border-ink px-3 py-2 text-sm font-black sm:text-base " +
                 (active
-                  ? `${accents[t.accent].bg} text-ink shadow-brute-sm`
+                  ? `${accents[t.accent].bg} ${accents[t.accent].fg} shadow-brute-sm`
                   : "bg-paper hover:bg-shade")
               }
             >
