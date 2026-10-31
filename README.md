@@ -124,7 +124,9 @@ Unsigned 64-bit arithmetic, inputs up to 18 digits, no 128-bit integers.
 | F1 / F2 | Notes | search / next hit |
 | F1 | Number theory | run the function |
 | F3 / F4 | Notes | heading list / jump to the top |
-| F5 / F6 | home | Settings / About |
+| F5 | everywhere | help for this screen (on the home screen, for the selected tile) |
+| F6 | home | Settings (About is a tile in the Tools category) |
+| F1..F4 | home | the four categories |
 | digits, `.`, `-` | number fields | type a value, DEL removes |
 
 Text entry does not use the ALPHA key. The search field opens a small on-screen

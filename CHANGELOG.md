@@ -24,8 +24,8 @@ next one.
   unverified on device: nobody has looked at the new screen on a calculator yet.
 - **Labels drawn in a colour too close to their background.** Ink on red is
   2.75:1, paper on teal 3.00:1, a red cursor on the yellow field 2.91:1. Text is
-  now ink or blue on paper, and a paper plate carries a label that cannot reach
-  4.5:1 on its tile.
+  now ink or blue on paper, and a selected tile is ink with paper text instead
+  of a tinted tile with a paper plate under the label.
 - **The keyboard covered half of the note behind it.** The modal now clears the
   content area first, and the space key is marked instead of being drawn as an
   empty cell.
@@ -45,10 +45,17 @@ next one.
 - A home screen with categories on F1..F4, a 3 x 2 tile grid, pages with dots,
   a dashboard strip on Study, and the selected tile's hard shadow. This is
   unverified on device.
+- **Help on every screen (F5).** One page per tool, rendered from the tool's
+  registry row: no second copy to drift. Paging (count, copy, clamp) is
+  `src/core/help.c`, 37 native checks. On the home screen F5 shows the help for
+  the tile under the cursor; in a tool it shows that tool's help; EXE or EXIT
+  returns to the screen that asked. Unverified on device.
+- Screens with no softkeys draw a plain hint strip (`w_strip`) instead of six
+  empty divider cells, and an empty F5 slot advertises F5 as help.
 - `make check-screens` (part of `make test`): every key script is checked for
   overlapping labels, labels off-screen, labels in the title bar or softkey
   strip, labels painted over, text under WCAG AA, softkey labels too wide, and
-  icons that match their tile. 28 scripts, 0 findings.
+  icons that match their tile. 30 scripts, 0 findings.
 - Worst-case screens: a 120-character deck, a 57-character file name with
   89-character table cells.
 - `docs/design.md`: the palette with measured contrast ratios, the rules, and
