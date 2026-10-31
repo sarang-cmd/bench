@@ -79,11 +79,17 @@ const grouped = categories
   })
   .filter(Boolean);
 
-// Category order, then registry order inside a category: the page reads Study,
-// Math, Science, Tools, and the registry still decides what sits where.
+// Category order, then the page order the copy asks for (`rank`), then the
+// registry's own order. The registry decides which tools exist; only the reading
+// order is a site decision.
 const ordered = grouped.flatMap((group) =>
-  group.tools.map((id) => tools.find((tool) => tool.id === id)),
+  group.tools
+    .map((id) => tools.find((tool) => tool.id === id))
+    .sort((a, b) => (a.rank ?? 100) - (b.rank ?? 100)),
 );
+for (const group of grouped) {
+  group.tools = ordered.filter((tool) => tool.category === group.name).map((tool) => tool.id);
+}
 
 writeFileSync(
   outPath,

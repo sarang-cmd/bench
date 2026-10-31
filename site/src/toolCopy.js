@@ -10,6 +10,7 @@
 
 export const toolCopy = {
   pacer: {
+    rank: 1,
     accent: "red",
     tag: "0.5-90 minutes",
     summary:
@@ -36,6 +37,7 @@ export const toolCopy = {
   },
 
   cards: {
+    rank: 2,
     accent: "yellow",
     tag: "Leitner drill",
     summary:
@@ -63,6 +65,7 @@ export const toolCopy = {
   },
 
   notes: {
+    rank: 3,
     accent: "teal",
     tag: "Markdown viewer",
     summary:
@@ -89,6 +92,7 @@ export const toolCopy = {
   },
 
   function: {
+    rank: 1,
     accent: "blue",
     tag: "expression engine",
     summary:
@@ -114,6 +118,7 @@ export const toolCopy = {
   },
 
   triangle: {
+    rank: 2,
     accent: "yellow",
     tag: "SSS to SSA",
     summary:
@@ -138,6 +143,7 @@ export const toolCopy = {
   },
 
   poly: {
+    rank: 3,
     accent: "violet",
     tag: "to degree 8",
     summary:
@@ -163,6 +169,7 @@ export const toolCopy = {
   },
 
   roots: {
+    rank: 4,
     accent: "red",
     tag: "bisection, Newton",
     summary:
@@ -188,6 +195,7 @@ export const toolCopy = {
   },
 
   seq: {
+    rank: 5,
     accent: "teal",
     tag: "terms and sums",
     summary:
@@ -212,6 +220,7 @@ export const toolCopy = {
   },
 
   cplx: {
+    rank: 6,
     accent: "violet",
     tag: "a + bi",
     summary:
@@ -237,6 +246,7 @@ export const toolCopy = {
   },
 
   numtheory: {
+    rank: 7,
     accent: "violet",
     tag: "unsigned 64-bit",
     summary:
@@ -262,6 +272,7 @@ export const toolCopy = {
   },
 
   uncert: {
+    rank: 1,
     accent: "blue",
     tag: "error arithmetic",
     summary:
@@ -287,6 +298,7 @@ export const toolCopy = {
   },
 
   sigfig: {
+    rank: 2,
     accent: "blue",
     tag: "count, round, form",
     summary:
