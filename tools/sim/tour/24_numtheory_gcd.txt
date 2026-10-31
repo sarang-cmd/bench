@@ -1,12 +1,12 @@
 # tour step: 24_numtheory_gcd
-# run with tools/sim/run_tour.sh, which draws every step
+# starts at the home screen; see tools/sim/run_tour.sh
 down
 down
 exe
 exe
-7
-1
-down
 8
+4
+down
 3
+6
 exe

@@ -1,0 +1,25 @@
+{
+  "name": "bench-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Landing page for Bench, the Casio fx-CG 50 study add-in.",
+  "scripts": {
+    "images": "node scripts/copy-images.mjs",
+    "check": "node scripts/check-images.mjs",
+    "dev": "npm run images && vite",
+    "build": "npm run check && npm run images && vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11"
+  }
+}

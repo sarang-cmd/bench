@@ -29,6 +29,8 @@ def main(argv):
         big.quantize(colors=16, method=Image.MEDIANCUT, dither=Image.NONE).save(
             ppm.with_suffix(".png"), optimize=True
         )
+        # The PPM is a scratch frame: the PNG is the artefact that is kept.
+        ppm.unlink()
         count += 1
     print(f"{count} screenshot(s) converted in {folder}")
     return 0

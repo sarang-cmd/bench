@@ -30,7 +30,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 |---|---|
 | ![Pacer plan](docs/images/03_pacer_plan.png) | ![Pacer run](docs/images/04_pacer_run.png) |
 | ![Uncertainty result](docs/images/10_uncert_result.png) | ![Cards](docs/images/14_cards_answer.png) |
-| ![Markdown](docs/images/18_notes_markdown.png) | ![Number theory](docs/images/24_numbertheory_gcd.png) |
+| ![Markdown](docs/images/18_notes_markdown.png) | ![Number theory](docs/images/24_numtheory_gcd.png) |
 | ![Cards boxes](docs/images/16_cards_boxes.png) | ![Settings](docs/images/26_settings.png) |
 
 Every picture in `docs/images/` is a real frame drawn by the add-in's own code,

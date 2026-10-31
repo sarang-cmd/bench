@@ -116,50 +116,65 @@ def card() -> Image.Image:
     return img
 
 
+WORDMARK_FONTS = [
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+]
+
+
+def wordmark() -> "Image.Image":
+    """BENCH in a heavy grotesque, black, with the red square for the counter.
+
+    Drawn from a real font (DejaVu Sans Bold) rather than assembled out of
+    rectangles: the previous hand-built version was unreadable.
+    """
+    from PIL import ImageFont
+
+    font = None
+    for path in WORDMARK_FONTS:
+        try:
+            font = ImageFont.truetype(path, 132)
+            break
+        except OSError:
+            continue
+    if font is None:
+        raise SystemExit("DejaVu Sans Bold not found; install fonts-dejavu")
+
+    text = "BENCH"
+    pad = 26
+    left, top, right, bottom = font.getbbox(text)
+    tw, th = right - left, bottom - top
+    w, h = tw + pad * 2 + 54, th + pad * 2
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    # Paper plate with the hard offset shadow, the house style.
+    d.rectangle([4, 4, w - 1, h - 1], fill=INK)
+    d.rectangle([0, 0, w - 5, h - 5], fill=PAPER)
+    d.rectangle([0, 0, w - 5, h - 5], outline=INK, width=6)
+
+    # Red square: the one accent, aligned to the cap height.
+    d.rectangle([pad - 8, top + pad - 8, pad + 8, top + pad + 8], fill=RED)
+    d.rectangle([pad - 8, top + pad - 8, pad + 8, top + pad + 8], outline=INK,
+                width=4)
+
+    d.text((pad + 46 - left, pad - top), text, font=font, fill=INK)
+    return img
+
+
 def wordmark_svg() -> str:
-    return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" \
+    """The same wordmark as live text: no hand-built letterforms."""
+    return """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 190" \
 role="img" aria-label="Bench">
   <title>Bench</title>
-  <rect x="6" y="6" width="508" height="108" fill="#f4f3ee" stroke="#1a1818" \
+  <rect x="6" y="6" width="606" height="176" fill="#1a1818"/>
+  <rect x="0" y="0" width="606" height="176" fill="#f4f3ee" stroke="#1a1818" \
 stroke-width="6"/>
-  <rect x="18" y="18" width="26" height="26" fill="#d92d27" stroke="#1a1818" \
-stroke-width="3"/>
-  <g fill="#1a1818">
-    <rect x="58" y="30" width="14" height="60"/>
-    <rect x="70" y="30" width="26" height="10"/>
-    <rect x="92" y="30" width="10" height="22"/>
-    <rect x="70" y="50" width="24" height="10"/>
-    <rect x="70" y="58" width="28" height="10"/>
-    <rect x="94" y="66" width="10" height="24"/>
-    <rect x="70" y="80" width="26" height="10"/>
-  </g>
-  <g fill="#1a1818">
-    <rect x="130" y="30" width="40" height="10"/>
-    <rect x="130" y="30" width="10" height="60"/>
-    <rect x="130" y="55" width="32" height="10"/>
-    <rect x="130" y="80" width="40" height="10"/>
-  </g>
-  <g fill="#1a1818">
-    <rect x="190" y="30" width="10" height="60"/>
-    <rect x="218" y="30" width="10" height="60"/>
-    <rect x="190" y="30" width="38" height="10"/>
-    <rect x="190" y="80" width="38" height="10"/>
-  </g>
-  <g fill="#1a1818">
-    <rect x="248" y="30" width="10" height="60"/>
-    <rect x="276" y="30" width="10" height="60"/>
-    <rect x="248" y="30" width="38" height="10"/>
-  </g>
-  <g fill="#1a1818">
-    <rect x="306" y="30" width="10" height="60"/>
-    <rect x="334" y="30" width="10" height="60"/>
-    <rect x="306" y="30" width="38" height="10"/>
-    <rect x="306" y="55" width="30" height="10"/>
-  </g>
-  <rect x="360" y="30" width="10" height="60" fill="#d92d27"/>
-  <rect x="380" y="30" width="46" height="10" fill="#2f5fd0"/>
-  <rect x="380" y="55" width="34" height="10" fill="#1f9c8a"/>
-  <rect x="380" y="80" width="52" height="10" fill="#8b5cf6"/>
+  <rect x="26" y="52" width="34" height="34" fill="#d92d27" stroke="#1a1818" \
+stroke-width="4"/>
+  <text x="78" y="132" fill="#1a1818"
+        font-family="'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif"
+        font-size="132" font-weight="900" letter-spacing="-2">BENCH</text>
 </svg>
 """
 
@@ -171,9 +186,10 @@ def main() -> int:
     icon(False).save(ROOT / "assets-cg" / "icon-uns.png")
     icon(True).save(ROOT / "assets-cg" / "icon-sel.png")
     card().save(ROOT / "docs" / "images" / "brand-card.png")
+    wordmark().save(ROOT / "docs" / "images" / "brand-wordmark.png")
     (ROOT / "docs" / "images" / "brand-wordmark.svg").write_text(wordmark_svg())
     print("wrote assets-cg/icon-uns.png, assets-cg/icon-sel.png,")
-    print("      docs/images/brand-card.png, docs/images/brand-wordmark.svg")
+    print("      docs/images/brand-card.png, brand-wordmark.png/.svg")
     return 0
 
 

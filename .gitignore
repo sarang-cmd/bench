@@ -21,3 +21,8 @@ docs/images/*.ppm
 
 # Node, used only to try a browser locally
 node_modules/
+
+# Website (React + Tailwind), built by Vite
+site/node_modules/
+site/dist/
+site/public/images/

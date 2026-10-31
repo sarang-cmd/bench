@@ -1,6 +1,5 @@
 # tour step: 17_notes_list
-# run with tools/sim/run_tour.sh, which draws every step
-down
+# starts at the home screen; see tools/sim/run_tour.sh
 down
 right
 exe

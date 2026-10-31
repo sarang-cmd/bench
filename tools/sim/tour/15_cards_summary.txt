@@ -1,5 +1,5 @@
 # tour step: 15_cards_summary
-# run with tools/sim/run_tour.sh, which draws every step
+# starts at the home screen; see tools/sim/run_tour.sh
 down
 exe
 exe
@@ -7,6 +7,20 @@ f1
 exe
 f1
 exe
-f2
+f1
+exe
+f1
+exe
+f1
+exe
+f1
+exe
+f1
+exe
+f1
+exe
+f1
+exe
+f1
 exe
 f1
