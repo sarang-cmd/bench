@@ -17,6 +17,10 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build, e.g. 1.0.0 (default: version.txt)"
+        required: false
 
 jobs:
   native-tests:
@@ -53,6 +57,10 @@ jobs:
     needs: native-tests
     steps:
       - uses: actions/checkout@v4
+
+      - name: Use the requested version
+        if: inputs.version != ''
+        run: echo "${{ inputs.version }}" > version.txt
 
       - name: Install build dependencies
         run: |

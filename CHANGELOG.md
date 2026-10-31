@@ -1,8 +1,12 @@
 # Changelog
 
-Everything notable in Bench, newest first. Every released version has a tag of
-the same name (`v1.0.0`, `v0.6.0`, ...) and a GitHub release carrying the
-`.g3a`. Storage layout changes are called out explicitly, as `AGENTS.md` asks.
+Everything notable in Bench, newest first. Released versions have a tag of the
+same name (`v1.0.0`) and a GitHub release; the release carries the `.g3a` built
+by `.github/workflows/build.yml`.
+
+The core modules below were written in milestone order (0.1.0 to 0.6.0) but
+never tagged separately: they landed in one 1.0.0 release, so their sections are
+milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage layout changes are called out explicitly, as `AGENTS.md` asks.
 
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
@@ -82,9 +86,9 @@ Calculator side: **not run by the agent** (no fxSDK and no hardware here, see
 `docs/STATUS.md`), so this version is 1.0.0 of the code, not a hardware-tested
 release.
 
-## 0.6.0 - 2026-10-31
+## Milestone 0.6.0 - 2026-10-31 (in 1.0.0)
 
-Number theory. Tag `v0.6.0`.
+Number theory.
 
 - `src/core/numtheory.c`: gcd, lcm, extended gcd, modular inverse,
   addmod/mulmod, modpow, deterministic Miller-Rabin, trial division plus Pollard
@@ -95,9 +99,9 @@ Number theory. Tag `v0.6.0`.
 - Factorisation time on a PC: 33 ms for a 1e9 x 1e9 semiprime, 1 ms for a prime
   near 1e18.
 
-## 0.5.0 - 2026-10-31
+## Milestone 0.5.0 - 2026-10-31 (in 1.0.0)
 
-Markdown. Tag `v0.5.0`.
+Markdown.
 
 - `src/core/md_parse.c`: block classifier and a single-pass inline span parser,
   no recursion. `src/core/md_layout.c`: greedy wrapping against font callbacks,
@@ -106,26 +110,26 @@ Markdown. Tag `v0.5.0`.
   front-matter and HTML stripping, a change report, `--check` for CI.
 - `docs/samples/markdown.md` with every syntax row.
 
-## 0.4.0 - 2026-10-31
+## Milestone 0.4.0 - 2026-10-31 (in 1.0.0)
 
-Notes, plain text. Tag `v0.4.0`.
+Notes, plain text.
 
 - `src/core/textsearch.c`: case-insensitive search, next/previous, wrap, and the
   line helpers the viewer scrolls with.
 - `docs/samples/note.txt`.
 
-## 0.3.0 - 2026-10-31
+## Milestone 0.3.0 - 2026-10-31 (in 1.0.0)
 
-Cards. Tag `v0.3.0`.
+Cards.
 
 - `src/core/cards_parse.c`: `question | answer` parsing in place, line numbers
   on errors, 500-card and 120-character limits, FNV-1a question hash.
 - `src/core/leitner.c`: three boxes, due rules, session draw, progress file.
 - `docs/samples/cards.txt`.
 
-## 0.2.0 - 2026-10-31
+## Milestone 0.2.0 - 2026-10-31 (in 1.0.0)
 
-Uncertainty and the decimal formatter. Tag `v0.2.0`.
+Uncertainty and the decimal formatter.
 
 - `src/core/numfmt.c`: exact double-to-decimal conversion with a small
   big-integer, half-up rounding on decimal digits, plain and scientific output,
@@ -134,16 +138,16 @@ Uncertainty and the decimal formatter. Tag `v0.2.0`.
 - `src/core/numparse.c`: a parser for numbers typed on the keypad, so the app
   never needs `strtod` or float printf.
 
-## 0.1.0 - 2026-10-31
+## Milestone 0.1.0 - 2026-10-31 (in 1.0.0)
 
-Pacer. Tag `v0.1.0`.
+Pacer.
 
 - `src/core/pacer.c`: minutes per mark, checkpoints, target marks, gap to pace,
   pausable run clock. 114 native checks.
 
-## 0.0.3 - 2026-10-31
+## Milestone 0.0.3 - 2026-10-31 (in 1.0.0)
 
-Shell. Tag `v0.0.3`.
+Shell.
 
 - Home screen, theme, widgets, `store.h`, settings, About.
 - `src/core/settings.c` with 659 native checks.
