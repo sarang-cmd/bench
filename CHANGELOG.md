@@ -75,6 +75,17 @@ next one.
   fit. Unverified on device.
 
 
+- **Study log (F13)**, **Notes v2 (F14)** and **Cards v2 (F15)**: a plain text
+  log of what you studied and for how long, with totals, days logged and the
+  longest streak (`src/core/logbook.c`, 56 native checks); the Notes footer now
+  counts words as well as lines (`textsearch_words`, 6 more checks); and a
+  Cards deck can be drilled in a mixed order inside each box
+  (`leitner_shuffle`, deterministic for a session, 8 more checks). Bench cannot
+  read the calendar - gint's date fields were never checked on the hardware - so
+  a log entry takes the day after the newest one and UP/DOWN moves it.
+  Unverified on device.
+
+
 ### Fixed
 - **Home tiles: the icon vanished on the selected tile.** The icon was painted
   in the tool's accent colour on a tile filled with that same colour. Every

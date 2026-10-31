@@ -473,6 +473,10 @@ static void draw_view(void)
         nt_u64((uint64_t)line_count, num, (int)sizeof num);
         nt_append(line, (int)sizeof line, num);
         nt_append(line, (int)sizeof line, " lines");
+        nt_u64((uint64_t)textsearch_words(text, text_len), num, (int)sizeof num);
+        nt_append(line, (int)sizeof line, "  ");
+        nt_append(line, (int)sizeof line, num);
+        nt_append(line, (int)sizeof line, "w");
         scr_text(TH_PAD, fy, line, TH_INK);
 
         if (has_search)

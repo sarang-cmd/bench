@@ -492,6 +492,30 @@ static char const help_graph[] =
     "Keys: digits type, LEFT/RIGHT pick\n"
     "a field, EXE adds the point.";
 
+static char const help_log[] =
+    "Study log\n"
+    "What you did, for how long, and\n"
+    "on which day, in a text file you\n"
+    "can also edit by hand:\n"
+    "\n"
+    "  2026-10-31 25 pacer\n"
+    "\n"
+    "A broken line is skipped and\n"
+    "counted, never added up wrongly.\n"
+    "\n"
+    "F1 adds a session: type the\n"
+    "minutes, UP/DOWN picks the tool,\n"
+    "LEFT/RIGHT moves between the three\n"
+    "fields, EXE saves it. F2 deletes\n"
+    "the last one, which is the mistake\n"
+    "you will make.\n"
+    "\n"
+    "Bench cannot read the calendar, so\n"
+    "a new entry takes the day after the\n"
+    "newest one in the log; UP/DOWN on\n"
+    "the day moves it. The file is\n"
+    "written once, when you leave.";
+
 /* ---- the table ---------------------------------------------------------- */
 
 static tool_t const tools[] = {
@@ -527,6 +551,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NOTES,
         .needs_file = true,
         .help = help_notes,
+    },
+    {
+        .id = "log",
+        .title = "Study log",
+        .subtitle = "minutes per day",
+        .category = TOOL_CAT_STUDY,
+        .accent = TH_YELLOW,
+        .icon = icon_bars,
+        .screen = APP_SCREEN_LOG,
+        .needs_file = false,
+        .help = help_log,
     },
     {
         .id = "cplx",

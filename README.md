@@ -2,7 +2,7 @@
 
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
-**Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+**Nineteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
@@ -302,6 +302,23 @@ three points leave nothing to measure the error against, so it is left off
 rather than faked. The axes hold the whole error bar, not just the centre, so a
 measurement can never run off the top of the graph.
 
+### Study log
+A plain text file, `Bench/study/log.txt`, one line a session:
+
+```
+2026-10-31 25 pacer
+2026-11-01 40 cards
+```
+
+The screen reads it and shows the totals, the days logged and the longest run
+of consecutive days. F1 adds an entry: type the minutes, UP/DOWN picks the tool,
+EXE saves. A line it cannot read is skipped and counted, never added up wrongly.
+
+Bench cannot read the calendar - gint's date fields were never checked on the
+hardware, see `docs/spike.md` - so a new entry takes the day after the newest
+one in the log, and UP/DOWN on the day moves it. The file is written once, when
+you leave the screen, never in a loop.
+
 ## Keys
 
 | Key | Where | What |
@@ -331,6 +348,10 @@ measurement can never run off the top of the graph.
 | EXE | Lab graph | add the point |
 | F2 | Lab graph | the graph |
 | F3 | Lab graph | the example data |
+| F1 | Study log | add a session |
+| F2 | Study log | delete the last entry |
+| LEFT / RIGHT | Study log | minutes / tool / day |
+| F2 | Cards, on a deck | mixed order inside each box |
 | F3 / F4 | Statistics | quartile method / the working |
 | F2 | SUVAT | the flight path |
 | F3 | SUVAT | g = 9.81 or 10 |

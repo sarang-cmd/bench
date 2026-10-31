@@ -177,3 +177,22 @@ bool textsearch_at_line_end(char const *text, int len, int pos)
         return true;
     return text[pos] == '\n';
 }
+
+int textsearch_words(char const *text, int len)
+{
+    int words = 0;
+    bool in_word = false;
+
+    for (int i = 0; i < len; i++) {
+        char const c = text[i];
+        bool const space = (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+
+        if (space)
+            in_word = false;
+        else if (!in_word) {
+            in_word = true;
+            words++;
+        }
+    }
+    return words;
+}

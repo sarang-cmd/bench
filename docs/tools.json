@@ -27,6 +27,15 @@
     "help": "Notes\nReads .md and .txt from Bench/notes.\n\nMarkdown headings, lists, quotes,\nbold and code are drawn in the\npalette. Long lines wrap; the wrap\nwidth is a setting.\n\nKeys: UP/DOWN scroll, EXE page down,\nALPHA search, F2 headings, EXIT."
   },
   {
+    "id": "log",
+    "title": "Study log",
+    "subtitle": "minutes per day",
+    "category": "Study",
+    "screen": 20,
+    "needs_file": false,
+    "help": "Study log\nWhat you did, for how long, and\non which day, in a text file you\ncan also edit by hand:\n\n  2026-10-31 25 pacer\n\nA broken line is skipped and\ncounted, never added up wrongly.\n\nF1 adds a session: type the\nminutes, UP/DOWN picks the tool,\nLEFT/RIGHT moves between the three\nfields, EXE saves it. F2 deletes\nthe last one, which is the mistake\nyou will make.\n\nBench cannot read the calendar, so\na new entry takes the day after the\nnewest one in the log; UP/DOWN on\nthe day moves it. The file is\nwritten once, when you leave."
+  },
+  {
     "id": "cplx",
     "title": "Complex",
     "subtitle": "a + bi",
@@ -130,7 +139,7 @@
     "title": "Sig figs",
     "subtitle": "round, standard",
     "category": "Science",
-    "screen": 20,
+    "screen": 21,
     "needs_file": false,
     "help": "Sig figs\nHow many figures, and how to write\nthem.\n\nUP/DOWN picks a mode, LEFT/RIGHT\nchanges n, EXE types the number.\n\nCount: leading zeros never count,\nand trailing zeros count only after\na decimal point. 0.004560 has 4.\n\nRound: half up on the decimal\ndigits, so 1234.5 to 3 figures is\n1230 = 1.23 x 10^3.\n\nPractice asks a question; type the\ncount and EXE marks it, F2 moves\non.\n\nKeys: EXE type, F1 clear."
   },

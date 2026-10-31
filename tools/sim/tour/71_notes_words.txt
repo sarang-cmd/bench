@@ -1,0 +1,4 @@
+# tour step: 71_notes_words
+# The footer now counts the words as well as the lines.
+tool:notes
+exe

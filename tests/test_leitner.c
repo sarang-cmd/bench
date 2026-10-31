@@ -4,6 +4,8 @@
 
 #include "cards_parse.h"
 #include "leitner.h"
+
+static void test_shuffle(void);
 #include "test_util.h"
 
 static void box_moves(void)
@@ -276,6 +278,8 @@ static void deck_identity(void)
 
 static void five_hundred_cards(void)
 {
+    T_SECTION("shuffle");
+    test_shuffle();
     T_SECTION("a 500 card deck runs through a whole session");
 
     static char text[CARDS_MAX * 24 + 64];
@@ -325,6 +329,55 @@ static void five_hundred_cards(void)
     T_INT(leitner_state_parse(saved, len, &back), CARDS_MAX);
     T_INT(back.sessions, 1);
     T_INT(leitner_state_box(&back, deck.card[499].id), 2);
+}
+
+
+static void test_shuffle(void)
+{
+    int a[20], b[20];
+
+    for (int i = 0; i < 20; i++) a[i] = b[i] = i;
+
+    leitner_shuffle(a, 20, 12345);
+    leitner_shuffle(b, 20, 12345);
+
+    /* Deterministic for a seed, and still a permutation. */
+    for (int i = 0; i < 20; i++) T_INT(a[i], b[i]);
+
+    {
+        bool seen[20] = { false };
+        bool all = true;
+
+        for (int i = 0; i < 20; i++) {
+            if (a[i] < 0 || a[i] >= 20 || seen[a[i]]) all = false;
+            else seen[a[i]] = true;
+        }
+        T_TRUE(all);
+        /* It also has to move something, or it is not a shuffle. */
+        {
+            bool moved = false;
+
+            for (int i = 0; i < 20; i++)
+                if (a[i] != i) moved = true;
+            T_TRUE(moved);
+        }
+    }
+
+    /* A different seed gives a different order, and tiny inputs are safe. */
+    for (int i = 0; i < 20; i++) b[i] = i;
+    leitner_shuffle(b, 20, 999);
+    {
+        bool same = true;
+
+        for (int i = 0; i < 20; i++)
+            if (a[i] != b[i]) same = false;
+        T_FALSE(same);
+    }
+    /* Fewer than two entries has nothing to mix, and must not touch them. */
+    b[0] = 42;
+    leitner_shuffle(b, 0, 1);
+    leitner_shuffle(b, 1, 1);
+    T_INT(b[0], 42);
 }
 
 static void run_tests(void)
