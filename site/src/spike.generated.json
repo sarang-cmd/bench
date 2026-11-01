@@ -9,7 +9,7 @@
     "version": "0.0.2",
     "size": 60100,
     "sha256": "40fc6a85783bb9657d0b6357dac458be46b3dbf9a55a44401741305dc66343e7",
-    "source": "dist",
+    "source": "public",
     "commit": "52f62c3ce66c1d612caee2ade0f45686f1fb5abd",
     "built": "2026-11-01",
     "verified": true

@@ -108,6 +108,15 @@
     "help": "Number theory\nNine functions, each with working.\n\ngcd, lcm, prime test, factorise,\nmodular inverse, CRT, divisors,\ntotient and base conversion.\n\nFactorisation shows a progress bar;\nEXIT cancels it.\n\nKeys: UP/DOWN choose, EXE open,\nEXIT back."
   },
   {
+    "id": "factor",
+    "title": "Prime factors",
+    "subtitle": "factorise n",
+    "category": "Math",
+    "screen": 23,
+    "needs_file": false,
+    "help": "Prime factors\nType a whole number and press EXE.\nThe page shows the factorisation\nwith powers, then the four things\nthat follow from it.\n\n360 = 2^3 x 3^2 x 5\n  divisors 24, their sum 1170\n  totient 96\n  square-free part 30\n\nSquare-free part is the primes\nmultiplied with their powers thrown\naway: 30 for 360. If it equals the\nnumber, the number is square free.\n\nUp to 18 digits. F2 halves the\nnumber and factors again.\n\nKeys: digits, DEL, F1 clear, F2\nhalve, EXE factor, EXIT back."
+  },
+  {
     "id": "stats",
     "title": "Statistics",
     "subtitle": "mean to regression",
@@ -168,7 +177,7 @@
     "category": "Tools",
     "screen": 6,
     "needs_file": false,
-    "help": "Settings\nFive rows: uncertainty figures, the\nPacer checkpoint size, the Notes\nwrap width, the unit the Triangle\ntool opens in, and whether the\nfirst-run line on the home screen\nhas been read.\n\nEvery value is also a line in\nBench/state/settings.cfg, one per\nline, safe to edit by hand.\n\nThe file is written only when a\nvalue changes.\n\nKeys: UP/DOWN choose, LEFT/RIGHT\nchange, EXIT back."
+    "help": "Settings\nEight rows. The first five change\nwhat a tool shows: uncertainty\nfigures, the Pacer checkpoint\nsize, the Notes wrap width, the\nunit Triangle opens in, and the\nfirst-run line.\n\nOpens on: which category the home\nscreen starts on. Show hint line:\nno hides the first-run line for\ngood. Pacer clock red at: how many\nminutes left turn the clock red,\n0 for never.\n\nEvery value is also a line in\nBench/state/settings.cfg, safe to\nedit by hand. The file is written\nonly when a value changes.\n\nKeys: UP/DOWN choose, LEFT/RIGHT\nchange, EXIT back."
   },
   {
     "id": "about",
@@ -177,6 +186,6 @@
     "category": "Tools",
     "screen": 7,
     "needs_file": false,
-    "help": "About\nVersion, build date, target and the\nstorage Bench uses.\n\nBench never reads or changes Exam\nMode. If the calculator is in Exam\nMode the add-in does not run at\nall; that is the OS, not us."
+    "help": "About Bench\nVersion, build date, target and the\nstorage Bench uses, plus who made\nit and how: the maths is plain C\ntested on a PC, the screens are a\nthin layer over gint, and every\npicture in the docs is a real frame\nfrom the simulator.\n\nUP/DOWN scroll the page.\n\nBench never reads or changes Exam\nMode. If the calculator is in Exam\nMode the add-in does not start at\nall, which is the OS's rule, not\nBench's.\n\nKeys: UP/DOWN scroll, EXIT back."
   }
 ]

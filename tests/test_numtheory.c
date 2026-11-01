@@ -487,6 +487,98 @@ static void edges(void)
     T_TRUE(nt_error_text((nt_status_t)99) != NULL);
 }
 
+/* The prime factors page: the factorisation written out, and the three things
+ * that follow from it.  Every vector is small enough to check by hand. */
+static void factor_page(void)
+{
+    nt_factorization_t f;
+    nt_progress_t prog;
+    char buf[64];
+    uint64_t v;
+
+    T_SECTION("prime factors page");
+
+    /* 360 = 2^3 x 3^2 x 5: 24 divisors, sigma 1170, radical 30. */
+    T_INT(nt_factor(360, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(f.count, 3);
+    T_INT(nt_factor_text(&f, buf, (int)sizeof buf), NT_OK);
+    T_STR(buf, "2^3 x 3^2 x 5");
+    T_INT(nt_divisor_count(&f, &v), NT_OK);
+    T_INT((long)v, 24);
+    T_INT(nt_divisor_sum(&f, &v), NT_OK);
+    T_INT((long)v, 1170);
+    T_INT(nt_factor_radical(&f, &v), NT_OK);
+    T_INT((long)v, 30);
+    T_INT(nt_totient_from(&f, &v), NT_OK);
+    T_INT((long)v, 96);
+
+    /* A prime is written without an exponent. */
+    T_INT(nt_factor(97, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(nt_factor_text(&f, buf, (int)sizeof buf), NT_OK);
+    T_STR(buf, "97");
+    T_INT(nt_divisor_count(&f, &v), NT_OK);
+    T_INT((long)v, 2);
+    T_INT(nt_divisor_sum(&f, &v), NT_OK);
+    T_INT((long)v, 98);
+
+    /* One is the empty factorisation: "1", one divisor, sum 1. */
+    T_INT(nt_factor(1, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(f.count, 0);
+    T_INT(nt_factor_text(&f, buf, (int)sizeof buf), NT_OK);
+    T_STR(buf, "1");
+    T_INT(nt_divisor_count(&f, &v), NT_OK);
+    T_INT((long)v, 1);
+    T_INT(nt_divisor_sum(&f, &v), NT_OK);
+    T_INT((long)v, 1);
+    T_INT(nt_factor_radical(&f, &v), NT_OK);
+    T_INT((long)v, 1);
+
+    /* 1024 = 2^10: eleven divisors, sum 2047, radical 2. */
+    T_INT(nt_factor(1024, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(nt_factor_text(&f, buf, (int)sizeof buf), NT_OK);
+    T_STR(buf, "2^10");
+    T_INT(nt_divisor_count(&f, &v), NT_OK);
+    T_INT((long)v, 11);
+    T_INT(nt_divisor_sum(&f, &v), NT_OK);
+    T_INT((long)v, 2047);
+    T_INT(nt_factor_radical(&f, &v), NT_OK);
+    T_INT((long)v, 2);
+
+    /* 7919 is prime; 2 * 3 * 5 * 7 * 11 * 13 = 30030, square free. */
+    T_INT(nt_factor(30030, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(f.count, 6);
+    T_INT(nt_factor_text(&f, buf, (int)sizeof buf), NT_OK);
+    T_STR(buf, "2 x 3 x 5 x 7 x 11 x 13");
+    T_INT(nt_factor_radical(&f, &v), NT_OK);
+    T_INT((long)v, 30030);
+
+    /* Perfect squares have every exponent even; 1 is one. */
+    T_TRUE(nt_factor(360, &f, NULL, NULL, &prog) == NT_OK);
+    T_FALSE(nt_factor_is_square(&f));
+    T_TRUE(nt_factor(1024, &f, NULL, NULL, &prog) == NT_OK);
+    T_TRUE(nt_factor_is_square(&f));
+    T_TRUE(nt_factor(1, &f, NULL, NULL, &prog) == NT_OK);
+    T_TRUE(nt_factor_is_square(&f));
+    T_TRUE(nt_factor(49, &f, NULL, NULL, &prog) == NT_OK);
+    T_TRUE(nt_factor_is_square(&f));
+    T_TRUE(nt_factor(98, &f, NULL, NULL, &prog) == NT_OK);
+    T_FALSE(nt_factor_is_square(&f));
+    T_FALSE(nt_factor_is_square(NULL));
+
+    /* A buffer that is one byte short is refused, not truncated. */
+    T_INT(nt_factor(360, &f, NULL, NULL, &prog), NT_OK);
+    T_INT(nt_factor_text(&f, buf, 13), NT_ERR_OVERFLOW);
+    T_INT(nt_factor_text(&f, buf, 14), NT_OK);
+    T_INT(nt_factor_text(&f, buf, 0), NT_ERR_ARG);
+    T_INT(nt_factor_text(NULL, buf, (int)sizeof buf), NT_ERR_ARG);
+
+    /* The three follow-ons refuse a NULL. */
+    T_INT(nt_divisor_count(NULL, &v), NT_ERR_ARG);
+    T_INT(nt_divisor_sum(NULL, &v), NT_ERR_ARG);
+    T_INT(nt_factor_radical(NULL, &v), NT_ERR_ARG);
+    T_INT(nt_divisor_count(&f, NULL), NT_ERR_ARG);
+}
+
 static void run_tests(void)
 {
     acceptance_rows();
@@ -498,6 +590,7 @@ static void run_tests(void)
     crt();
     parsing();
     edges();
+    factor_page();
 }
 
 T_MAIN("test_numtheory")

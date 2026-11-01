@@ -15,6 +15,21 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **Prime factors, on its own screen in Math**: factorisation existed, three
+  levels down a list of nine Number theory functions, which is not where anyone
+  looks for it. The new screen takes a number up to 18 digits and shows the
+  factorisation written out - `360 = 2^3 x 3^2 x 5` - with the four numbers that
+  follow from it: divisor count, divisor sum, totient and square-free part, plus
+  how many distinct primes and whether the number is a perfect square. F2 halves
+  the number and factors again, which is the question that usually comes next.
+  New in `core/numtheory.c`, each with vectors checked by hand (1091 checks in
+  that suite): `nt_factor_text` (exact buffer arithmetic, so a text of exactly
+  the buffer's length is accepted and one byte less refused),
+  `nt_divisor_count`, `nt_divisor_sum` (the geometric series without a division,
+  wrapping checked), `nt_factor_radical` and `nt_factor_is_square`.
+  **Unverified on device**: how long the rho routine takes on a real CPU for a
+  hard 18-digit semiprime, and the screen draws no progress bar because of it.
+
 - **About says who made it**: the page was one screenful of version numbers. It
   now says whose work it is (Sarang, `github.com/sarang-cmd`), what it is, how it
   was made - maths in plain C tested without a calculator, screens a thin layer
