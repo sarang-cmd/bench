@@ -5,12 +5,20 @@
       "date": "unreleased",
       "entries": [
         {
+          "title": "A shared number field and a history of answers (V2, workstream A5)",
+          "body": "`src/core/numedit.c` is the one place that decides what a numeric field accepts - digits, at most one dot, a lone zero replaced rather than stacked, a leading dot turned into `0.` - with `numedit_valid()` for \"would numparse read this?\" (54 checks). The moles screen was carrying its own copy, which is how `1.2.3` got in; it now uses the shared one. `src/core/history.c` keeps the last eight formatted results (33 checks) and the Root finder pushes every solve onto it, with F4 to show the list - a panel, not a file, so nothing is written to flash."
+        },
+        {
+          "title": "Browser widths in CI (V2, workstream B)",
+          "body": "`site/scripts/check-widths.mjs` loads all eight routes at 320, 390, 768, 1024 and 1440 px and fails on a horizontal scrollbar, an element that crosses the right edge or one wider than the viewport. Chromium could not be downloaded here, so the sweep has only run in CI; the result of that first run is in the pull request."
+        },
+        {
           "title": "Demo content (V2, workstream D)",
           "body": "`demo/` holds three notes, three decks and a fortnight study log so a fresh install is not three empty screens. The text is written from scratch, not copied from a booklet or a past paper, and `demo/README.md` says in its first section that it needs human proofreading. `tests/test_demo_files.c` reads every demo file with the add-in's own parsers (108 checks) and fails on a single skipped line, so the sample cannot rot into something the calculator refuses to read."
         },
         {
           "title": "The site is eight pages, not one (V2)",
-          "body": "`/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the landing page, which keeps its layout. `src/router.jsx` is a 120-line path switch with real `<a href>`s, so back, forward, middle-click and a shared link all work; `vercel.json` rewrites every path to `index.html`. Every route sets its own title, description, canonical and Open Graph image. `scripts/gen-stats.mjs` and `scripts/gen-changelog.mjs` write the numbers and the changelog from `CHANGELOG.md`, `docs/tools.json` and `src/`, and `scripts/check-pages.mjs` renders all eight routes in Node and fails the build if one throws. Eight 1200x630 Open Graph cards come from `tools/brand/make_brand.py`. The canonical URL is now `bench-sarang-dev.vercel.app` everywhere; `sitemap.xml` lists all eight routes."
+          "body": "`/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog` and `/about` join the landing page, which keeps its layout. `src/router.jsx` is a 120-line path switch with real `<a href>`s, so back, forward, middle-click and a shared link all work; `vercel.json` rewrites every path to `index.html`. Every route sets its own title, description, canonical and Open Graph image. `scripts/gen-stats.mjs` and `scripts/gen-changelog.mjs` write the numbers and the changelog from `CHANGELOG.md`, `docs/tools.json` and `src/`, and `scripts/check-pages.mjs` renders all eight routes in Node and fails the build if one throws. Eight 1200x630 Open Graph cards come from `tools/brand/make_brand.py`. The canonical URL is now `bench-gdc.vercel.app` everywhere; `sitemap.xml` lists all eight routes."
         },
         {
           "title": "The simulator page is honest about the simulator",

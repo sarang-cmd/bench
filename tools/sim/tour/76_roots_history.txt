@@ -1,0 +1,6 @@
+# tour step: 76_roots_history
+# F3 solves, F4 shows the last few answers: the root does not vanish when the
+# fields change.
+tool:roots
+f3
+f4

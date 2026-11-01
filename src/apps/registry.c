@@ -375,8 +375,13 @@ static char const help_roots[] =
     "setting says. Tolerance 1e-6, at most\n"
     "50 steps.\n"
     "\n"
+    "F4 lists the last eight answers, so a\n"
+    "root does not vanish when the fields\n"
+    "change. Nothing is written to storage.\n"
+    "\n"
     "Keys: EXE edits f or solves, F1 clears,\n"
-    "F2 method, arrows move and scroll.";
+    "F2 method, F4 history, arrows move\n"
+    "and scroll.";
 
 
 static char const help_stats[] =

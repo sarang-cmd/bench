@@ -47,6 +47,8 @@ set(SOURCES
   src/core/md_parse.c
   src/core/numfmt.c
   src/core/numparse.c
+  src/core/numedit.c
+  src/core/history.c
   src/core/numtheory.c
   src/core/poly.c
   src/core/roots.c

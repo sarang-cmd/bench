@@ -27,6 +27,7 @@
 #include <string.h>
 
 #include "core/chem.h"
+#include "core/numedit.h"
 #include "core/numparse.h"
 #include "platform/screen.h"
 #include "theme.h"
@@ -234,13 +235,11 @@ void app_moles_draw(void)
 
 /* ---- keys --------------------------------------------------------------- */
 
+/* One shared editor for every numeric field (core/numedit.c), so the mole
+ * screen and the SUVAT screen cannot disagree about a second dot. */
 static void type_char(char ch)
 {
-    size_t const n = strlen(buf[field]);
-
-    if (n + 1 >= sizeof buf[field]) return;
-    buf[field][n] = ch;
-    buf[field][n + 1] = 0;
+    numedit_put(buf[field], (int)sizeof buf[field], ch);
 }
 
 app_result_t app_moles_key(bench_event_t ev)
@@ -267,8 +266,7 @@ app_result_t app_moles_key(bench_event_t ev)
         type_char('.');
         break;
     case BK_DEL:
-        if (buf[field][0])
-            buf[field][strlen(buf[field]) - 1] = 0;
+        numedit_back(buf[field]);
         break;
     case BK_F1:
         load_defaults();

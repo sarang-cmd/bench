@@ -9,7 +9,7 @@ authors:
   - name: "sarang-cmd"
     alias: "sarang-cmd"
 repository-code: "https://github.com/sarang-cmd/bench"
-url: "https://bench-sarang-dev.vercel.app"
+url: "https://bench-gdc.vercel.app"
 license: MIT
 type: software
 keywords:

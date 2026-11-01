@@ -185,7 +185,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | A2 tool registry | **done**: `src/apps/registry.c` is the only list (21 rows: 19 tools plus Settings and About); `docs/tools.json` is generated from it and CI diffs it; the site reads it too, through `site/scripts/gen-tools.mjs` |
 | A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy; the site's ink was brought back to `#2f2d2e` to match |
-| A5 shared services | **partly**: help screen and paging done; `core/expr.c` is the expression engine (123 checks, shunting-yard, column-numbered errors); `core/mathfn.c` gives core sqrt, exp, ln and trigonometry without libm. Number entry as a shared widget, working lines, result history and settings v2 are **not** started |
+| A5 shared services | **done for what the plan names**: help screen and paging, `core/expr.c` (shunting-yard, column-numbered errors), `core/mathfn.c` (no libm), `core/numedit.c` as the one numeric-field editor (54 checks, adopted by the moles screen), `core/history.c` with the Root finder's F4 panel (33 checks), and settings v2 |
 | B overlap hunt | **done**: 75 tour scripts, 0 findings, worst cases included; `site/scripts/check-widths.mjs` sweeps all eight routes at 320, 390, 768, 1024 and 1440 px in CI (horizontal scroll, right-edge crossings, over-wide boxes). Chromium could not be downloaded in this environment, so that sweep has run only in CI |
 | C fifteen tools | **15 of 15**: F1 Function table, F2 Triangle, F3 Polynomials, F4 Root finder, F5 Sequences, F6 Complex numbers, F7 Statistics, F8 Lab graph, F9 Sig figs, F10 SUVAT, F11 Moles, F12 Base and bits, F13 Study log, F14 Notes v2 (word count), F15 Cards v2 (mixed order) |
 | D demo content | **done**: `demo/` = 3 notes (headings, bold, lists, quotes, code fences), 3 decks (26 cards) and a 16-session study log, all in my own words and marked **needs human proofreading**; `tests/test_demo_files.c` parses every file with the add-in's parsers (108 checks). Copy instructions are in `demo/README.md` |
@@ -266,7 +266,7 @@ the title-bar cut have been looked at in the host preview only.
 | Workstream | State |
 |---|---|
 | A design system, tile bug, registry | done |
-| A5 shared services | partly: help, paging and the expression engine are in; the shared number-entry widget and result history are not |
+| A5 shared services | done: the shared numeric field editor (`core/numedit.c`) and the result history (`core/history.c`, F4 in the Root finder) are in |
 | B overlap and width sweeps | done, the width sweep in CI |
 | C fifteen tools | done |
 | D demo content | done, **needs human proofreading** |
