@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.1-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -45,7 +45,7 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | Tour scripts | 97 |
 | Native test programs | 39 |
 | C source | 24,758 lines in 125 files |
-| Version | 1.2.0 |
+| Version | 1.2.1 |
 <!-- STATS:END -->
 
 ## Screens
@@ -566,6 +566,17 @@ site/           the landing page: React + Vite + Tailwind (see site/README.md)
 
 The split exists so maths and parsing bugs surface on a PC in seconds; only
 drawing and input need the calculator.
+
+### Review
+
+Pull requests get a CodeRabbit review written against
+[`.coderabbit.yaml`](.coderabbit.yaml), which is in the repository rather than in
+a dashboard: `src/core` may not include gint or libm, a screen may only use the
+nine palette colours, a regenerated table is not a code change, and no bot
+approves a build nobody ran on hardware. `make coderabbit-check` reads it with a
+parser of its own (no new dependency) and fails on a misspelt key or a rule for a
+directory that was renamed. Installing the GitHub App is the one manual step -
+see [docs/CODERABBIT.md](docs/CODERABBIT.md).
 
 ## Status
 

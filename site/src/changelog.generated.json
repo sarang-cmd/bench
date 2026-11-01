@@ -1,9 +1,13 @@
 {
   "releases": [
     {
-      "version": "1.2.0",
+      "version": "1.2.1",
       "date": "unreleased (source only)",
       "entries": [
+        {
+          "title": "CodeRabbit, configured in the repository instead of a dashboard",
+          "body": "`.coderabbit.yaml` tells the reviewer what this project actually breaks on - `src/core` must not include gint or libm, a screen may only use the nine palette colours with 2 px ink borders and a 3 px shadow under the selected item, a new core function needs a test with a concrete vector, a regenerated table is not a code change, and files are written to flash only at session end. Generated files, images, binaries and the site lockfile are out of scope, poems and UML diagrams are off, and automatic approvals are off because merging here depends on whether anyone ran the build on a calculator. `tools/check_coderabbit.py` parses the YAML with its own small reader - no new dependency - and rejects an unknown key, a `path_instructions` glob that matches no file (how a rule for a renamed directory stops applying), a tool switched on with no config file or for a language the repository does not contain, tabs and CRLF. `make coderabbit-check` runs it and CI runs that. Installing the GitHub App is the one step a commit cannot do; `docs/CODERABBIT.md` has the four clicks. **Unverified on device.**"
+        },
         {
           "title": "A version number that moves with the work, and a check that it did",
           "body": "the tree said 1.1.0 through fourteen merged pull requests, so the About screen, the `.g3a` name and the website would have disagreed with the changelog the moment anything shipped. The rule is now that every change bumps the version in the same commit - patch for a fix or a doc, minor for a feature, major only for a storage-layout change - and the version of record is 1.2.0. `tools/ bump_version.py` rewrites `version.txt`, the `src/version.h` fallback and the example file name in `CMakeLists.txt` in one command (`make bump-minor`, `make bump-patch`), and `--check` compares those against the changelog heading and the README badge, naming each file that disagrees. `make test` runs it, and so does CI, so a forgotten bump fails a build instead of shipping. 21 Python tests cover the arithmetic and the rewriting, including that a bad version is refused before any file is touched. The README's version badge now links to the releases page rather than to `releases/tag/v<version>`, because between a bump and a release there is no such tag and a badge pointing at a 404 is a lie about a page. **Unverified on device.**"

@@ -56,11 +56,17 @@ bump-patch bump-minor bump-major:
 version-check:
 	@$(PYTHON) tools/bump_version.py --check
 
+# .coderabbit.yaml: an unknown key, a review rule for a directory that no longer
+# exists, or automatic approvals switched on.  CodeRabbit only complains on the
+# next pull request, which is too late, so check it here.
+coderabbit-check:
+	@$(PYTHON) tools/check_coderabbit.py
+
 # The spike add-in as one patch file (see docs/spike.md).
 spike-patch:
 	@$(PYTHON) tools/gen_spike_patch.py
 
-py-test:
+py-test: coderabbit-check
 	@echo "== python tool tests =="
 	$(PYTHON) -m unittest discover -s tools -p "test_*.py" -v
 

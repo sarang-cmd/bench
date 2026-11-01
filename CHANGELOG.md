@@ -11,13 +11,29 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.0 - unreleased (source only)
+## 1.2.1 - unreleased (source only)
 
 Numbers here describe the source in `main`, not a build on a calculator. The
 version is bumped with the change, not at release time (docs/VERSIONING.md);
-1.2.0 is what the tree says and 1.1.0 is still the newest `.g3a` anyone can
+1.2.1 is what the tree says and 1.1.0 is still the newest `.g3a` anyone can
 download.
 
+- **CodeRabbit, configured in the repository instead of a dashboard**:
+  `.coderabbit.yaml` tells the reviewer what this project actually breaks on -
+  `src/core` must not include gint or libm, a screen may only use the nine
+  palette colours with 2 px ink borders and a 3 px shadow under the selected
+  item, a new core function needs a test with a concrete vector, a regenerated
+  table is not a code change, and files are written to flash only at session
+  end. Generated files, images, binaries and the site lockfile are out of scope,
+  poems and UML diagrams are off, and automatic approvals are off because
+  merging here depends on whether anyone ran the build on a calculator.
+  `tools/check_coderabbit.py` parses the YAML with its own small reader - no new
+  dependency - and rejects an unknown key, a `path_instructions` glob that
+  matches no file (how a rule for a renamed directory stops applying), a tool
+  switched on with no config file or for a language the repository does not
+  contain, tabs and CRLF. `make coderabbit-check` runs it and CI runs that.
+  Installing the GitHub App is the one step a commit cannot do;
+  `docs/CODERABBIT.md` has the four clicks. **Unverified on device.**
 - **A version number that moves with the work, and a check that it did**: the
   tree said 1.1.0 through fourteen merged pull requests, so the About screen, the
   `.g3a` name and the website would have disagreed with the changelog the moment
