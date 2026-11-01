@@ -11,6 +11,66 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
+## 1.3.0 - unreleased
+
+Five things the reader asked for, none of which change the storage layout or
+what a key means, so this is a minor version.
+
+**Files are found.** The report that the add-in "cannot detect files" was real,
+and it had one cause: every screen looked in exactly one folder. Bench now looks
+in four places, in this order, and takes the first that holds anything:
+
+1. `\fls0\Bench\<folder>` - the documented place,
+2. `\fls0\SAVE-F\Bench\<folder>` - where a copy made in USB Flash mode lands,
+3. `\fls0\<folder>` - the drive root, for a card written by an older build,
+4. `\fls0\*` - the drive root itself, for a file dropped next to the `.g3a`.
+
+The list screens say which one they used ("Notes in SAVE-F\Bench"), the entry
+remembers it, and the viewer reopens from the same place, so a file that is
+listed always opens. `BFile_FindFirst` was also given a buffer big enough for
+the fully-qualified path it writes (264 bytes, not 64), which was truncating
+long names on a real card. Settings > F2 opens a new **Card check** screen: the
+four places, how many files each holds for each folder, and the raw names the
+list call returns.
+
+**Real Markdown.** Tables were plain text; they are now a table. `| a | b |`
+with an alignment row is parsed into cells, padded left, centre or right as the
+row asks, squeezed to the screen width, and drawn as aligned rows with a rule
+under the header. Inline `$...$` and display `$$...$$` math are recognised as
+their own spans and blocks and tinted blue.
+
+**Real LaTeX, as far as the font allows.** A new converter turns the school
+formula subset into characters: Greek letters, `\times`, `\le`, `\pm`,
+`\to`, `\sqrt`, `\infty`, superscripts and subscripts (Unicode forms where
+they exist). A bitmap font cannot stack a fraction, so `\frac{a}{b}` becomes
+`a/b`; the reasoning and the full symbol table are in `src/core/md_parse.c`.
+Because the bundled face is ASCII-only, the viewer converts to ASCII spellings
+(`pi`, `sqrt2`, `x^2`) - that is the honest version of "supports LaTeX": the
+structure and the symbols survive, the typography cannot.
+
+**A readable font, as a real setting.** The add-in now carries its own 6x10
+bitmap face (`src/platform/font_data.h`) instead of drawing with gint's default
+one, which is what made text hard to read: identical glyphs on every build, and
+the host preview draws the exact same pixels. Settings gained a **Font** row
+(Standard / Large) that doubles the text; the reader screens (Notes, Formula,
+Help, About, Settings, Card check) honour it, bars and rows are sized from the
+text, and the settings list scrolls when the larger size leaves fewer rows.
+Forms and keypads keep the standard size: they are targets, not reading matter.
+The screen checker now runs every one of its 100 scripts a second time with
+large text, so "the layout survives the bigger font" is a tested claim, not a
+hope.
+
+**The starter pack travels inside the `.g3a`.** `src/apps/starter_data.c` is
+generated from `starterpack/` at build time and linked in, so the first run on
+a blank card writes the notes, decks, study log and booklets itself. The
+separate starter pack zip on the website is a convenience download, not a
+dependency: nothing needs to be copied before the add-in has content.
+
+Also in this release: the help and About screens wrap to the width available
+instead of assuming 40 columns, message boxes wrap and centre as a block, field
+boxes grow with the text size, and the F5 "Help" label is measured before it is
+centred (it was drawn on top of its neighbour once text was doubled).
+
 ## 1.2.8 - 2026-11-01
 
 The site's page check has been red since 1.2.6, and the release went out anyway:

@@ -1,6 +1,6 @@
 # Bench - one add-in for the Casio fx-CG 50.
 #
-#   fxsdk build-cg                      -> Bench-1.2.8.g3a
+#   fxsdk build-cg                      -> Bench-1.3.0.g3a
 #   fxsdk build-cg -DBENCH_VERSION=0.0.3   -> Bench-0.0.3.g3a
 #
 # The add-in is one .g3a with five tools behind a home screen (Pacer,
@@ -82,6 +82,7 @@ set(SOURCES
   src/ui/widgets.c
 
   src/apps/app_about.c
+  src/apps/app_cardcheck.c
   src/apps/app_cards.c
   src/apps/app_cplx.c
   src/apps/app_function.c

@@ -1,0 +1,4 @@
+# tour step: 100_card_check
+# Settings, then F2: the four places Bench looks, and what each holds.
+tool:settings
+f2

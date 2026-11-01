@@ -48,6 +48,7 @@ typedef enum {
     APP_SCREEN_PI,
     APP_SCREEN_FORMULA,
     APP_SCREEN_PERCENT,
+    APP_SCREEN_CARDCHECK,
 } app_screen_t;
 
 /* Switch to another screen (implemented in main.c). */
@@ -97,5 +98,6 @@ DECLARE_APP(factor);
 DECLARE_APP(pi);
 DECLARE_APP(formula);
 DECLARE_APP(percent);
+DECLARE_APP(cardcheck);
 
 #endif /* BENCH_APP_H */

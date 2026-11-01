@@ -21,24 +21,25 @@ fs=/tmp/bench-tour-fs
 [ -x "$sim" ] || { echo "build the simulator first: make sim"; exit 1; }
 
 rm -rf "$fs"
-mkdir -p "$fs/notes" "$fs/cards" "$fs/state" "$fs/formulas"
+mkdir -p "$fs/fls0/Bench/notes" "$fs/fls0/Bench/cards" \
+         "$fs/fls0/Bench/state" "$fs/fls0/Bench/formulas" "$fs/fls0/Bench/study"
 # State files the tour needs to show a real screen (the six expressions).
 [ -f "$root/docs/samples/state/exprs.txt" ] &&
-    cp "$root/docs/samples/state/exprs.txt" "$fs/state/"
+    cp "$root/docs/samples/state/exprs.txt" "$fs/fls0/Bench/state/"
 # The formula booklets, so the Formula book screen has something to show.
 [ -d "$root/docs/samples/formulas" ] &&
-    cp "$root"/docs/samples/formulas/*.txt "$fs/formulas/"
+    cp "$root"/docs/samples/formulas/*.txt "$fs/fls0/Bench/formulas/"
 # Every sample, so the worst-case screens have their files too.
 # A Bench folder copied into @MainMem ends up in SAVE-F; one script shows that.
-mkdir -p "$fs/SAVE-F/Bench/notes"
+mkdir -p "$fs/fls0/SAVE-F/Bench/notes"
 if [ -d "$root/docs/samples/savef/notes" ]; then
-    cp "$root"/docs/samples/savef/notes/* "$fs/SAVE-F/Bench/notes/" 2>/dev/null || true
+    cp "$root"/docs/samples/savef/notes/* "$fs/fls0/SAVE-F/Bench/notes/" 2>/dev/null || true
 fi
 for f in "$root"/docs/samples/*; do
     [ -f "$f" ] || continue
     case "$f" in
-        *cards*.txt) cp "$f" "$fs/cards/" 2>/dev/null || true ;;
-        *) cp "$f" "$fs/notes/" 2>/dev/null || true ;;
+        *cards*.txt) cp "$f" "$fs/fls0/Bench/cards/" 2>/dev/null || true ;;
+        *) cp "$f" "$fs/fls0/Bench/notes/" 2>/dev/null || true ;;
     esac
 done
 mkdir -p "$out"
@@ -50,7 +51,7 @@ mkdir -p "$out"
 # the "nothing yet" screens.
 fs_fresh=/tmp/bench-tour-fresh
 rm -rf "$fs_fresh"
-mkdir -p "$fs_fresh"
+mkdir -p "$fs_fresh/fls0"
 
 for step in "$root"/tools/sim/tour/*.txt; do
     name=$(basename "$step" .txt)

@@ -73,8 +73,7 @@ static void open_book(int index)
 
     if (index < 0 || index >= book_count)
         return;
-    strcpy(path, "formulas/");
-    strncat(path, books[index].name, (size_t)(sizeof path - strlen(path) - 1));
+    (void)path;
     /* A booklet bigger than the buffer is refused with a message, not read
      * half-way and shown as if it were whole. */
     if (books[index].size > BOOK_MAX - 1)
@@ -83,7 +82,8 @@ static void open_book(int index)
         return;
     }
     too_big = 0;
-    if (store_read(path, text, BOOK_MAX - 1, &len) != STORE_OK)
+    if (store_read_at(books[index].at, "formulas", books[index].name, text,
+                      BOOK_MAX - 1, &len) != STORE_OK)
         return;
     text[len] = 0;
     text_len = len;
@@ -98,9 +98,9 @@ static char const *book_subtitle(int index)
     int len = 0;
     char path[80];
 
-    strcpy(path, "formulas/");
-    strncat(path, books[index].name, (size_t)(sizeof path - strlen(path) - 1));
-    if (store_read(path, text, BOOK_MAX - 1, &len) != STORE_OK)
+    (void)path;
+    if (store_read_at(books[index].at, "formulas", books[index].name, text,
+                      BOOK_MAX - 1, &len) != STORE_OK)
         return "";
     text[len] = 0;
     for (int i = 0; i < formula_line_count(text, len); i++)
@@ -124,7 +124,7 @@ static void draw_list(void)
 {
     int y = TH_CONTENT_Y + TH_PAD;
     int const w = SCR_W - 2 * TH_PAD;
-    int const list_rows = (SCR_H - TH_SOFT_H - y - TH_LINE - 8) / TH_LINE;
+    int const list_rows = (SCR_H - TH_SOFT_H - y - 2 * TH_LINE - 8) / TH_LINE;
 
     if (book_count == 0)
     {
@@ -137,6 +137,10 @@ static void draw_list(void)
         w_strip(NULL, NULL);
         return;
     }
+
+    /* Which folder the booklets came from, since it can be one of three. */
+    w_source_line("Booklets", (int)books[0].at, "Bench/formulas");
+    y += TH_LINE;
 
     if (book_sel < book_top)
         book_top = book_sel;

@@ -50,6 +50,7 @@ typedef enum {
     VIEW_PI,
     VIEW_FORMULA,
     VIEW_PERCENT,
+    VIEW_CARDCHECK,
     VIEW_COUNT,
 } view_t;
 
@@ -110,6 +111,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                       app_sigfig_timeout },
     [VIEW_HWREPORT] = { app_hwreport_init, app_hwreport_draw, app_hwreport_key,
                         app_hwreport_timeout },
+    [VIEW_CARDCHECK] = { app_cardcheck_init, app_cardcheck_draw,
+                         app_cardcheck_key, app_cardcheck_timeout },
     [VIEW_FACTOR] = { app_factor_init, app_factor_draw, app_factor_key,
                       app_factor_timeout },
     [VIEW_PI] = { app_pi_init, app_pi_draw, app_pi_key, app_pi_timeout },
@@ -124,11 +127,22 @@ bench_settings_t *app_cfg(void)
     return &cfg;
 }
 
+/* Screens that are mostly text to read, and therefore the ones that honour
+ * Settings > Font: Large.  Menus, keypads and form screens keep one size: their
+ * boxes and key targets are laid out in fixed pixels, and growing the text in a
+ * form would push values onto the borders. */
+static bool view_reads_text(view_t v)
+{
+    return v == VIEW_NOTES || v == VIEW_FORMULA || v == VIEW_HELP ||
+           v == VIEW_ABOUT || v == VIEW_SETTINGS || v == VIEW_CARDCHECK;
+}
+
 static void set_view(view_t v)
 {
     if (v < 0 || v >= VIEW_COUNT)
         v = VIEW_MENU;
     view = v;
+    scr_set_text_scale(view_reads_text(v) ? (int)cfg.font_scale : 1);
     apps[view].init();
 }
 
@@ -166,6 +180,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_PI: set_view(VIEW_PI); break;
     case APP_SCREEN_FORMULA: set_view(VIEW_FORMULA); break;
     case APP_SCREEN_PERCENT: set_view(VIEW_PERCENT); break;
+    case APP_SCREEN_CARDCHECK: set_view(VIEW_CARDCHECK); break;
     default: set_view(VIEW_MENU); break;
     }
 }

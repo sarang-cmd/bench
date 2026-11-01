@@ -344,12 +344,12 @@ void app_roots_draw(void)
 
     scr_clear(TH_PAPER);
     w_title("Root finder", method_name[method]);
-    w_field(TH_PAD, y, SCR_W - 2 * TH_PAD, 20, "f =", fn, sel == 0);
+    w_field(TH_PAD, y, SCR_W - 2 * TH_PAD, w_field_h(), "f =", fn, sel == 0);
     y += 24;
 
-    w_field(TH_PAD, y, w, 20, first_label(), pa, sel == 1);
+    w_field(TH_PAD, y, w, w_field_h(), first_label(), pa, sel == 1);
     if (second_field())
-        w_field(TH_PAD + w + TH_GAP, y, w, 20, second_label(), pb, sel == 2);
+        w_field(TH_PAD + w + TH_GAP, y, w, w_field_h(), second_label(), pb, sel == 2);
     else
         scr_text(TH_PAD + w + TH_GAP, y + 6, "one guess is enough", TH_INK);
     y += 24;

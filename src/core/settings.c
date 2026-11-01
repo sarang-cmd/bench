@@ -81,6 +81,15 @@ uint8_t settings_clamp_wrap(int v)
     return (uint8_t)v;
 }
 
+uint8_t settings_clamp_font(int v)
+{
+    if (v < SETTINGS_FONT_MIN)
+        return SETTINGS_FONT_MIN;
+    if (v > SETTINGS_FONT_MAX)
+        return SETTINGS_FONT_MAX;
+    return (uint8_t)v;
+}
+
 uint8_t settings_clamp_angle(int v)
 {
     return v == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_RAD : SETTINGS_ANGLE_DEG;
@@ -106,6 +115,11 @@ uint8_t settings_clamp_warn(int v)
 uint8_t settings_clamp_flag(int v)
 {
     return v ? 1 : 0;
+}
+
+char const *settings_font_text(uint8_t v)
+{
+    return v >= SETTINGS_FONT_MAX ? "Large" : "Standard";
 }
 
 char const *settings_angle_text(uint8_t v)
@@ -150,6 +164,7 @@ void settings_defaults(bench_settings_t *s)
     s->startup_cat = 0;
     s->show_hint = 1;
     s->pacer_warn = 5;
+    s->font_scale = 1;
 }
 
 bool settings_equal(bench_settings_t const *a, bench_settings_t const *b)
@@ -163,7 +178,8 @@ bool settings_equal(bench_settings_t const *a, bench_settings_t const *b)
            a->tour_done == b->tour_done &&
            a->startup_cat == b->startup_cat &&
            a->show_hint == b->show_hint &&
-           a->pacer_warn == b->pacer_warn;
+           a->pacer_warn == b->pacer_warn &&
+           a->font_scale == b->font_scale;
 }
 
 /* ---- parse -------------------------------------------------------------- */
@@ -254,6 +270,11 @@ int settings_parse(char const *text, int len, bench_settings_t *s, int *ignored)
         else if (key_is(text + start, klen, "pacer_warn"))
         {
             s->pacer_warn = settings_clamp_warn(value);
+            applied++;
+        }
+        else if (key_is(text + start, klen, "font_scale"))
+        {
+            s->font_scale = settings_clamp_font(value);
             applied++;
         }
         else if (key_is(text + start, klen, "version"))
@@ -405,6 +426,9 @@ int settings_format(bench_settings_t const *s, char *buf, int size)
     n = put_key_int(buf, n, size, "startup_cat", s->startup_cat);
     n = put_key_int(buf, n, size, "show_hint", s->show_hint);
     n = put_key_int(buf, n, size, "pacer_warn", s->pacer_warn);
+    if (n < 0)
+        return -1;
+    n = put_key_int(buf, n, size, "font_scale", s->font_scale);
     if (n < 0)
         return -1;
 

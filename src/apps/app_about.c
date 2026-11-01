@@ -110,10 +110,18 @@ int app_about_timeout(void)
     return 0;
 }
 
+static int columns(void)
+{
+    int cols = scr_text_cols(SCR_W - 2 * TH_PAD - 4);
+
+    return cols < 8 ? 8 : cols;
+}
+
 void app_about_draw(void)
 {
+    int const cols = columns();
     int const fit = visible_lines();
-    int const lines = help_line_count(about_text);
+    int const lines = help_wrap_count(about_text, cols);
     int const y0 = TH_CONTENT_Y + TH_PAD;
     int y = y0;
     char buf[64];
@@ -123,14 +131,15 @@ void app_about_draw(void)
 
     for (int i = top; i < top + fit && i < lines; i++)
     {
-        if (help_line(about_text, i, buf, (int)sizeof buf) > 0)
+        if (help_wrap_line(about_text, cols, i, buf, (int)sizeof buf) > 0)
             scr_text(TH_PAD, y, buf, TH_INK);
         y += TH_LINE;
     }
 
     w_scrollbar(SCR_W - TH_PAD + 2, y0, fit * TH_LINE - 4, lines, fit, top);
 
-    w_strip(help_needs_scroll(about_text, fit) ? "UP/DOWN scroll" : "F5 help",
+    w_strip(help_wrap_needs_scroll(about_text, cols, fit) ? "UP/DOWN scroll"
+                                                          : "F5 help",
             "EXE back");
     scr_present();
 }
@@ -147,10 +156,10 @@ app_result_t app_about_key(bench_event_t ev)
     case BK_MENU:
         return APP_QUIT;
     case BK_UP:
-        top = help_scroll_pos(about_text, top, fit, -1);
+        top = help_wrap_scroll(about_text, columns(), top, fit, -1);
         break;
     case BK_DOWN:
-        top = help_scroll_pos(about_text, top, fit, 1);
+        top = help_wrap_scroll(about_text, columns(), top, fit, 1);
         break;
     case BK_EXIT:
     case BK_EXE:

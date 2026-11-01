@@ -271,6 +271,25 @@ int md_layout(char const *src, int len, md_block_t const *blocks, int nblocks,
             continue;
         }
 
+        if (blk->type == MD_BLOCK_TABLE) {
+            /* One row, already the right width: no wrapping, no joining. */
+            int line_start = (int)blk->offset;
+            int line_end = line_start + (int)blk->length;
+            int width = 0;
+            int line = begin_line(&b, MD_BLOCK_TABLE, 0, 0, 0);
+            int p = line_start;
+
+            add_span(&b, line_start, line_end - line_start, MD_SPAN_TEXT);
+            while (p < line_end) {
+                uint32_t cp = md_utf8_decode(src, line_end, &p);
+
+                width += glyph_width(metrics, cp, MD_SPAN_TEXT);
+                count_glyph(&local, metrics, cp);
+            }
+            close_line(&b, line, width);
+            continue;
+        }
+
         if (blk->type == MD_BLOCK_CODE) {
             /* Code lines are not wrapped: the renderer clips them. */
             int pos = (int)blk->offset;

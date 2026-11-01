@@ -24,9 +24,19 @@
 void scr_init(void);
 void scr_present(void);
 
-/* Height of one line of the default font, measured once in scr_init(). */
+/* Text size: 1 is the font as designed (6x10 pixels), 2 doubles it.  Set once
+ * from the saved settings before the first frame, and again when the reader
+ * changes Settings > Font.  Layout constants derive from scr_text_h(), so the
+ * whole UI reflows. */
+void scr_set_text_scale(int scale);
+int scr_text_scale(void);
+
+/* Height of one line of text in pixels (font height times the scale). */
 int scr_text_h(void);
 int scr_text_w(char const *s);
+/* Characters that fit in `px` pixels: the font is fixed-advance, and this is
+ * what the help and about screens wrap to. */
+int scr_text_cols(int px);
 /* Bytes of `s` that fit in `max_w` pixels (for clipping a label). */
 int scr_text_fit(char const *s, int max_w);
 

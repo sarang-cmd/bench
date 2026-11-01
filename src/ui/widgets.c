@@ -7,6 +7,8 @@
 #include "platform/input.h"
 #include "platform/screen.h"
 #include "theme.h"
+#include "core/help.h"
+#include "numtext.h"
 
 /* ---- title and softkeys ------------------------------------------------- */
 
@@ -50,8 +52,18 @@ void w_softkeys(char const *const labels[6], int active)
     {
         int x = i * TH_SOFT_W;
         char const *label = labels[i];
-        int const w = label ? scr_text_w(label) : 0;
-        int const label_x = x + 1 + (TH_SOFT_W - 1 - w) / 2;
+        int w;
+        int label_x;
+
+        /* F5 is help on every screen (main.c routes it), so an empty F5 slot
+         * advertises it rather than sitting blank.  A screen may still put its
+         * own label there.  This happens *before* the label is measured: getting
+         * it the other way round centred "Help" as if it were zero pixels wide,
+         * which put it on top of "About" once the text was doubled. */
+        if ((!label || !*label) && i == 4)
+            label = "Help";
+        w = label ? scr_text_w(label) : 0;
+        label_x = x + 1 + (TH_SOFT_W - 1 - w) / 2;
 
         /* Separators stop short of the top and bottom edge, so the bar reads as
          * six slots with air around them rather than six boxes touching. */
@@ -59,11 +71,6 @@ void w_softkeys(char const *const labels[6], int active)
             scr_vline(x, y + 4, TH_SOFT_H - 8, TH_PAPER);
         if (active == i)
             scr_fill(x + 1, y + 1, TH_SOFT_W - 1, TH_SOFT_H - 1, TH_INK);
-        /* F5 is help on every screen (main.c routes it), so an empty F5 slot
-         * advertises it rather than sitting blank.  A screen may still put its
-         * own label there. */
-        if ((!label || !*label) && i == 4)
-            label = "Help";
         if (!label || !*label)
             continue;
         scr_text_ellipsis_as(SCR_TR_SOFTKEY,
@@ -98,15 +105,61 @@ void w_panel(int x, int y, int w, int h)
     scr_fill(x + 1, y + 1, 3, 3, TH_RED);
 }
 
+void w_source_line(char const *what, int at, char const *bench_path)
+{
+    char line[72];
+
+    /* at is a store_location_t, passed as int so this file stays free of
+     * platform headers; 0 is Bench itself. */
+    strcpy(line, what);
+    nt_append(line, (int)sizeof line, " in ");
+    if (at == 0)
+        nt_append(line, (int)sizeof line, bench_path);
+    else if (at == 1)
+        nt_append(line, (int)sizeof line, "SAVE-F\\Bench");
+    else if (at == 2)
+        nt_append(line, (int)sizeof line, "the card root");
+    else
+        nt_append(line, (int)sizeof line, "the card root (loose)");
+    scr_text_ellipsis(TH_PAD, TH_CONTENT_Y + TH_PAD, line, TH_INK,
+                      SCR_W - 2 * TH_PAD);
+}
+
+/* Draw one string centred, wrapped to the content width.  Returns the number
+ * of lines it took, so the caller can centre the block as a whole. */
+static int wrap_centre(int y, char const *s, int color)
+{
+    int const cols = scr_text_cols(SCR_W - 2 * TH_PAD);
+    int n = cols > 0 ? help_wrap_count(s, cols) : 0;
+    char buf[80];
+
+    if (!s || !*s)
+        return 0;
+    if (n <= 0)
+        return 0;
+    for (int i = 0; i < n; i++)
+    {
+        if (help_wrap_line(s, cols > 0 ? cols : 64, i, buf, (int)sizeof buf) > 0)
+            scr_text_center(0, SCR_W, y + i * TH_LINE, buf, color);
+    }
+    return n;
+}
+
 void w_message(char const *title, char const *line)
 {
-    int y = TH_CONTENT_Y + TH_CONTENT_H / 2 - TH_LINE;
+    int const cols = scr_text_cols(SCR_W - 2 * TH_PAD);
+    int const t = (title && *title) ? (cols > 0 ? help_wrap_count(title, cols) : 1)
+                                    : 0;
+    int const l = (line && *line) ? (cols > 0 ? help_wrap_count(line, cols) : 1)
+                                  : 0;
+    int const total = t + l;
+    int y = TH_CONTENT_Y + (TH_CONTENT_H - total * TH_LINE) / 2;
 
     scr_fill(0, TH_CONTENT_Y, SCR_W, TH_CONTENT_H, TH_PAPER);
-    if (title && *title)
-        scr_text_center(0, SCR_W, y, title, TH_INK);
-    if (line && *line)
-        scr_text_center(0, SCR_W, y + TH_LINE, line, TH_INK);
+    if (t > 0)
+        y += wrap_centre(y, title, TH_INK) * TH_LINE;
+    if (l > 0)
+        wrap_centre(y, line, TH_INK);
 }
 
 void w_modal(char const *title, char const *const *lines, int count,
@@ -181,11 +234,20 @@ void w_scrollbar(int x, int y, int h, int count, int visible, int top)
 
 /* ---- fields ------------------------------------------------------------- */
 
+int w_field_h(void)
+{
+    return scr_text_h() + 10;
+}
+
 void w_field(int x, int y, int w, int h, char const *label, char const *value,
              bool active)
 {
     int lw = scr_text_w(label);
 
+    /* A caller that passes a smaller box than the text needs would put text on
+     * the border; grow instead, and let the layout above make room. */
+    if (h < scr_text_h() + 6)
+        h = scr_text_h() + 6;
     scr_fill(x, y, w, h, active ? TH_YELLOW : TH_PAPER);
     scr_frame(x, y, w, h, TH_INK, active ? 2 : 1);
     scr_text(x + TH_PAD, y + (h - scr_text_h()) / 2, label, TH_INK);
@@ -221,7 +283,12 @@ int w_keyboard(char *buf, int size, char const *title)
 {
     int sel = 0;
     int len = (int)strlen(buf);
+    /* A keypad is a target, not reading matter: it keeps the standard text
+     * size so the seven columns of keys stay big enough to hit, whatever the
+     * reader set for the pages around it. */
+    int const saved_scale = scr_text_scale();
 
+    scr_set_text_scale(1);
     for (;;)
     {
         int box_w = SCR_W - 2 * TH_PAD;
@@ -229,9 +296,10 @@ int w_keyboard(char *buf, int size, char const *title)
         int x = TH_PAD;
         int y = TH_CONTENT_Y + (TH_CONTENT_H - box_h) / 2;
 
-        /* Modal: erase everything behind it.  Half a line of the note
-         * showing above and below the panel read as a drawing bug. */
-        scr_fill(0, TH_CONTENT_Y, SCR_W, TH_CONTENT_H, TH_PAPER);
+        /* Modal: erase the whole window, title bar and softkey strip included.
+         * The screen behind it was drawn at the reader's text size, and half a
+         * line of it above or below the panel read as a drawing bug. */
+        scr_fill(0, 0, SCR_W, SCR_H, TH_PAPER);
         scr_fill(x, y, box_w, box_h, TH_PAPER);
         scr_frame(x, y, box_w, box_h, TH_INK, 2);
         scr_fill(x + 2, y + 2, box_w - 4, TH_TITLE_H - 4, TH_INK);
@@ -293,7 +361,10 @@ int w_keyboard(char *buf, int size, char const *title)
             bench_event_t ev = input_next();
 
             if (ev.key == BK_EXIT || ev.key == BK_MENU)
+            {
+                scr_set_text_scale(saved_scale);
                 return 0;
+            }
             if (ev.key == BK_LEFT)
                 sel = (sel / KB_COLS) * KB_COLS + ((sel % KB_COLS) + KB_COLS - 1) % KB_COLS;
             else if (ev.key == BK_RIGHT)
@@ -312,7 +383,10 @@ int w_keyboard(char *buf, int size, char const *title)
                 char c = ev.key == BK_DIGIT ? ev.ch : keyboard_cells[sel];
 
                 if (c == '>')
+                {
+                    scr_set_text_scale(saved_scale);
                     return 1;
+                }
                 if (c == '<')
                 {
                     if (len > 0)

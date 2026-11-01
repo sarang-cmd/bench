@@ -118,7 +118,7 @@ static void draw(const char *title)
     scr_clear(TH_PAPER);
     w_title(title, "F1 clear");
 
-    w_field(TH_PAD, y, w, 20, "n =", in, 1);
+    w_field(TH_PAD, y, w, w_field_h(), "n =", in, 1);
     y += 24;
 
     if (err[0])

@@ -48,6 +48,10 @@ static char const *flatten(char const *src, int start, int end, int *count)
             open = "<c>";
             close = "</c>";
             break;
+        case MD_SPAN_MATH:
+            open = "<m>";
+            close = "</m>";
+            break;
         case MD_SPAN_TEXT:
             break;
         }
@@ -271,11 +275,13 @@ static void unsupported_syntax(void)
 {
     T_SECTION("unsupported syntax stays plain text");
 
-    /* A table row is just text. */
+    /* A pipe row is its own block since 1.3.0 (the viewer draws it as one
+     * aligned line), and the text of each row is kept as written. */
     char const *src = "| a | b |\n|---|---|\n";
-    T_INT(parse_blocks(src), 1);
-    T_INT(blocks[0].type, MD_BLOCK_PARAGRAPH);
-    T_STR(block_text(src, 0), "| a | b |\n|---|---|");
+    T_INT(parse_blocks(src), 2);
+    T_INT(blocks[0].type, MD_BLOCK_TABLE);
+    T_STR(block_text(src, 0), "| a | b |");
+    T_STR(block_text(src, 1), "|---|---|");
 
     /* An image is text, not a picture. */
     src = "![alt](pic.png)\n";
@@ -346,7 +352,7 @@ static void full_sample(void)
     T_TRUE(n > 0);
 
     int headings = 0, bullets = 0, ordered = 0, quotes = 0, rules = 0;
-    int code = 0, paras = 0, checks = 0;
+    int code = 0, paras = 0, checks = 0, maths = 0, tables = 0;
     for (int i = 0; i < n; i++) {
         switch ((md_block_type_t)blocks[i].type) {
         case MD_BLOCK_HEADING:
@@ -366,6 +372,12 @@ static void full_sample(void)
         case MD_BLOCK_QUOTE:
             quotes++;
             break;
+        case MD_BLOCK_MATH:
+            maths++;
+            break;
+        case MD_BLOCK_TABLE:
+            tables++;
+            break;
         case MD_BLOCK_RULE:
             rules++;
             break;
@@ -383,8 +395,11 @@ static void full_sample(void)
     T_TRUE(quotes >= 2);
     T_TRUE(rules >= 1);
     T_TRUE(code >= 1);
-    T_TRUE(paras >= 4);      /* text, table, image, html, footnote */
+    T_TRUE(paras >= 4);      /* text, image, html, footnote */
     T_INT(checks, 2);
+    /* The sample now carries 1.3.0 maths and a table. */
+    T_TRUE(maths >= 1);
+    T_TRUE(tables >= 1);
 
     /* Every block stays inside the file. */
     for (int i = 0; i < n; i++) {

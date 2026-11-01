@@ -27,14 +27,19 @@
 #define TH_VIOLET 0x8AFE  /* #8b5cf6 */
 #define TH_SHADE 0xD6B9   /* #d9d7cd */
 
+/* Paper on ink: light text for a dark panel.  The palette has no grey, and the
+ * shade colour is light, so "nothing here" is drawn as a filled bar with paper
+ * text rather than an unreadable pale label. */
+#define TH_PAPER_ON_INK TH_PAPER
+
 /* ---- layout ------------------------------------------------------------- */
 
-#define TH_TITLE_H 18
-/* 20, not 16: a 10-pixel label in a 16-pixel bar left three pixels above and
- * below, which reads as text jammed into a slot.  Five pixels on each side is
- * the same padding the tiles use, and it is what the bottom bar needs to look
- * like a row of buttons rather than a strip of text. */
-#define TH_SOFT_H 20
+/* Bars are sized from the text, not from a constant: the reader can double the
+ * text size (Settings > Font), and a title bar with eight pixels to spare at
+ * Standard would cut the top of every large title.  Eight and ten pixels are
+ * what the two bars were tuned to at Standard. */
+#define TH_TITLE_H (scr_text_h() + 8)
+#define TH_SOFT_H (scr_text_h() + 10)
 #define TH_SOFT_PAD 4
 #define TH_CONTENT_Y (TH_TITLE_H + 1)
 #define TH_CONTENT_H (SCR_H - TH_TITLE_H - TH_SOFT_H - 2)
@@ -66,6 +71,9 @@
 #define TH_MD_QUOTE_BAR TH_RED
 #define TH_MD_RULE TH_SHADE
 #define TH_MD_BULLET TH_RED
+/* Math is tinted, not boxed: the page already uses shade for code, and a
+ * second background would make a formula look like a button. */
+#define TH_MD_MATH TH_BLUE
 #define TH_MD_SEARCH_HIT TH_YELLOW
 
 #endif /* BENCH_THEME_H */

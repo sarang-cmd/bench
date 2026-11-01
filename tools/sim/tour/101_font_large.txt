@@ -1,0 +1,7 @@
+# tour step: 101_font_large
+# Settings, down to the Font row, right: the reading screens double their text.
+# This is the second row, so it is two keys in - and the row itself says
+# "Standard" or "Large", no separate overview needed.
+tool:settings
+down
+right

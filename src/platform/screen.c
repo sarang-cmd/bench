@@ -11,22 +11,74 @@
 
 #include <gint/display.h>
 
+#include "font_data.h"
 #include "theme.h"
 
-static int line_h = 8;
+/* Text size multiplier.  1 is the font as designed (6x10); 2 doubles it for
+ * Settings > Font: Large.  Only whole pixels: a half-pixel face would have to
+ * be anti-aliased by hand and the palette has no grey to blend with. */
+static int text_scale = 1;
 
-/* Width in pixels of the first `n` bytes of `s`. */
+static int line_h = BENCH_FONT_H;
+
+/* Width in pixels of the first `n` bytes of `s`.  Every glyph in the table is
+ * a fixed advance, so this is a multiplication and works for a cut at any
+ * byte, which is what the ellipsis code needs. */
 static int text_w_prefix(char const *s, int n)
 {
-    char tmp[80];
-    int copy = n < (int)sizeof tmp - 1 ? n : (int)sizeof tmp - 1;
-
-    if (n <= 0 || !s)
+    if (!s || n <= 0)
         return 0;
-    for (int i = 0; i < copy; i++)
-        tmp[i] = s[i];
-    tmp[copy] = 0;
-    return scr_text_w(tmp);
+    return n * BENCH_FONT_W * text_scale;
+}
+
+/* The glyph for a byte, or the '?' box when it is outside the table. */
+static unsigned short const *glyph_for(unsigned char c)
+{
+    if (c < BENCH_FONT_FIRST || c > BENCH_FONT_LAST)
+        c = '?';
+    return bench_font_glyphs[c - BENCH_FONT_FIRST];
+}
+
+/* One character, `text_scale` pixels of every font pixel. */
+static void draw_glyph(int x, int y, unsigned char c, int color)
+{
+    unsigned short const *g = glyph_for(c);
+    int s = text_scale;
+
+    for (int gx = 0; gx < BENCH_FONT_W; gx++) {
+        unsigned short bits = g[gx];
+
+        if (!bits)
+            continue;
+        for (int gy = 0; gy < BENCH_FONT_H; gy++) {
+            int px, py;
+
+            if (!(bits & (1u << gy)))
+                continue;
+            px = x + gx * s;
+            py = y + gy * s;
+            if (px < 0 || py < 0 || px + s > SCR_W || py + s > SCR_H) {
+                /* Clip per pixel block: a label may start off-screen. */
+                if (px >= SCR_W || py >= SCR_H || px + s <= 0 || py + s <= 0)
+                    continue;
+            }
+            if (s == 1)
+                scr_pixel(px, py, color);
+            else
+                scr_fill(px, py, s, s, color);
+        }
+    }
+}
+
+/* Draw a NUL-terminated string, one glyph at a time. */
+static void draw_string(int x, int y, char const *s, int color)
+{
+    int cx = x;
+
+    for (int i = 0; s[i]; i++) {
+        draw_glyph(cx, y, (unsigned char)s[i], color);
+        cx += BENCH_FONT_W * text_scale;
+    }
 }
 
 static int clip_lo(int v, int lo)
@@ -41,11 +93,22 @@ static int clip_hi(int v, int hi)
 
 void scr_init(void)
 {
-    int w = 0;
-    int h = 0;
+    line_h = BENCH_FONT_H * text_scale;
+}
 
-    dsize("Ag", NULL, &w, &h);
-    line_h = (h > 0) ? h : 8;
+void scr_set_text_scale(int scale)
+{
+    if (scale < 1)
+        scale = 1;
+    if (scale > 2)
+        scale = 2;
+    text_scale = scale;
+    line_h = BENCH_FONT_H * text_scale;
+}
+
+int scr_text_scale(void)
+{
+    return text_scale;
 }
 
 int scr_text_h(void)
@@ -55,24 +118,32 @@ int scr_text_h(void)
 
 int scr_text_w(char const *s)
 {
-    int w = 0;
-    int h = 0;
+    int n = 0;
 
     if (!s)
         return 0;
-    dsize(s, NULL, &w, &h);
-    return w;
+    while (s[n])
+        n++;
+    return n * BENCH_FONT_W * text_scale;
+}
+
+int scr_text_cols(int px)
+{
+    int cell = BENCH_FONT_W * text_scale;
+
+    if (px <= 0 || cell <= 0)
+        return 0;
+    return px / cell;
 }
 
 int scr_text_fit(char const *s, int max_w)
 {
-    int w = 0;
-    char const *cut;
+    int cell = BENCH_FONT_W * text_scale;
 
     if (!s || max_w <= 0)
         return 0;
-    cut = drsize(s, NULL, max_w, &w);
-    return (int)(cut - s);
+    /* Bytes that fit whole: floor(max_w / cell), never past the string. */
+    return max_w / cell;
 }
 
 void scr_present(void)
@@ -165,7 +236,7 @@ void scr_text_as(int kind, int x, int y, char const *s, int color)
     if (y < -line_h || y >= SCR_H)
         return;
     SCR_TRACE(kind, x, y, scr_text_w(s), line_h, color, C_NONE, s);
-    dtext(x + SCR_X, y + SCR_Y, color, s);
+    draw_string(x, y, s, color);
 }
 
 void scr_text(int x, int y, char const *s, int color)
@@ -180,7 +251,8 @@ void scr_text_bg(int x, int y, char const *s, int fg, int bg)
     if (y < -line_h || y >= SCR_H)
         return;
     SCR_TRACE(SCR_TR_TEXT, x, y, scr_text_w(s), line_h, fg, bg, s);
-    dtext_opt(x + SCR_X, y + SCR_Y, fg, bg, DTEXT_LEFT, DTEXT_TOP, s, -1);
+    scr_fill(x, y, scr_text_w(s), line_h, bg);
+    draw_string(x, y, s, fg);
 }
 
 void scr_text_ellipsis_as(int kind, int x, int y, char const *s, int color,
@@ -203,9 +275,10 @@ void scr_text_ellipsis_as(int kind, int x, int y, char const *s, int color,
      * make the overlap check complain about a label overlapping itself. */
     SCR_TRACE(kind, x, y, text_w_prefix(s, fit) + scr_text_w("..."), line_h,
               color, C_NONE, s);
-    dtext_opt(x + SCR_X, y + SCR_Y, color, C_NONE, DTEXT_LEFT, DTEXT_TOP, s,
-              fit);
-    dtext(x + SCR_X + text_w_prefix(s, fit), y + SCR_Y, color, "...");
+    for (int i = 0; i < fit; i++)
+        draw_glyph(x + i * BENCH_FONT_W * text_scale, y, (unsigned char)s[i],
+                   color);
+    draw_string(x + fit * BENCH_FONT_W * text_scale, y, "...", color);
 }
 
 void scr_text_ellipsis(int x, int y, char const *s, int color, int max_w)
@@ -256,28 +329,19 @@ int scr_utf8_encode(unsigned int cp, char *buf)
 
 int scr_glyph_w(unsigned int codepoint)
 {
-    char buf[5];
-    int w = 0;
-    int h = 0;
-
     if (codepoint == 0)
         return 0;
-    scr_utf8_encode(codepoint, buf);
-    dsize(buf, NULL, &w, &h);
-    return w;
+    return BENCH_FONT_W * text_scale;
 }
 
 bool scr_has_glyph(unsigned int codepoint)
 {
     char buf[5];
 
-    /* The default gint font covers printable ASCII.  Anything above is drawn as
-     * '?' until the M1 font test (docs/spike.md question 4) says otherwise;
-     * md2bench.py maps the common symbols to ASCII for this reason. */
-    if (codepoint < 0x20)
-        return false;
-    if (codepoint > 0x7E)
-        return false;
-    scr_utf8_encode(codepoint, buf);
-    return scr_glyph_w(codepoint) > 0;
+    /* The bundled face covers printable ASCII only (docs/spike.md question 4:
+     * the OS fonts offer no Greek or maths glyphs).  Everything else is drawn
+     * as '?', which is why md_latex_to_text() has an ASCII spelling for every
+     * symbol it can emit: the reader sees "pi", not "?". */
+    (void)buf;
+    return codepoint >= 0x20 && codepoint <= 0x7E;
 }

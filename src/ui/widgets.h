@@ -27,6 +27,12 @@ void w_strip(char const *left, char const *right);
 /* A raised panel for grouping content. */
 void w_panel(int x, int y, int w, int h);
 
+/* The line above a file list: "Notes in Bench/notes", or "Notes in SAVE-F -
+ * Bench cannot write there" when the files came from another folder.  Keeps
+ * the three list screens saying the same thing, and keeps the difference
+ * visible instead of silent. */
+void w_source_line(char const *what, int at, char const *bench_path);
+
 /* Centred message in the content area, with an optional second line. */
 void w_message(char const *title, char const *line);
 
@@ -47,6 +53,10 @@ int w_scroll_follow(int sel, int top, int visible);
 void w_scrollbar(int x, int y, int h, int count, int visible, int top);
 
 /* Text field box.  `label` on the left, the value right of it. */
+/* Height of a field box: text plus five pixels of padding above and below,
+ * so a doubled text size gets a doubled box instead of text on the border. */
+int w_field_h(void);
+
 void w_field(int x, int y, int w, int h, char const *label,
              char const *value, bool active);
 

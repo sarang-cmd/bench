@@ -64,14 +64,23 @@ int app_help_timeout(void)
     return 0;
 }
 
+/* Columns the text may use, from the pixels between the margins. */
+static int columns(void)
+{
+    int cols = scr_text_cols(SCR_W - 2 * TH_PAD - 4);
+
+    return cols < 8 ? 8 : cols;
+}
+
 void app_help_draw(void)
 {
     char const *text = body();
-    int const lines = help_line_count(text);
+    int const cols = columns();
+    int const lines = help_wrap_count(text, cols);
     int const fit = visible_lines();
     int const last = first + fit;
     int y = TH_CONTENT_Y + TH_PAD;
-    char buf[48];
+    char buf[64];
 
     scr_clear(TH_PAPER);
     w_title(resolved()->title, "Help");
@@ -80,7 +89,7 @@ void app_help_draw(void)
     {
         /* An empty line is spacing, and a label of nothing is not readable
          * text: skip it rather than asking the checker to read it. */
-        if (help_line(text, i, buf, (int)sizeof buf) > 0)
+        if (help_wrap_line(text, cols, i, buf, (int)sizeof buf) > 0)
             scr_text(TH_PAD, y, buf, TH_INK);
         y += TH_LINE;
     }
@@ -90,7 +99,7 @@ void app_help_draw(void)
     w_scrollbar(SCR_W - TH_PAD + 2, TH_CONTENT_Y + TH_PAD, fit * TH_LINE - 4,
                 lines, fit, first);
 
-    w_strip(help_needs_scroll(text, fit) ? "UP/DOWN scroll" : NULL,
+    w_strip(help_wrap_needs_scroll(text, cols, fit) ? "UP/DOWN scroll" : NULL,
             "EXE back");
     scr_present();
 }
@@ -105,10 +114,10 @@ app_result_t app_help_key(bench_event_t ev)
     case BK_MENU:
         return APP_QUIT;
     case BK_UP:
-        first = help_scroll_pos(text, first, fit, -1);
+        first = help_wrap_scroll(text, columns(), first, fit, -1);
         break;
     case BK_DOWN:
-        first = help_scroll_pos(text, first, fit, 1);
+        first = help_wrap_scroll(text, columns(), first, fit, 1);
         break;
     case BK_EXIT:
     case BK_EXE:

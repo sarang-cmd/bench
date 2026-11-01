@@ -4,6 +4,7 @@
  * docs/plan.md section 6.2 for the uncertainty setting.
  *
  * Keys: UP/DOWN pick a row, LEFT/RIGHT change it, EXE also changes it,
+ * F2 Card check (the folders Bench reads), F3 Hardware report, F5 Help,
  * F6 About, EXIT back.  The file is written the moment a value changes, never
  * on a timer and never inside a loop. */
 
@@ -71,97 +72,207 @@ void app_cfg_save(void)
         saved_ok = store_write(SETTINGS_PATH, text, n) == STORE_OK;
 }
 
-#define SETTINGS_ROWS 8
+#define SETTINGS_ROWS 9
+
+/* The row order, in one place: draw_row() and change() both switch on these,
+ * so a new row cannot end up drawn in one position and edited in another. */
+enum {
+    ROW_UNCERT = 0,
+    ROW_FONT,
+    ROW_CHECKPOINT,
+    ROW_WRAP,
+    ROW_ANGLE,
+    ROW_HINT,
+    ROW_STARTUP,
+    ROW_HINT_LINE,
+    ROW_WARN,
+};
 
 static void change(int delta)
 {
     bench_settings_t *cfg = app_cfg();
 
-    if (row == 5)
+    switch (row)
+    {
+    case ROW_UNCERT:
+        cfg->uncert_sig = settings_clamp_uncert_sig(cfg->uncert_sig + delta);
+        break;
+    case ROW_FONT:
+        cfg->font_scale = settings_clamp_font(cfg->font_scale + delta);
+        /* Take effect at once: the reader can see the result on this screen. */
+        scr_set_text_scale((int)cfg->font_scale);
+        break;
+    case ROW_CHECKPOINT:
+        cfg->pacer_checkpoint =
+            settings_clamp_checkpoint(cfg->pacer_checkpoint + delta);
+        break;
+    case ROW_WRAP:
+    {
+        int v = cfg->notes_wrap + (delta > 0 ? 25 : -25);
+
+        cfg->notes_wrap = settings_clamp_wrap(v);
+        if (v > 0 && cfg->notes_wrap == 0)
+            cfg->notes_wrap = 50;   /* never land on "auto" by accident */
+        break;
+    }
+    case ROW_ANGLE:
+        cfg->angle_unit = settings_clamp_angle(
+            cfg->angle_unit == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_DEG
+                                                  : SETTINGS_ANGLE_RAD);
+        break;
+    case ROW_HINT:
+        cfg->tour_done = settings_clamp_flag(cfg->tour_done + delta);
+        break;
+    case ROW_STARTUP:
         cfg->startup_cat = settings_clamp_startup_cat(
             delta > 0 ? (cfg->startup_cat + 1) % SETTINGS_CATEGORY_COUNT
                       : (cfg->startup_cat + SETTINGS_CATEGORY_COUNT - 1) %
                             SETTINGS_CATEGORY_COUNT);
-    else if (row == 6)
+        break;
+    case ROW_HINT_LINE:
         cfg->show_hint = settings_clamp_flag(cfg->show_hint ? 0 : 1);
-    else if (row == 7)
+        break;
+    case ROW_WARN:
         cfg->pacer_warn = settings_clamp_warn(
             delta > 0 ? (cfg->pacer_warn + 1) % (SETTINGS_WARN_MAX + 1)
-                      : (cfg->pacer_warn + SETTINGS_WARN_MAX) % (SETTINGS_WARN_MAX + 1));
-    else if (row == 0)
-        cfg->uncert_sig = settings_clamp_uncert_sig(cfg->uncert_sig + delta);
-    else if (row == 1)
-        cfg->pacer_checkpoint =
-            settings_clamp_checkpoint(cfg->pacer_checkpoint + delta);
-    else if (row == 3)
-        cfg->angle_unit = settings_clamp_angle(
-            cfg->angle_unit == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_DEG
-                                                  : SETTINGS_ANGLE_RAD);
-    else if (row == 4)
-        cfg->tour_done = settings_clamp_flag(cfg->tour_done + delta);
-    else
-    {
-        int v = cfg->notes_wrap;
-
-        if (delta > 0)
-            v += 25;
-        else
-            v -= 25;
-        cfg->notes_wrap = settings_clamp_wrap(v);
-        if (v > 0 && cfg->notes_wrap == 0)
-            cfg->notes_wrap = 50;   /* never land on "auto" by accident */
+                      : (cfg->pacer_warn + SETTINGS_WARN_MAX) %
+                            (SETTINGS_WARN_MAX + 1));
+        break;
+    default:
+        break;
     }
     app_cfg_save();
 }
 
+/* Rows from the first row down to the key legend at the bottom. */
+static int list_top(void)
+{
+    return TH_CONTENT_Y + TH_PAD + TH_LINE + 4;
+}
+
+static int list_space(void)
+{
+    return SCR_H - TH_SOFT_H - TH_LINE - 2 - 4 - list_top();
+}
+
+/* Two status lines ("1 figure", "Saved to ...") sit under the list when there
+ * is room for them; at Large text there is not, and the list gets the space. */
+static bool status_fits(void)
+{
+    return list_space() - 2 * TH_LINE >= 4 * TH_LINE;
+}
+
+/* How many rows fit.  The list scrolls rather than overlapping the status lines
+ * or the key legend, which is what a larger text size makes necessary. */
+static int visible_rows(void)
+{
+    int space = list_space();
+    int rows;
+
+    if (status_fits())
+        space -= 2 * TH_LINE;
+    rows = space / TH_LINE;
+    if (rows > SETTINGS_ROWS)
+        rows = SETTINGS_ROWS;
+    return rows < 1 ? 1 : rows;
+}
+
+/* First row shown, so the selected row is always on screen. */
+static int first_row(void)
+{
+    int n = visible_rows();
+
+    if (row < n)
+        return 0;
+    return row - n + 1;
+}
+
+/* One row, by index.  Kept in one place so the scrolling window and the key
+ * handler cannot disagree about which row is which. */
+static void draw_row(int index, int y, int w, bench_settings_t *cfg, char *num)
+{
+    bool sel = index == row;
+
+    switch (index)
+    {
+    case ROW_UNCERT:
+        w_row(TH_PAD, y, w, "Uncertainty figures",
+              cfg->uncert_sig == 2 ? "1 or 2" : "1", sel);
+        break;
+    case ROW_FONT:
+        w_row(TH_PAD, y, w, "Font", settings_font_text(cfg->font_scale), sel);
+        break;
+    case ROW_CHECKPOINT:
+        nt_u64(cfg->pacer_checkpoint, num, (int)sizeof num);
+        w_row(TH_PAD, y, w, "Pacer checkpoint", num, sel);
+        break;
+    case ROW_WRAP:
+        if (cfg->notes_wrap == 0)
+            strcpy(num, "auto");
+        else
+        {
+            nt_u64(cfg->notes_wrap, num, (int)sizeof num);
+            nt_append(num, (int)sizeof num, "%");
+        }
+        w_row(TH_PAD, y, w, "Note width", num, sel);
+        break;
+    case ROW_ANGLE:
+        w_row(TH_PAD, y, w, "Angles default",
+              settings_angle_text(cfg->angle_unit), sel);
+        break;
+    case ROW_HINT:
+        w_row(TH_PAD, y, w, "First-run hint",
+              cfg->tour_done ? "read" : "showing", sel);
+        break;
+    case ROW_STARTUP:
+        w_row(TH_PAD, y, w, "Opens on",
+              tool_category_name((tool_category_t)cfg->startup_cat), sel);
+        break;
+    case ROW_HINT_LINE:
+        w_row(TH_PAD, y, w, "Show hint line", cfg->show_hint ? "yes" : "no",
+              sel);
+        break;
+    case ROW_WARN:
+        w_row(TH_PAD, y, w, "Pacer clock red at",
+              settings_warn_text(cfg->pacer_warn, num, (int)sizeof num), sel);
+        break;
+    default:
+        break;
+    }
+}
+
 void app_settings_draw(void)
 {
-    int y = TH_CONTENT_Y + TH_PAD;
+    int y;
     int w = SCR_W - 2 * TH_PAD;
     bench_settings_t *cfg = app_cfg();
     char num[8];
+    int first = first_row();
+    int shown = visible_rows();
 
     scr_clear(TH_PAPER);
     w_title("Settings", "F6 About");
     y = TH_CONTENT_Y + TH_PAD;
     y += TH_LINE + 4;
 
-    w_row(TH_PAD, y, w, "Uncertainty figures",
-          cfg->uncert_sig == 2 ? "1 or 2" : "1",
-          row == 0);
-    y += TH_LINE;
-    nt_u64(cfg->pacer_checkpoint, num, (int)sizeof num);
-    w_row(TH_PAD, y, w, "Pacer checkpoint", num, row == 1);
-    y += TH_LINE;
-    if (cfg->notes_wrap == 0)
-        strcpy(num, "auto");
-    else
+    for (int i = first; i < SETTINGS_ROWS && i < first + shown; i++)
     {
-        nt_u64(cfg->notes_wrap, num, (int)sizeof num);
-        nt_append(num, (int)sizeof num, "%");
+        draw_row(i, y, w, cfg, num);
+        y += TH_LINE;
     }
-    w_row(TH_PAD, y, w, "Note width", num, row == 2);
-    y += TH_LINE;
-    w_row(TH_PAD, y, w, "Angles default", settings_angle_text(cfg->angle_unit), row == 3);
-    y += TH_LINE;
-    w_row(TH_PAD, y, w, "First-run hint", cfg->tour_done ? "read" : "showing",
-          row == 4);
-    y += TH_LINE;
-    w_row(TH_PAD, y, w, "Opens on",
-          tool_category_name((tool_category_t)cfg->startup_cat), row == 5);
-    y += TH_LINE;
-    w_row(TH_PAD, y, w, "Show hint line", cfg->show_hint ? "yes" : "no",
-          row == 6);
-    y += TH_LINE;
-    w_row(TH_PAD, y, w, "Pacer clock red at",
-          settings_warn_text(cfg->pacer_warn, num, (int)sizeof num), row == 7);
-    y += TH_LINE + 6;
+    if (shown < SETTINGS_ROWS)
+        w_scrollbar(SCR_W - 4, list_top(), shown * TH_LINE, SETTINGS_ROWS,
+                    shown, first);
 
+    if (!status_fits())
+        goto legend;
+    y += 4;
     scr_text(TH_PAD, y, settings_uncert_sig_text(cfg->uncert_sig), TH_INK);
-    y += TH_LINE + 2;
-    scr_text(TH_PAD, y, saved_ok ? "Saved to state/settings.cfg"
-                                 : "Could not write the settings file",
-             TH_INK);
+    y += TH_LINE;
+    scr_text_ellipsis(TH_PAD, y,
+                      saved_ok ? "Saved to state/settings.cfg"
+                               : "Could not write the settings file",
+                      TH_INK, w);
     if (ignored_lines > 0)
     {
         char line[48];
@@ -172,7 +283,8 @@ void app_settings_draw(void)
         scr_text_ellipsis(TH_PAD, y + TH_LINE, line, TH_INK, w);
     }
 
-    w_softkeys((char const *const[6]){ "", "", "Report", "", "", "About" }, -1);
+legend:
+    w_softkeys((char const *const[6]){ "", "Card", "Report", "", "", "About" }, -1);
     /* Short, because the softkey strip already names Report, Help and About. */
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                     "UP/DOWN pick   LEFT/RIGHT change", TH_INK);
@@ -193,6 +305,11 @@ app_result_t app_settings_key(bench_event_t ev)
     if (ev.key == BK_F6)
     {
         app_open(APP_SCREEN_ABOUT);
+        return APP_CONTINUE;
+    }
+    if (ev.key == BK_F2)
+    {
+        app_open(APP_SCREEN_CARDCHECK);
         return APP_CONTINUE;
     }
     if (ev.key == BK_F3)

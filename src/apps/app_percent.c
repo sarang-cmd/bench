@@ -175,14 +175,14 @@ void app_percent_draw(void)
     scr_clear(TH_PAPER);
     w_title(q_title[question], "F1 clear");
 
-    w_field(TH_PAD, y, half, 20, q_first[question], a, field == 0);
-    w_field(TH_PAD + half + TH_GAP, y, half, 20, q_second[question], b,
+    w_field(TH_PAD, y, half, w_field_h(), q_first[question], a, field == 0);
+    w_field(TH_PAD + half + TH_GAP, y, half, w_field_h(), q_second[question], b,
             field == 1);
     y += 24;
 
     if (question == Q_COMPOUND)
     {
-        w_field(TH_PAD, y, half, 20, "years", years, field == 2);
+        w_field(TH_PAD, y, half, w_field_h(), "years", years, field == 2);
         y += 24;
     }
 

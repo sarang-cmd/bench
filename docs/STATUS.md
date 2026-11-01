@@ -1,9 +1,9 @@
 # Status
 
-Last updated: 1 November 2026, after the second round of fixes from the first
-person to use the add-in on a desktop simulator: file detection, back
-navigation, the fx-CG 50 keypad, visible scrollbars and a page indicator that
-can actually be read.
+Last updated: 1 November 2026, during 1.3.0: the five things the reader asked
+for in one minor release - files actually being found, real Markdown tables,
+the school subset of LaTeX, a text size you can raise, and the starter pack
+living inside the `.g3a`.
 A fresh session should read this file first, then `AGENTS.md`, `docs/plan.md`
 and the task file for the milestone it is about to start.
 
@@ -15,7 +15,11 @@ what is not, is in the table at the end of this file.
 
 ## One sentence
 
-The tree and the newest build are both 1.2.8: 1.2.7 renamed the demo to the
+The tree is 1.3.0 and the newest build is 1.2.8: 1.3.0 fixes file detection
+properly (four places, first hit wins, the list says which one), draws Markdown
+tables and `$...$` maths, carries its own font so Settings > Font can double the
+text on the reading screens, and keeps the starter pack inside the `.g3a`. The
+last release, 1.2.8: 1.2.7 renamed the demo to the
 starter pack and 1.2.8 fixes the site's page check, which had been failing since
 1.2.6 and made every pipeline look red although the add-in built fine both
 times. Bench 1.2.8 is tested on a PC and documented: the tag `v1.2.8` carries
@@ -34,6 +38,8 @@ takes about two and a half minutes.
 The one thing still open is hardware: nobody has run the add-in on a real
 fx-CG 50 yet. That is the user's step (USB Flash mode, copy to the storage
 root); see `docs/STATUS.md` "What needs the calculator".
+
+| 10 | 1.3.0, the five requests | **done in source, unreleased**: file detection reads four locations and the reader reopens from the one that listed it; Settings > F2 opens Card check; pipe tables are parsed, aligned and drawn; `$x$` maths is converted to characters the font has; the add-in owns its 6x10 face and Settings > Font doubles it on the reading screens, checked a second time by every screen script at large text. Unverified on device |
 
 ## Where the project is
 
