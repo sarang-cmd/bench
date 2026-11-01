@@ -41,10 +41,21 @@ if (missing.length) {
 // The download button points at a file on this site, so that file has to be in
 // public/. It is the release build, copied in here by hand (see README), not
 // something a visitor should have to fetch from GitHub.
+// The page links whatever `scripts/fetch-addin.mjs` copied in, which is not
+// always the version in version.txt: between a version bump and the first
+// tagged build for it, the site keeps handing out the newest build it has and
+// names that version. So check the file the page actually names.
 const version = readFileSync(join(root, "..", "version.txt"), "utf8").trim();
-const addin = join(root, "public", `Bench-${version}.g3a`);
+const info = JSON.parse(readFileSync(join(root, "src", "build-info.generated.json"), "utf8"));
+const addin = join(root, "public", info.file);
 if (!existsSync(addin)) {
-  console.error(`missing add-in for the download button: public/Bench-${version}.g3a`);
+  console.error(`missing add-in for the download button: public/${info.file}`);
   process.exit(1);
 }
-console.log(`download: public/Bench-${version}.g3a (${Math.round(statSync(addin).size / 1024)} KiB)`);
+if (info.version !== version) {
+  console.log(
+    `download: public/${info.file} - the newest build there is; ` +
+      `version.txt already says ${version}, which the next tagged build will produce`,
+  );
+}
+console.log(`download: public/${info.file} (${Math.round(statSync(addin).size / 1024)} KiB)`);

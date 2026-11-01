@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.0.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.0.0)
+[![version](https://img.shields.io/badge/version-1.1.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.1.0)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -23,10 +23,10 @@ Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
 Live page: <https://bench-gdc.vercel.app> (source in `site/`). The page
-serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.0.0.g3a>.
+serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.1.0.g3a>.
 
 ```
-Bench-1.0.0.g3a     <- copy this to the calculator's storage root
+Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 ```
 
 | | |
@@ -34,7 +34,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | Target | Casio fx-CG 50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -45,7 +45,7 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | Tour scripts | 77 |
 | Native test programs | 32 |
 | C source | 22,204 lines in 107 files |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 <!-- STATS:END -->
 
 ## Screens
@@ -443,14 +443,14 @@ check anything before you rely on it in an exam.
 
 ## Install
 
-`Bench-1.0.0.g3a` is in five places. Take whichever works from where you are:
+`Bench-1.1.0.g3a` is in five places. Take whichever works from where you are:
 
 | Where | How |
 |---|---|
-| This site | <https://bench-gdc.vercel.app/Bench-1.0.0.g3a> - one click, no account |
+| This site | <https://bench-gdc.vercel.app/Bench-1.1.0.g3a> - one click, no account |
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
-| `dist/` in the repo | [`dist/Bench-1.0.0.g3a`](dist/Bench-1.0.0.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
+| `dist/` in the repo | [`dist/Bench-1.1.0.g3a`](dist/Bench-1.1.0.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
 | `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
 
 The copy in `dist/` is the one to use when GitHub's release assets and artifacts
