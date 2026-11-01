@@ -5,6 +5,10 @@
       "date": "",
       "entries": [
         {
+          "title": "EXIT goes back where you came from",
+          "body": "closing a tool used to land on the home screen with Study selected, first tile, every single time - so a Maths or Science session meant walking back to the right category after every tool. The add-in now keeps a small stack of the screens it came through (`src/core/nav.c`, 525 native checks over push/pop, repeat pushes, a full stack and 500 random presses). EXIT and the help screen's way out both walk back one screen at a time, and the home screen remembers the category and the tile you were on instead of resetting itself. Two tour scripts record it: `78_back_to_maths` and `79_back_from_settings_about`."
+        },
+        {
           "title": "The browser simulator has the calculator's keypad",
           "body": "it was a flat 5-column grid that followed no physical keyboard - DEL next to 9, ALPHA where x² is, arrows spread over two rows. It is now the fx-CG 50 layout: six function keys with the case's own captions, the SHIFT/OPTN/VARS/MENU and ALPHA blocks, the four-way pad on the right where the real one sits, and 7-8-9-DEL-AC / 4-5-6-×-÷ / 1-2-3-+-(−) / 0-.-×10ˣ-(−)-EXE. Keys Bench does not read are drawn as muted hardware rather than pretending to work; every live key is a real button with an aria-label. Checked at 320, 390 and 1280px: no horizontal scroll, smallest key 26px."
         },

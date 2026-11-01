@@ -1,0 +1,7 @@
+# tour step: 79_back_from_settings_about
+# Settings, then About from Settings, then EXIT twice: About returns to
+# Settings, and Settings returns to the menu it was opened from.
+f6
+f6
+exit
+exit

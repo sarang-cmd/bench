@@ -1,0 +1,8 @@
+# tour step: 78_back_to_maths
+# EXIT on a Maths tool returns to Maths, on the tile that was open. Before
+# core/nav.c it always dropped the user on Study, first tile.
+f2
+right
+right
+exe
+exit
