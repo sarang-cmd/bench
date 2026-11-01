@@ -15,6 +15,8 @@
 // simulator page carries on with the real screenshots.
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import CalcKeypad from "./CalcKeypad.jsx";
+
 // The gint key codes tools/sim/include/gint/gint.h defines, so a press here is
 // the same event the calculator sends.
 const KEYS = {
@@ -46,15 +48,6 @@ const KEYS = {
   8: 0x42,
   9: 0x43,
 };
-
-const PAD = [
-  [["F1", "f1"], ["F2", "f2"], ["F3", "f3"], ["F4", "f4"], ["F5", "f5"], ["F6", "f6"]],
-  [["7", "7"], ["8", "8"], ["9", "9"], ["DEL", "del"], ["AC/EXIT", "exit"]],
-  [["4", "4"], ["5", "5"], ["6", "6"], ["x", "neg"], ["MENU", "menu"]],
-  [["1", "1"], ["2", "2"], ["3", "3"], ["ALPHA", "alpha"], ["EXE", "exe"]],
-  [["0", "0"], [".", "dot"], ["<-", "left"], ["^", "up"], ["->", "right"]],
-  [["DOWN", "down"]],
-];
 
 // header: keySeq, key, frameSeq, width, height (Int32), then the pixels.
 const HEADER_BYTES = 32;
@@ -201,38 +194,27 @@ export default function WasmSim() {
   }
 
   return (
-    <div className="mt-8">
-      <div className="inline-block border-3 border-ink bg-ink p-1 shadow-brute">
-        <canvas
-          ref={canvasRef}
-          width={WIDTH}
-          height={HEIGHT}
-          aria-label="The Bench add-in running in the browser"
-          className="block h-auto w-full max-w-[396px]"
-          style={{ imageRendering: "pixelated" }}
-        />
+    <div className="mt-8 w-full max-w-[420px]">
+      {/* The calculator body: the screen sits in the chassis with the keypad
+          under it, instead of a naked canvas with a grid of boxes. */}
+      <div className="border-3 border-ink bg-ink p-2 shadow-brute sm:p-3">
+        <div className="border-2 border-ink/60 bg-shade p-1">
+          <canvas
+            ref={canvasRef}
+            width={WIDTH}
+            height={HEIGHT}
+            aria-label="The Bench add-in running in the browser"
+            className="block h-auto w-full"
+            style={{ imageRendering: "pixelated" }}
+          />
+        </div>
       </div>
 
-      <div className="mt-4 grid max-w-[420px] grid-cols-5 gap-1.5">
-        {PAD.flat().map(([label, key]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => press(key)}
-            className={
-              "border-3 border-ink bg-paper py-2 font-mono text-xs font-bold shadow-brute-sm " +
-              "hover:-translate-y-0.5 hover:bg-yellow active:translate-y-0 active:shadow-none " +
-              (label.length > 2 ? "col-span-2" : "")
-            }
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      <CalcKeypad press={press} />
 
-      <p className="mt-3 max-w-[420px] font-mono text-[11px] uppercase tracking-widest text-ink/60">
+      <p className="mt-3 font-mono text-[11px] uppercase leading-relaxed tracking-widest text-ink/60">
         {state === "ready"
-          ? "Same C as the calculator - keys go straight into the add-in"
+          ? "Same C as the calculator. Grey keys are on the case but unread by Bench."
           : "Loading the add-in..."}
       </p>
     </div>

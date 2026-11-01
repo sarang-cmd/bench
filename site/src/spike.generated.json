@@ -4,5 +4,14 @@
     "size": 16988,
     "sha256": "dfaa125c25c491ce5083e68361fe94697133a9eb51cd031eeb632f8cc337fd73"
   },
-  "binary": null
+  "binary": {
+    "file": "Bench-spike-0.0.2.g3a",
+    "version": "0.0.2",
+    "size": 60100,
+    "sha256": "40fc6a85783bb9657d0b6357dac458be46b3dbf9a55a44401741305dc66343e7",
+    "source": "public",
+    "commit": "52f62c3ce66c1d612caee2ade0f45686f1fb5abd",
+    "built": "2026-11-01",
+    "verified": true
+  }
 }
