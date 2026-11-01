@@ -43,17 +43,22 @@ for f in "$root"/docs/samples/*; do
 done
 mkdir -p "$out"
 
-# The add-in writes the bundled demo to any card that lacks it, and most steps
-# here are about the empty states and the sample files - so the tour turns the
-# demo off (BENCH_NO_DEMO, a PC-build switch in src/platform/demo.c).  A step
-# named 99_* runs with it on: that is the screen a first run really shows.
+# What a first run shows: an empty card, and the add-in seed it.  A step named
+# 99_* gets this filesystem; the rest share the one built above, with the
+# starter pack switched off (BENCH_NO_STARTERPACK, a PC-build switch in
+# src/platform/starter.c), because most steps are about the sample files and
+# the "nothing yet" screens.
+fs_fresh=/tmp/bench-tour-fresh
+rm -rf "$fs_fresh"
+mkdir -p "$fs_fresh"
+
 for step in "$root"/tools/sim/tour/*.txt; do
     name=$(basename "$step" .txt)
     case "$name" in
-        99_*) no_demo= ;;
-        *)    no_demo=1 ;;
+        99_*) card=$fs_fresh; no_starterpack= ;;
+        *)    card=$fs;        no_starterpack=1 ;;
     esac
-    BENCH_NO_DEMO=$no_demo BENCH_FS=$fs BENCH_KEYS=$step \
+    BENCH_NO_STARTERPACK=$no_starterpack BENCH_FS=$card BENCH_KEYS=$step \
         BENCH_SHOT=$out/$name.ppm "$sim"
     echo "  $name"
 done

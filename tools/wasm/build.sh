@@ -20,7 +20,8 @@
 #
 # Output, all of it copied to site/public/sim/ by site/scripts/copy-wasm.mjs:
 #   bench.wasm   the add-in plus the stand-in, WASI reactor
-#   demo.json    the demo notes, decks and study log, base64, for the in-memory
+#   starterpack.json    the starter pack notes, decks and study log, base64,
+#                       for the in-memory
 #                filesystem the worker builds (the wasm has no real disk)
 set -e
 
@@ -74,16 +75,16 @@ compile "$root/tools/sim/sim.c" sim
     $( [ -n "$BENCH_WASM_DEBUG" ] && echo -g ) \
     -o "$out/bench.wasm" "$obj"/*.o
 
-# The demo content as a JSON map of path -> base64, so the worker can put it in
-# the in-memory filesystem before the add-in starts.  Built here rather than in
+# The starter pack content as a JSON map of path -> base64, so the worker can put
+# it in the in-memory filesystem before the add-in starts.  Built here rather than in
 # JS so the wasm and the files it opens always come from the same run.
-python3 - "$root" "$out/demo.json" <<'PY'
+python3 - "$root" "$out/starterpack.json" <<'PY'
 import base64, json, os, sys
 
 root, dest = sys.argv[1], sys.argv[2]
 files = {}
 for folder in ("notes", "cards", "study"):
-    path = os.path.join(root, "demo", folder)
+    path = os.path.join(root, "starterpack", folder)
     if not os.path.isdir(path):
         continue
     for name in sorted(os.listdir(path)):
@@ -94,10 +95,13 @@ for folder in ("notes", "cards", "study"):
 with open(dest, "w", encoding="utf-8") as fh:
     json.dump(files, fh, indent=0, sort_keys=True)
     fh.write("\n")
-print(f"demo.json: {len(files)} files")
+if not files:
+    sys.exit("starterpack.json: nothing found under starterpack/ - the simulator "
+             "would boot with an empty card")
+print(f"starterpack.json: {len(files)} files")
 PY
 
 rm -rf "$obj"
 ls -l "$out/bench.wasm"
-echo "built $out/bench.wasm - copy it, with demo.json and the page's worker, by"
+echo "built $out/bench.wasm - copy it, with starterpack.json and the page's worker, by"
 echo "running: node site/scripts/copy-wasm.mjs"

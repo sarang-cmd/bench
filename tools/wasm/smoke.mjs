@@ -4,7 +4,7 @@
 //
 // This is the check that the browser build is a build of the add-in and not
 // just a file that exists: it loads bench.wasm with the same WASI shim the page
-// uses, puts the demo content in the in-memory filesystem, sends a few keys and
+// uses, puts the starter pack content in the in-memory filesystem, sends a few keys and
 // writes the resulting frames as PPM (same format tools/sim writes), which
 // tools/sim/ppm2png.py or Pillow can turn into a PNG.
 //
@@ -43,12 +43,12 @@ if (!existsSync(wasmPath)) {
   process.exit(1);
 }
 
-// The demo content the build put next to the wasm, as base64.
-const demo = JSON.parse(readFileSync(join(root, "build-wasm/demo.json"), "utf8"));
+// The starter pack content the build put next to the wasm, as base64.
+const pack = JSON.parse(readFileSync(join(root, "build-wasm/starterpack.json"), "utf8"));
 
 // Build the tree the add-in expects under its root: notes/, cards/, study/.
 const tree = new Map();
-for (const [path, b64] of Object.entries(demo)) {
+for (const [path, b64] of Object.entries(pack)) {
   const [folder, name] = path.split("/");
   if (!tree.has(folder)) tree.set(folder, new Directory(new Map()));
   tree.get(folder).contents.set(name, new File([...Buffer.from(b64, "base64")]));

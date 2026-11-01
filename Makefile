@@ -34,13 +34,14 @@ build/tests:
 build/tests/%: tests/%.c $(CORE_SRC) $(CORE_HDR) tests/test_util.h | build/tests
 	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -o $@ $< $(CORE_SRC) $(LDLIBS)
 
-# The bundled demo is generated data, not a core module: this one test links the
-# table in as well as src/core.  demo-check runs first, so a stale table fails
+# The bundled starter pack is generated data, not a core module: this one test
+# links the table in as well as src/core.  starterpack-check runs first, so a
+# stale table fails
 # with the generator's message rather than a diff of two literal dumps.
-build/tests/test_demo_data: tests/test_demo_data.c src/apps/demo_data.c \
-                            src/apps/demo_data.h $(CORE_SRC) $(CORE_HDR) \
-                            tests/test_util.h demo-check | build/tests
-	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -Isrc/apps -o $@ $< src/apps/demo_data.c \
+build/tests/test_starter_data: tests/test_starter_data.c src/apps/starter_data.c \
+                            src/apps/starter_data.h $(CORE_SRC) $(CORE_HDR) \
+                            tests/test_util.h starterpack-check | build/tests
+	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -Isrc/apps -o $@ $< src/apps/starter_data.c \
 	      $(CORE_SRC) $(LDLIBS)
 
 test: version-check $(TEST_BIN) check-screens
@@ -71,24 +72,26 @@ version-check:
 coderabbit-check:
 	@$(PYTHON) tools/check_coderabbit.py
 
-# The demo travels inside the .g3a (src/apps/demo_data.c, written by
-# tools/gen_demo.py from demo/ and docs/samples/formulas).  `make demo-check`
-# fails when the generated file no longer matches those sources, so editing a
-# demo note without regenerating cannot reach a release.
-demo-gen:
-	@$(PYTHON) tools/gen_demo.py
+# The starter pack travels inside the .g3a (src/apps/starter_data.c, written by
+# tools/gen_starterpack.py from starterpack/ and docs/samples/formulas).  `make
+# starterpack-check` fails when the generated file no longer matches those
+# sources, so editing a starter pack note without regenerating cannot reach a
+# release.
+starterpack-gen:
+	@$(PYTHON) tools/gen_starterpack.py
 
-demo-check: version-check
-	@$(PYTHON) tools/gen_demo.py --check
+starterpack-check: version-check
+	@$(PYTHON) tools/gen_starterpack.py --check
 
-# The separate download for the same demo (dist/Bench-demo-<version>.zip).  Not
-# part of `make test`: the file is renamed on every version bump, so the check
-# lives in the release job, after the bump.
-demo-zip:
-	@$(PYTHON) tools/make_demo_zip.py
+# The separate download for the same starter pack
+# (dist/Bench-starterpack-<version>.zip).  Not part of `make test`: the file is
+# renamed on every version bump, so the check lives in the release job, after
+# the bump.
+starterpack-zip:
+	@$(PYTHON) tools/make_starterpack_zip.py
 
-demo-zip-check:
-	@$(PYTHON) tools/make_demo_zip.py --check
+starterpack-zip-check:
+	@$(PYTHON) tools/make_starterpack_zip.py --check
 
 # The spike add-in as one patch file (see docs/spike.md).
 spike-patch:

@@ -149,7 +149,7 @@ export default function WasmSim() {
           type: "start",
           sab,
           wasm: new URL("bench.wasm", base).href,
-          demo: new URL("demo.json", base).href,
+          starterpack: new URL("starterpack.json", base).href,
           shim: new URL("browser_wasi_shim/index.js", base).href,
           width: WIDTH,
           height: HEIGHT,

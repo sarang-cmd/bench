@@ -5,7 +5,7 @@
 // Content rules: no invented screenshots, no invented numbers.  Every count
 // comes from src/stats.generated.json, src/tools.generated.json or the build
 // info, all generated at build time from the repository.
-import { BUILD, DEMO, DOWNLOAD, REPO, SHA256, VERSION, tools } from "./data.js";
+import { BUILD, DOWNLOAD, REPO, SHA256, STARTERPACK, VERSION, tools } from "./data.js";
 import stats from "./stats.generated.json";
 import changelog from "./changelog.generated.json";
 import Tools from "./components/Tools.jsx";
@@ -70,7 +70,7 @@ export function SimulatorPage() {
             <p className="font-mono text-xs uppercase tracking-widest text-ink/60">Interactive</p>
             <p className="mt-2 text-sm leading-relaxed">
               The add-in itself runs above, in WebAssembly: no re-implementation, the same C, keys
-              from the buttons, on an in-memory filesystem holding the demo notes and decks. Move
+              from the buttons, on an in-memory filesystem holding the starter pack notes and decks. Move
               with the arrows, open a tool with EXE.
             </p>
           </Card>
@@ -251,10 +251,10 @@ export function DownloadsPage() {
         ))}
       </ul>
 
-      {DEMO && (
+      {STARTERPACK && (
         <section className="mt-10 border-3 border-ink bg-paper p-5">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/60">
-            Or the demo, as files
+            Or the same files on their own
           </p>
           <h2 className="mt-2 text-xl font-black">
             The same ten files, for a full card.
@@ -275,14 +275,14 @@ export function DownloadsPage() {
             calculator empties into <code className="font-mono text-xs">SAVE-F</code>.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <BruteButton href={`./${DEMO.file}`} download>
-              Download the demo <span className="font-mono text-xs">.zip</span>
+            <BruteButton href={`./${STARTERPACK.file}`} download>
+              Download the starter pack <span className="font-mono text-xs">.zip</span>
             </BruteButton>
-            <Chip tone="paper">{Math.round(DEMO.size / 1024)} KiB</Chip>
-            <Chip tone="paper">{DEMO.file}</Chip>
+            <Chip tone="paper">{Math.round(STARTERPACK.size / 1024)} KiB</Chip>
+            <Chip tone="paper">{STARTERPACK.file}</Chip>
           </div>
           <p className="mt-4 break-all font-mono text-xs text-ink/60">
-            sha256 {DEMO.sha256}
+            sha256 {STARTERPACK.sha256}
           </p>
         </section>
       )}
@@ -351,7 +351,7 @@ export function ChangelogPage() {
 const nots = [
   "Not a CAS. It does the arithmetic a paper asks for, and shows the working.",
   "Not a cloud service. No account, no sync, no network call from the calculator.",
-  "Not a replacement for a textbook. The demo content is small on purpose.",
+  "Not a replacement for a textbook. The starter pack content is small on purpose.",
   "Not finished. 1.1.0 ran through every tool it shipped with; nothing in 1.2.x has been on a calculator yet, and docs/HARDWARE.md lists what the next session has to run.",
 ];
 

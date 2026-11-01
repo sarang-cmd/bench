@@ -43,7 +43,7 @@ const worker = new Worker(new URL("./test/worker-host.mjs", import.meta.url), {
       type: "start",
       sab,
       wasm: fileUrl("bench.wasm"),
-      demo: fileUrl("demo.json"),
+      starterpack: fileUrl("starterpack.json"),
       shim: fileUrl("browser_wasi_shim/index.js"),
       width: WIDTH,
       height: HEIGHT,

@@ -11,7 +11,47 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
+## 1.2.7 - unreleased
+
+Wording, not behaviour: the demo is the starter pack now. Everything the
+add-in, the zip, the repository and the site call it uses one name, because
+"demo" was doing three jobs at once - a demo of the software, throwaway sample
+data, and the files a new install needs to have something to read.
+
+- **Every user-facing mention says starter pack**: the README section, the
+  downloads page card, `docs/TUTORIAL.md`, `docs/STATUS.md`, `dist/README.md`,
+  the hardware checklist and the in-app comments. No screen inside the add-in
+  said "demo", so no tour script changed its content; step 99 is still the
+  first-run screenshot and the image is now `99_starterpack_seeded.png`.
+- **The names on disk follow**: `demo/` is `starterpack/`,
+  `Bench-demo-<version>.zip` is `Bench-starterpack-<version>.zip`,
+  `tools/gen_demo.py` is `tools/gen_starterpack.py`,
+  `tools/make_demo_zip.py` is `tools/make_starterpack_zip.py`, and the make
+  targets are `starterpack-gen`, `starterpack-check`, `starterpack-zip` and
+  `starterpack-zip-check`. So is the code: `src/platform/starter.{h,c}`
+  (`starter_install()`), `src/apps/starter_data.{h,c}` (`starter_files[]`,
+  `starter_file_count`), and `tests/test_starter_data.c`,
+  `tests/test_starter_files.c`, `tools/test_starterpack.py`.
+- **The wasm build follows too**: the file the browser simulator seeds its
+  in-memory filesystem with is `starterpack.json`, and the worker's message key
+  is `starterpack`.
+- **What did not change**: the ten files, their text, the destination folders
+  (`Bench/notes`, `Bench/cards`, `Bench/study`, `Bench/formulas`), the rule that
+  only missing files are written, the ASCII-only check and the size budget. The
+  cards gained a few bytes because their own first line said "sample content for
+  the demo folder" and now says "starter pack folder" - 17 877 B becomes
+  17 901 B, and the zip 10 479 B becomes 10 495 B. **Unverified on device.**
+- **1.2.6 keeps its own names**: that release carries `Bench-1.2.6.g3a` and
+  `Bench-demo-1.2.6.zip`, and its entry below still says demo, because that is
+  what it shipped. From this version on, the file to download is
+  `Bench-starterpack-1.2.7.zip`.
+
 ## 1.2.6 - 2026-11-01
+
+Everything this entry calls a demo is called the starter pack from 1.2.7 on
+(`demo/` is `starterpack/`, `demo_install()` is `starter_install()`), and the
+zip it names is now `Bench-starterpack-<version>.zip`. The text below is what
+1.2.6 actually shipped.
 
 Numbers here describe the source in `main`. The release carries
 `Bench-1.2.6.g3a` built by CI from this commit, and **nobody has had it on a

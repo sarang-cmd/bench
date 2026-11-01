@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.6-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.7-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -26,16 +26,20 @@ Live page: <https://bench-gdc.vercel.app> (source in `site/`). The page
 serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.2.6.g3a>.
 
 ```
-Bench-1.2.6.g3a          <- copy this to the calculator's storage root
-Bench-demo-1.2.6.zip     <- optional: the same demo files, to unzip onto D:\
+Bench-1.2.6.g3a              <- copy this to the calculator's storage root
+Bench-starterpack-1.2.7.zip  <- optional: the same files, to unzip onto D:\
 ```
+
+The two names differ because of a rename, not a change: 1.2.6 called the zip
+`Bench-demo-1.2.6.zip`, and from 1.2.7 on it is the starter pack, in the file
+name as everywhere else. Same ten files either way.
 
 | | |
 |---|---|
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.6 in the tree; the newest build is 1.2.6, which the downloads page serves |
+| Version | 1.2.7 in the tree; the newest build is 1.2.6, which the downloads page serves |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -45,8 +49,8 @@ Bench-demo-1.2.6.zip     <- optional: the same demo files, to unzip onto D:\
 | Screens captured | 99 |
 | Tour scripts | 99 |
 | Native test programs | 40 |
-| C source | 25,269 lines in 129 files |
-| Version | 1.2.6 |
+| C source | 25,273 lines in 129 files |
+| Version | 1.2.7 |
 <!-- STATS:END -->
 
 ## Screens
@@ -505,7 +509,7 @@ show_hint 1           # 1 to show the first-run line at all
 pacer_warn 5          # minutes left when the clock turns red; 0 = never
 ```
 
-## Demo content
+## Starter pack content
 
 Something to look at before you have written a single note: three Markdown
 notes, three decks of cards, three formula booklets and eighteen lines of study
@@ -513,26 +517,28 @@ log.
 
 **It comes with the add-in.** A `.g3a` is one file, so the ten files are
 compiled into it and written to the card on the first run - install the add-in,
-open Notes / Cards / Study log / Formula book, and they are already there. Only
-files that are **not there yet** are written, so nothing you wrote is ever
-overwritten, and a card that is full just gets a working add-in without the demo.
+open Notes / Cards / Study log / Formula book, and they are already there.
+Only files that are **not there yet** are written, so nothing you wrote is ever
+overwritten, and a card that is full still gets a working add-in - just without
+the starter pack.
 
-**Or take it as a zip.** `Bench-demo-1.2.6.zip` is the same ten files on their
-own, laid out as `Bench/notes`, `Bench/cards`, `Bench/study` and
+**Or take it as a zip.** `Bench-starterpack-1.2.7.zip` is the same ten files on
+their own, laid out as `Bench/notes`, `Bench/cards`, `Bench/study` and
 `Bench/formulas`: extract it onto `D:\` in USB Flash mode. That is for a full
 card, a second card, or editing the notes on a PC before they reach the
 calculator.
 
-![Notes on a first run: the demo is already there](docs/images/99_demo_seeded.png)
+![Notes on a first run: the starter pack is already there](docs/images/99_starterpack_seeded.png)
 
-The sources are `demo/notes`, `demo/cards`, `demo/study` and
-`docs/samples/formulas`. Both the embedded copy and the zip are generated from
-them (`make demo-gen`, `make demo-zip`) and checked against them in CI
-(`make demo-check`, `make demo-zip-check`), so the three cannot drift apart.
+The sources are `starterpack/notes`, `starterpack/cards`, `starterpack/study`
+and `docs/samples/formulas`. Both the embedded copy and the zip are generated
+from them (`make starterpack-gen`, `make starterpack-zip`) and checked against
+them in CI (`make starterpack-check`, `make starterpack-zip-check`), so the
+three cannot drift apart.
 
-**The text needs human proofreading.** It is written for the demo, in my own
-words, and has not been checked by a teacher; treat it as revision notes and
-check anything before you rely on it in an exam.
+**The text needs human proofreading.** It is written for the starter pack, in
+my own words, and has not been checked by a teacher; treat it as revision notes
+and check anything before you rely on it in an exam.
 
 ## Install
 
@@ -541,9 +547,9 @@ check anything before you rely on it in an exam.
 | Where | How |
 |---|---|
 | This site | <https://bench-gdc.vercel.app/Bench-1.2.6.g3a> - one click, no account |
-| Release | [releases page](../../releases) - the same bytes, attached by CI, with `Bench-demo-1.2.6.zip` beside it |
+| Release | [releases page](../../releases) - the same bytes, attached by CI. The 1.2.6 release carries the zip as `Bench-demo-1.2.6.zip`; from 1.2.7 it is `Bench-starterpack-<version>.zip` |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
-| `dist/` in the repo | [`dist/Bench-1.2.6.g3a`](dist/Bench-1.2.6.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256; the demo zip sits beside it |
+| `dist/` in the repo | [`dist/Bench-1.2.6.g3a`](dist/Bench-1.2.6.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256; the starter pack zip sits beside it |
 | `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.2.6.g3a > Bench-1.2.6.g3a` - plain git, for when release downloads are blocked |
 
 The copy in `dist/` is the one to use when GitHub's release assets and artifacts
@@ -554,10 +560,10 @@ are unreachable: it is a normal file in a normal clone.
    storage memory, and its root is where things go.
 3. Copy `Bench-1.2.6.g3a` there — **beside** `@MainMem`, never inside it.
 4. Open Bench once. It creates `Bench/notes`, `Bench/cards`, `Bench/study`,
-   `Bench/formulas` and `Bench/state`, and fills the first four with the demo,
+   `Bench/formulas` and `Bench/state`, and fills the first four with the starter pack,
    so there is nothing to copy for a first look. Your own notes go in the same
    folders; only missing files are written, so nothing of yours is replaced. If
-   you prefer the demo as files, extract `Bench-demo-1.2.6.zip` onto the same
+   you prefer the starter pack as files, extract `Bench-starterpack-1.2.6.zip` onto the same
    root instead — it has the same ten files in the same folders.
 5. Eject or unmount properly, then press **MENU** on the calculator; Bench
    appears as a new add-in.
@@ -577,14 +583,14 @@ make py-test  # every Python tool: the md2bench converter, the version bump, the
               # CodeRabbit configuration (87 tests)
 make sim      # the whole add-in compiled against a small gint stand-in
 make shots    # render every screen into docs/images
-make demo-gen # rebuild the demo that ships inside the add-in
-make demo-zip # rebuild dist/Bench-demo-<version>.zip
+make starterpack-gen # rebuild the starter pack that ships inside the add-in
+make starterpack-zip # rebuild dist/Bench-starterpack-<version>.zip
 ```
 
-The demo is generated, not written twice: `tools/gen_demo.py` turns `demo/` and
-`docs/samples/formulas/` into `src/apps/demo_data.c` and
-`tools/make_demo_zip.py` packs the same files into the zip. Edit the sources;
-`make demo-check` and `make demo-zip-check` fail if the generated copies are
+The starter pack is generated, not written twice: `tools/gen_starterpack.py` turns `starterpack/` and
+`docs/samples/formulas/` into `src/apps/starter_data.c` and
+`tools/make_starterpack_zip.py` packs the same files into the zip. Edit the sources;
+`make starterpack-check` and `make starterpack-zip-check` fail if the generated copies are
 stale.
 
 `make sim` builds `build/sim/bench`, which runs the real `src/apps` code against
@@ -649,9 +655,9 @@ GitHub runner; `docs/STATUS.md` lists the ten questions only a calculator can
 answer (file API behaviour, float printing, font coverage, redraw time, heap).
 
 The newest `.g3a`, `Bench-1.2.6.g3a`, is built by CI from the `v1.2.6` tag and
-carries the demo inside it: the notes, decks, study log and formula booklets are
+carries the starter pack inside it: the notes, decks, study log and formula booklets are
 written to the card on the first run, and the same ten files are also on the
-release as `Bench-demo-1.2.6.zip`. Everything in `main` builds and passes its
+release as `Bench-starterpack-1.2.6.zip`. Everything in `main` builds and passes its
 tests. 1.0.0 and 1.1.0 have been run on a calculator, the second of them through
 every tool it shipped with; 1.2.x has not, and each changelog entry says so.
 
