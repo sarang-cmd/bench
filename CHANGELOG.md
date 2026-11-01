@@ -11,7 +11,7 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.7 - unreleased
+## 1.2.7 - 2026-11-01
 
 Wording, not behaviour: the demo is the starter pack now. Everything the
 add-in, the zip, the repository and the site call it uses one name, because
@@ -45,6 +45,13 @@ data, and the files a new install needs to have something to read.
   `Bench-demo-1.2.6.zip`, and its entry below still says demo, because that is
   what it shipped. From this version on, the file to download is
   `Bench-starterpack-1.2.7.zip`.
+- **two things the rename broke, both fixed here**: the wasm build looked for a
+  directory called `starter pack` (a path hit by the rename), found none, and
+  wrote a zero-file seed - the browser simulator would have booted with an empty
+  card; it now fails the build rather than ship an empty seed. And
+  `BENCH_NO_STARTERPACK=` counted as "set", because the tour passes an empty
+  value when it wants the seed kept, so the first-run screenshot showed an empty
+  card. It reads the value now, and step 99 runs against a fresh filesystem.
 
 ## 1.2.6 - 2026-11-01
 

@@ -2,7 +2,7 @@
   "releases": [
     {
       "version": "1.2.7",
-      "date": "unreleased",
+      "date": "2026-11-01",
       "entries": [
         {
           "title": "Every user-facing mention says starter pack",
@@ -23,6 +23,10 @@
         {
           "title": "1.2.6 keeps its own names",
           "body": "that release carries `Bench-1.2.6.g3a` and `Bench-demo-1.2.6.zip`, and its entry below still says demo, because that is what it shipped. From this version on, the file to download is `Bench-starterpack-1.2.7.zip`."
+        },
+        {
+          "title": "two things the rename broke, both fixed here",
+          "body": "the wasm build looked for a directory called `starter pack` (a path hit by the rename), found none, and wrote a zero-file seed - the browser simulator would have booted with an empty card; it now fails the build rather than ship an empty seed. And `BENCH_NO_STARTERPACK=` counted as \"set\", because the tour passes an empty value when it wants the seed kept, so the first-run screenshot showed an empty card. It reads the value now, and step 99 runs against a fresh filesystem."
         }
       ]
     },

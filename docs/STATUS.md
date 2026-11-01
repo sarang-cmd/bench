@@ -15,15 +15,15 @@ what is not, is in the table at the end of this file.
 
 ## One sentence
 
-The newest build is 1.2.6 and the tree is 1.2.7, which renames the demo to the
-starter pack and changes nothing else. Bench 1.2.6 is tested on a PC and
-documented: the tag `v1.2.6` carries `Bench-1.2.6.g3a` as a release asset, in
-`dist/`, on the `builds` branch and on the website, with `Bench-demo-1.2.6.zip`
-beside it - that name is the last use of the old word, and 1.2.7's zip is
-`Bench-starterpack-1.2.7.zip` in `dist/`. The starter pack is compiled into the
-add-in and written to the card on the first run, so a fresh install has notes,
-decks, a study log and three formula booklets before anything is copied over
-USB. 1.0.0 and 1.1.0 have been run on a calculator; 1.1.0 went through every
+The tree and the newest build are both 1.2.7, which renames the demo to the
+starter pack and changes nothing else. Bench 1.2.7 is tested on a PC and
+documented: the tag `v1.2.7` carries `Bench-1.2.7.g3a` as a release asset, in
+`dist/`, on the `builds` branch and on the website, with
+`Bench-starterpack-1.2.7.zip` beside it (1.2.6 shipped that file as
+`Bench-demo-1.2.6.zip`, the last use of the old word). The starter pack is
+compiled into the add-in and written to the card on the first run, so a fresh
+install has notes, decks, a study log and three formula booklets before
+anything is copied over USB. 1.0.0 and 1.1.0 have been run on a calculator; 1.1.0 went through every
 tool it shipped with, and the one defect it showed was the bottom bar, fixed in
 1.2.3 (docs/HARDWARE.md). Nothing in 1.2.x has been on hardware. `.github/workflows/build.yml` is the only thing that can build
 it - this sandbox has no SuperH compiler and cannot reach
