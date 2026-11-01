@@ -127,6 +127,29 @@ try {
       console.log(`  ok   spike ${kind}: ${file} is there and matches its hash`);
     }
   }
+
+  // The demo zip, when the build handed one out.  Same rule as the spike: the
+  // downloads page must not offer a file that is not in public/, and the hash it
+  // prints has to be the hash of the file it serves.
+  const info = JSON.parse(readFileSync(join(root, "src", "build-info.generated.json"), "utf8"));
+  if (!info.demo) {
+    console.log("  ok   demo zip: none built, so none is offered");
+  } else {
+    const onDisk = join(root, "public", info.demo.file);
+    if (!existsSync(onDisk)) {
+      failures++;
+      console.log(`  FAIL demo zip: ${info.demo.file} is described but missing from public/`);
+    } else {
+      const bytes = readFileSync(onDisk);
+      const hash = createHash("sha256").update(bytes).digest("hex");
+      if (hash !== info.demo.sha256 || bytes.length !== info.demo.size) {
+        failures++;
+        console.log(`  FAIL demo zip: ${info.demo.file} does not match the size and hash on the page`);
+      } else {
+        console.log(`  ok   demo zip: ${info.demo.file} is there and matches its hash`);
+      }
+    }
+  }
 } finally {
   await server.close();
 }

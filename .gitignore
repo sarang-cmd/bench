@@ -31,6 +31,7 @@ site/public/images/
 # diagnostic add-in (scripts/fetch-spike.mjs); both are copied out of dist/,
 # which is where the committed bytes live.
 site/public/Bench-*.g3a
+site/public/Bench-demo-*.zip
 site/public/spike.diff
 
 # Intermediates of the WebAssembly build. The two files that matter are copied

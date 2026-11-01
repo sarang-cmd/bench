@@ -1,10 +1,15 @@
 {
   "file": "Bench-1.2.3.g3a",
   "version": "1.2.3",
-  "expected": "1.2.5",
+  "expected": "1.2.6",
   "size": 268072,
   "sha256": "aca6f6ba7cb363a4bf1296f5a5b4cc10c2cd83150542eb5b8b036bf33ac73e45",
   "commit": "62e63aa82c3bd1eac3a838257e398e0dd2411d46",
   "date": "2026-11-01",
-  "source": "dist-newest"
+  "source": "dist-newest",
+  "demo": {
+    "file": "Bench-demo-1.2.6.zip",
+    "size": 10479,
+    "sha256": "c1ebc7b2b2e303e3f463a92d2fced3960f7e438a9fb6cd905f97dc18f7e20aa4"
+  }
 }

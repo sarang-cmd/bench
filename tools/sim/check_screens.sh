@@ -39,8 +39,12 @@ count=0
 for step in "$root"/tools/sim/tour/*.txt; do
     name=$(basename "$step" .txt)
     count=$((count + 1))
-    if ! out=$(BENCH_FS=$fs BENCH_KEYS=$step BENCH_CHECK=1 BENCH_NAME=$name \
-               "$sim" 2>&1); then
+    case "$name" in
+        99_*) no_demo= ;;
+        *)    no_demo=1 ;;   # the empty states, as above: no bundled demo
+    esac
+    if ! out=$(BENCH_NO_DEMO=$no_demo BENCH_FS=$fs BENCH_KEYS=$step \
+               BENCH_CHECK=1 BENCH_NAME=$name "$sim" 2>&1); then
         printf '%s\n' "$out"
         fail=$((fail + 1))
     fi

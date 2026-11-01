@@ -24,6 +24,11 @@ export const ADDIN_FILE = buildInfo.file;
 export const DOWNLOAD = `./${ADDIN_FILE}`;
 export const SHA256 = buildInfo.sha256;
 
+// The demo, as files.  Null when the build had no zip to hand out (see
+// scripts/fetch-addin.mjs), so the page can leave the card out rather than
+// link to a file that is not there.
+export const DEMO = buildInfo.demo ?? null;
+
 export const tools = generated.tools;
 export const toolGroups = generated.groups;
 
