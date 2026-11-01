@@ -10,7 +10,7 @@
 [![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-screens.json)](docs/images)
 <!-- BADGES:END -->
 
-**Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
+**Eighteen tools in one add-in for the Casio fx-CG50.** Pacer times a practice
 paper, Cards drills flashcards with a Leitner schedule, Notes reads text and
 Markdown, and the maths and science screens cover function tables, triangles,
 polynomials, root finding, sequences, complex numbers, number theory,
@@ -31,7 +31,7 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 
 | | |
 |---|---|
-| Target | Casio fx-CG 50 (fx-CG 20 runs it too), OS 3.81 |
+| Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
 | Version | 1.1.0 |
