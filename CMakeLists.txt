@@ -88,6 +88,7 @@ set(SOURCES
   src/apps/app_moles.c
   src/apps/app_notes.c
   src/apps/app_numtheory.c
+  src/apps/app_factor.c
   src/apps/app_pacer.c
   src/apps/app_poly.c
   src/apps/app_roots.c

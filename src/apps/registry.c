@@ -98,6 +98,15 @@ static void icon_steps_up(int x, int y, int fill, int edge)
 }
 
 /* An "i" in dots: two squares, the dot over the stem. */
+/* Prime factors: one block, then two smaller ones under it, like a tree that
+ * keeps splitting.  Distinct from icon_bars (equal columns) and icon_steps. */
+static void icon_split(int x, int y, int fill, int edge)
+{
+    sh_square_icon(x + 6, y + 1, 8, fill, edge, 1);
+    sh_square_icon(x + 1, y + 12, 7, fill, edge, 1);
+    sh_square_icon(x + 12, y + 12, 7, fill, edge, 1);
+}
+
 static void icon_i(int x, int y, int fill, int edge)
 {
     /* The dot: a square outlined, then filled. */
@@ -216,6 +225,29 @@ static char const help_settings[] =
     "\n"
     "Keys: UP/DOWN choose, LEFT/RIGHT\n"
     "change, EXIT back.";
+
+static char const help_factor[] =
+    "Prime factors\n"
+    "Type a whole number and press EXE.\n"
+    "The page shows the factorisation\n"
+    "with powers, then the four things\n"
+    "that follow from it.\n"
+    "\n"
+    "360 = 2^3 x 3^2 x 5\n"
+    "  divisors 24, their sum 1170\n"
+    "  totient 96\n"
+    "  square-free part 30\n"
+    "\n"
+    "Square-free part is the primes\n"
+    "multiplied with their powers thrown\n"
+    "away: 30 for 360. If it equals the\n"
+    "number, the number is square free.\n"
+    "\n"
+    "Up to 18 digits. F2 halves the\n"
+    "number and factors again.\n"
+    "\n"
+    "Keys: digits, DEL, F1 clear, F2\n"
+    "halve, EXE factor, EXIT back.";
 
 static char const help_about[] =
     "About Bench\n"
@@ -673,6 +705,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_NUMTHEORY,
         .needs_file = false,
         .help = help_numtheory,
+    },
+    {
+        .id = "factor",
+        .title = "Prime factors",
+        .subtitle = "factorise n",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_TEAL,
+        .icon = icon_split,
+        .screen = APP_SCREEN_FACTOR,
+        .needs_file = false,
+        .help = help_factor,
     },
     {
         .id = "stats",

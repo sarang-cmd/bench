@@ -1,0 +1,10 @@
+# tour step: 87_prime_factors_power
+# starts at the home screen; see tools/sim/run_tour.sh
+# 1024 = 2^10: a single prime with a two-digit exponent, which is where the
+# buffer arithmetic in nt_factor_text() bites if it is written carelessly.
+tool:factor
+1
+0
+2
+4
+exe

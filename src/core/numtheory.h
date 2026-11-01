@@ -77,6 +77,23 @@ typedef struct {
 nt_status_t nt_factor(uint64_t n, nt_factorization_t *out, nt_cancel_fn cancel,
                       void *ctx, nt_progress_t *progress);
 
+/* The four things a prime factorisation page shows, all from the factors:
+ *
+ *   nt_factor_text   "2^3 x 3^2 x 5" (ASCII; the screen font has no times sign)
+ *   nt_divisor_count how many positive divisors, product of (e+1)
+ *   nt_divisor_sum   sigma(n), product of (p^(e+1)-1)/(p-1)
+ *   nt_factor_radical the largest square-free kernel, product of the primes
+ *
+ * All return NT_OK or NT_ERR_OVERFLOW when the answer does not fit in 64 bits.
+ * n = 1 is the empty factorisation: "1", one divisor, sum 1, radical 1. */
+nt_status_t nt_factor_text(nt_factorization_t const *f, char *out, int size);
+nt_status_t nt_divisor_count(nt_factorization_t const *f, uint64_t *out);
+nt_status_t nt_divisor_sum(nt_factorization_t const *f, uint64_t *out);
+nt_status_t nt_factor_radical(nt_factorization_t const *f, uint64_t *out);
+
+/* True when every exponent is even, so the number is a perfect square.  1 is. */
+bool nt_factor_is_square(nt_factorization_t const *f);
+
 /* Euler's totient from a factorisation, and directly (which factors n). */
 nt_status_t nt_totient_from(nt_factorization_t const *f, uint64_t *out);
 nt_status_t nt_totient(uint64_t n, uint64_t *out, nt_cancel_fn cancel,

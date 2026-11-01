@@ -1,0 +1,9 @@
+# tour step: 86_prime_factors
+# starts at the home screen; see tools/sim/run_tour.sh
+# 360 = 2^3 x 3^2 x 5, and the four numbers that follow from it.  This is the
+# screen the "prime factorisation" request asked for.
+tool:factor
+3
+6
+0
+exe

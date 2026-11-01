@@ -471,6 +471,136 @@ nt_status_t nt_totient_from(nt_factorization_t const *f, uint64_t *out)
     return NT_OK;
 }
 
+nt_status_t nt_divisor_count(nt_factorization_t const *f, uint64_t *out)
+{
+    uint64_t result = 1;
+
+    if (!f || !out)
+        return NT_ERR_ARG;
+    for (int i = 0; i < f->count; i++) {
+        uint64_t prod;
+
+        if (mul_overflow(result, (uint64_t)f->exponent[i] + 1u, &prod))
+            return NT_ERR_OVERFLOW;
+        result = prod;
+    }
+    *out = result;
+    return NT_OK;
+}
+
+nt_status_t nt_divisor_sum(nt_factorization_t const *f, uint64_t *out)
+{
+    uint64_t result = 1;
+
+    if (!f || !out)
+        return NT_ERR_ARG;
+    for (int i = 0; i < f->count; i++) {
+        uint64_t p = f->factor[i];
+        uint64_t term = 1;          /* 1 + p + p^2 + ... + p^e */
+        uint64_t prod;
+
+        for (int e = 0; e < f->exponent[i]; e++) {
+            if (mul_overflow(term, p, &prod) || prod == UINT64_MAX)
+                return NT_ERR_OVERFLOW;   /* prod + 1 would wrap */
+            term = prod + 1;
+        }
+        if (mul_overflow(result, term, &prod))
+            return NT_ERR_OVERFLOW;
+        result = prod;
+    }
+    *out = result;
+    return NT_OK;
+}
+
+nt_status_t nt_factor_radical(nt_factorization_t const *f, uint64_t *out)
+{
+    uint64_t result = 1;
+
+    if (!f || !out)
+        return NT_ERR_ARG;
+    for (int i = 0; i < f->count; i++) {
+        uint64_t prod;
+
+        if (mul_overflow(result, f->factor[i], &prod))
+            return NT_ERR_OVERFLOW;
+        result = prod;
+    }
+    *out = result;
+    return NT_OK;
+}
+
+bool nt_factor_is_square(nt_factorization_t const *f)
+{
+    if (!f)
+        return false;
+    for (int i = 0; i < f->count; i++)
+        if (f->exponent[i] % 2 != 0)
+            return false;
+    return true;
+}
+
+nt_status_t nt_factor_text(nt_factorization_t const *f, char *out, int size)
+{
+    int n = 0;
+
+    if (!f || !out || size <= 0)
+        return NT_ERR_ARG;
+    out[0] = 0;
+    if (f->count == 0) {
+        /* 1 has no prime factors, and "1 = " with nothing after it is not a
+         * sentence. */
+        if (size < 2)
+            return NT_ERR_OVERFLOW;
+        out[0] = '1';
+        out[1] = 0;
+        return NT_OK;
+    }
+
+    for (int i = 0; i < f->count; i++) {
+        int d = 0;
+        uint64_t v = f->factor[i];
+        char digits[24];
+        int expdigits = 0;
+        int sep = i > 0 ? 3 : 0;
+        int ex = f->exponent[i];
+
+        while (v > 0) {
+            digits[d++] = (char)('0' + (int)(v % 10));
+            v /= 10;
+        }
+        if (ex > 1) {
+            expdigits = 1;          /* the '^' */
+            for (int t = ex; t > 0; t /= 10)
+                expdigits++;
+        }
+        /* Room for the separator, the digits, the exponent and the NUL.  Exact,
+         * so a buffer that holds the whole text is never refused. */
+        if (n + sep + d + expdigits + 1 > size)
+            return NT_ERR_OVERFLOW;
+        if (i > 0) {
+            out[n++] = ' ';
+            out[n++] = 'x';
+            out[n++] = ' ';
+        }
+        while (d > 0)
+            out[n++] = digits[--d];
+        if (ex > 1) {
+            char ed[4];
+            int k = 0;
+
+            out[n++] = '^';
+            while (ex > 0 && k < 3) {
+                ed[k++] = (char)('0' + ex % 10);
+                ex /= 10;
+            }
+            while (k > 0)
+                out[n++] = ed[--k];
+        }
+    }
+    out[n] = 0;
+    return NT_OK;
+}
+
 nt_status_t nt_totient(uint64_t n, uint64_t *out, nt_cancel_fn cancel,
                        void *ctx)
 {
