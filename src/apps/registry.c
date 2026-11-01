@@ -249,6 +249,29 @@ static char const help_factor[] =
     "Keys: digits, DEL, F1 clear, F2\n"
     "halve, EXE factor, EXIT back.";
 
+static char const help_pi[] =
+    "Pi game\n"
+    "The digits of pi, from memory.\n"
+    "\n"
+    "The digits you have earned stay on\n"
+    "screen, grouped five at a time. Type\n"
+    "the next ones and press EXE: every\n"
+    "digit right moves you along, and the\n"
+    "first wrong one costs a life.\n"
+    "\n"
+    "Three lives. F2 shows the next digit\n"
+    "and costs one, so a hint is never\n"
+    "free. When the lives are gone the\n"
+    "page shows how far you got and the\n"
+    "best of this session.\n"
+    "\n"
+    "Nothing is written to the card: the\n"
+    "best score is gone when the add-in\n"
+    "closes.\n"
+    "\n"
+    "Keys: digits, DEL, EXE check, F1\n"
+    "again, F2 hint, EXIT back.";
+
 static char const help_about[] =
     "About Bench\n"
     "Version, build date, target and the\n"
@@ -716,6 +739,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_FACTOR,
         .needs_file = false,
         .help = help_factor,
+    },
+    {
+        .id = "pi",
+        .title = "Pi game",
+        .subtitle = "digits from memory",
+        .category = TOOL_CAT_STUDY,
+        .accent = TH_BLUE,
+        .icon = icon_ring,
+        .screen = APP_SCREEN_PI,
+        .needs_file = false,
+        .help = help_pi,
     },
     {
         .id = "stats",

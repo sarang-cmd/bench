@@ -1,0 +1,7 @@
+# tour step: 89_pi_game_wrong
+# starts at the home screen; see tools/sim/run_tour.sh
+# A wrong digit costs a life. The banner says so in paper on red, and one of
+# the three squares is now an outline.
+tool:pi
+9
+exe

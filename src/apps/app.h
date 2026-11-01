@@ -45,6 +45,7 @@ typedef enum {
     APP_SCREEN_SIGFIG,
     APP_SCREEN_HWREPORT,
     APP_SCREEN_FACTOR,
+    APP_SCREEN_PI,
 } app_screen_t;
 
 /* Switch to another screen (implemented in main.c). */
@@ -91,5 +92,6 @@ DECLARE_APP(log);
 DECLARE_APP(sigfig);
 DECLARE_APP(hwreport);
 DECLARE_APP(factor);
+DECLARE_APP(pi);
 
 #endif /* BENCH_APP_H */
