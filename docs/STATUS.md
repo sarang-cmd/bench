@@ -18,7 +18,10 @@ what is not, is in the table at the end of this file.
 The tree and the newest build are both 1.2.3. Bench 1.2.3 is tested on a PC and
 documented: the tag `v1.2.3` carries `Bench-1.2.3.g3a` (268 072 bytes, sha256
 `aca6f6ba...`, commit `62e63aa`) as a release asset, in `dist/`, on the `builds`
-branch and on the website. 1.0.0 is the only version anyone has run on a calculator. `.github/workflows/build.yml` is the only thing that can build
+branch and on the website. 1.0.0 and 1.1.0 have been run on a calculator; 1.1.0
+went through every tool it shipped with, and the one defect it showed was the
+bottom bar, fixed in 1.2.3 (docs/HARDWARE.md). Nothing in 1.2.x has been on
+hardware. `.github/workflows/build.yml` is the only thing that can build
 it - this sandbox has no SuperH compiler and cannot reach
 `git.planet-casio.com` - and the toolchain it needs is cached, so a release
 takes about two and a half minutes.
@@ -139,9 +142,9 @@ once at start-up. Nothing else, ever.
 2. Run the M0 check: full window in paper colour, centred red square, any key
    back to the menu.
 3. Run the spike (`spike/`, `docs/spike.md`) and fill in the ten answers.
-4. Every tool on the device: Pacer clock drift over 30 minutes, Uncertainty
-   display widths, Cards progress surviving a relaunch, Notes scroll speed on a
-   30 KiB note, Number theory factorisation time and the EXIT cancel.
+4. The 1.2.x set on the device: prime factors, percentages, the formula book,
+   the pi game, the new bottom bar and first-run hint, and the four settings rows
+   added after 1.1.0. Every tool that shipped in 1.1.0 has already run there.
 5. Exam Mode: the user's own test. The add-in must simply not appear.
 
 ## Assumptions that still need the calculator

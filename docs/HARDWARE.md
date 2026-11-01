@@ -36,35 +36,54 @@ Two bugs came out of that session:
 
 Both are fixed and covered by native tests (see `CHANGELOG.md`).
 
-## V2: unverified on device
+## 1.1.0, confirmed
 
-Everything after 1.0.0 is marked **unverified on device** in the CHANGELOG. The
-core arithmetic has native tests (32 test programs, `make test`) and every screen
-is rendered by the PC simulator and checked for overlaps (`make check-screens`),
-but neither is the calculator.
+Reported by the person who owns the hardware, after the 1.1.0 build: **every
+tool in 1.1.0 worked**, with one defect, the bottom bar described below. This is
+a summary from the person who ran it, not a per-row log; nothing in it was
+itemised tool by tool, so treat "worked" as "ran without a crash or a wrong
+answer on the screens they opened", which is what they were asked to check.
+
+The build tested was `Bench-1.1.0.g3a` (250 500 bytes, sha256 `5288af0e...`),
+the one on the `v1.1.0` release, in `dist/` and on the `builds` branch.
+
+| Area | What 1.1.0 contained |
+|---|---|
+| Install | Copied to `fls0/`, appears in MENU, launches |
+| Storage | `Bench/` and its subfolders, cards and notes read from them |
+| Study | Pacer, Cards, Notes, Study log |
+| Math | Complex, Function, Sequences, Polynomials, Root finder, Triangle, Base and bits, Number theory, Statistics |
+| Science | Lab graph, Uncertainty, Sig figs, SUVAT, Moles |
+| Tools | Settings, About, the hardware report screen |
+
+The one defect found, and its fix:
+
+| Defect | State |
+|---|---|
+| The bottom bar: labels pressed into their slots, and the first-run hint sitting on the tile borders below the grid | **fixed in 1.2.3**, which is a re-layout of a bar that 1.1.0 does not have a spare pixel in. The fix itself has not been on a calculator; see below |
+
+## After 1.1.0: unverified on device
+
+Everything that exists only in 1.2.x is marked **unverified on device** in the
+CHANGELOG, and it is a longer list than "the tools": the bottom bar is 20 pixels
+now instead of 16, every screen's footer moved with it, and the first-run hint
+has a band of its own.
 
 Not yet run on hardware:
 
 | Area | What needs running |
 |---|---|
-| Triangle | SSS, SAS, ASA, SSA (two solutions), the DEG/RAD switch |
-| Polynomials | Roots mode up to degree 8, solving from `state/exprs.txt` |
-| Root finder | Bisection, Newton, secant; the iterate table; the plot |
-| Sequences | Arithmetic, geometric, binomial; the sum line |
-| Statistics | Mean, median, quartiles, standard deviation, single and paired |
-| Sig figs | All six modes, in practice mode |
-| SUVAT | Every combination, the flight-path view, `g = 9.81` and `10` |
-| Moles | The three calculation screens |
-| Base and bits | Bases 2, 8, 10, 16; the operator list; shifts and masks |
-| Lab graph | Points typed in, the plot, the gradient |
-| Complex numbers | The four operations, the polar line, DEG/RAD, division by zero |
-| Settings v2 | The five rows, and that `settings.cfg` keeps its shape |
-| Hardware report | F3 in Settings, marking a row, F2 writing `state/hwreport.txt` |
-| First-run hint | It appears once and goes away after F5 |
+| Prime factors | A number typed in, the power display, the divisor count, sum, totient and square-free part |
+| Percentages | The four questions, and the three cases the page refuses with a reason |
+| Formula book | Files listed from `Bench/formulas`, scrolling, LEFT/RIGHT sections, F1 to the top |
+| Pi game | Digits accepted, a wrong one costing a life, F2 costing a life, the round-over screen |
+| The bottom bar | That six labels and a selected tab sit right at 396x224, not just in the preview |
+| First-run hint | That it clears the tiles, and that F5 still makes it go away for good |
+| Settings v2 | The rows added after 1.1.0: note width, opens on, show hint line, pacer clock red at |
 | Demo content | `demo/` copied to the three folders and read by every tool |
-| Study log | F1 adds a session, F2 removes the last, EXIT writes once |
 
-## How to run the V2 pass
+
+## How to run the next pass
 
 1. Copy `Bench-<version>.g3a` to `fls0/` in USB Flash mode.
 2. Run it once, then copy `demo/notes`, `demo/cards` and `demo/study` into
@@ -87,20 +106,14 @@ Exam Mode:    off
 
 Tool             Result    Notes
 ---------------- --------  ---------------------------------------------
-Triangle         pass/fail
-Polynomials      pass/fail
-Root finder      pass/fail
-Sequences        pass/fail
-Statistics       pass/fail
-Sig figs         pass/fail
-SUVAT            pass/fail
-Moles            pass/fail
-Base and bits    pass/fail
-Lab graph        pass/fail
-Settings         pass/fail
-First-run hint   pass/fail
+Prime factors    pass/fail
+Percentages      pass/fail
+Formula book     pass/fail
+Pi game          pass/fail
+Bottom bar       pass/fail   six labels, selected tab, no crowding
+First-run hint   pass/fail   clear of the tiles, gone after F5
+Settings v2      pass/fail   note width, opens on, hint line, clock red at
 Demo content     pass/fail
-Study log        pass/fail
 
 Anything else:
 ```

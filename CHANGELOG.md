@@ -11,6 +11,25 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
+## 1.2.4 - unreleased (source only)
+
+Numbers here describe the source in `main`. The newest build anyone can download
+is `Bench-1.2.3.g3a`.
+
+- **1.1.0 ran on the calculator, and everything in it worked**: the owner of the
+  hardware reported after the 1.1.0 build that every tool it shipped with - Pacer,
+  Cards, Notes, the study log, Complex, Function, Sequences, Polynomials, Root
+  finder, Triangle, Base and bits, Number theory, Statistics, Lab graph,
+  Uncertainty, Sig figs, SUVAT, Moles, Settings, About and the hardware report
+  screen - ran, and the one defect was the bottom bar: labels pressed into their
+  slots and the first-run hint sitting on the tile borders, both fixed in 1.2.3.
+  `docs/HARDWARE.md` records it as a summary from the person who ran it rather
+  than a per-row log, because that is what it is. The claims that said only 1.0.0
+  had ever been on a calculator - README, `docs/STATUS.md`, the site - say 1.0.0
+  and 1.1.0 now, and the "needs the calculator" list is shortened to what is
+  actually left: the four V2 tools, the new bar and hint, and the four settings
+  rows added after 1.1.0. **1.2.3 itself is still unverified on device.**
+
 ## 1.2.3 - 2026-11-01
 
 Numbers here describe the source in `main`, not a run on hardware: 1.2.3 is
@@ -269,8 +288,14 @@ built by CI from this commit, and nobody has had it on a calculator yet.
 ## 1.1.0 - 2026-11-01
 
 The two bugs from the first hardware session, the V2 tools, and the machinery
-that stops the next one. **Not run on a device yet**: the 1.0.0 rows in
-`docs/HARDWARE.md` are the only hardware results that exist.
+that stops the next one.
+
+**Run on a device** (added after the fact, see 1.2.4): the owner of the hardware
+put `Bench-1.1.0.g3a` on the calculator and every tool in this release worked.
+The one defect was the bottom bar - labels pressed into their slots and the
+first-run hint on the tile borders - fixed in 1.2.3. The "unverified on device"
+notes on the entries below were written before that run; the per-entry wording is
+left as it was, and `docs/HARDWARE.md` carries the result.
 
 - **A hardware report you can fill in on the calculator (V2, workstream J)**:
   Settings gained **F3**, which opens a screen listing the eight assumptions

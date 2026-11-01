@@ -1,6 +1,16 @@
 {
   "releases": [
     {
+      "version": "1.2.4",
+      "date": "unreleased (source only)",
+      "entries": [
+        {
+          "title": "1.1.0 ran on the calculator, and everything in it worked",
+          "body": "the owner of the hardware reported after the 1.1.0 build that every tool it shipped with - Pacer, Cards, Notes, the study log, Complex, Function, Sequences, Polynomials, Root finder, Triangle, Base and bits, Number theory, Statistics, Lab graph, Uncertainty, Sig figs, SUVAT, Moles, Settings, About and the hardware report screen - ran, and the one defect was the bottom bar: labels pressed into their slots and the first-run hint sitting on the tile borders, both fixed in 1.2.3. `docs/HARDWARE.md` records it as a summary from the person who ran it rather than a per-row log, because that is what it is. The claims that said only 1.0.0 had ever been on a calculator - README, `docs/STATUS.md`, the site - say 1.0.0 and 1.1.0 now, and the \"needs the calculator\" list is shortened to what is actually left: the four V2 tools, the new bar and hint, and the four settings rows added after 1.1.0. **1.2.3 itself is still unverified on device.**"
+        }
+      ]
+    },
+    {
       "version": "1.2.3",
       "date": "2026-11-01",
       "entries": [

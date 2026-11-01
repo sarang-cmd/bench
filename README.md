@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.3-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.4-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -34,7 +34,7 @@ Bench-1.2.3.g3a     <- copy this to the calculator's storage root
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.3 - the newest build is this one; the downloads page serves it |
+| Version | 1.2.4 in the tree; the newest build is 1.2.3, which the downloads page serves |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -45,7 +45,7 @@ Bench-1.2.3.g3a     <- copy this to the calculator's storage root
 | Tour scripts | 97 |
 | Native test programs | 39 |
 | C source | 24,788 lines in 125 files |
-| Version | 1.2.3 |
+| Version | 1.2.4 |
 <!-- STATS:END -->
 
 ## Screens
@@ -589,8 +589,9 @@ answer (file API behaviour, float printing, font coverage, redraw time, heap).
 
 The newest `.g3a`, `Bench-1.2.3.g3a`, is built by CI from `62e63aa` and
 contains the V2 tools: prime factors, percentages, the formula book and the pi
-game. Everything in `main` builds and passes its tests; only 1.0.0 has been on a
-calculator, and each changelog entry says so.
+game. Everything in `main` builds and passes its tests. 1.0.0 and 1.1.0 have
+been run on a calculator, the second of them through every tool it shipped with;
+1.2.3 has not, and each changelog entry says so.
 
 ## Releasing
 
