@@ -14,10 +14,11 @@ export default function Hero({ version }) {
       {/* Flat blocks, no gradients: the house style. They sit behind everything
           and only appear once there is room for them, so they never cross the
           text on a phone. */}
-      {/* The block is wider than the page on purpose; overflow-hidden keeps it
-          inside, so it never puts a scrollbar on the window. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
-        <div className="absolute -right-24 -top-28 h-72 w-72 rotate-12 border-3 border-ink bg-yellow/60" />
+      {/* Kept clear of the right edge: a rotated box reports the corners of its
+          bounding box, and `site/scripts/check-widths.mjs` fails a rectangle
+          that crosses the viewport even when nothing is painted there. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
+        <div className="absolute -top-20 right-12 h-56 w-56 rotate-12 border-3 border-ink bg-yellow/60" />
       </div>
 
       <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:px-12 lg:py-16">
