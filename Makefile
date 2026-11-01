@@ -82,6 +82,7 @@ SIM_SRC := $(wildcard src/core/*.c) $(wildcard src/platform/*.c) \
            $(wildcard src/ui/*.c) $(wildcard src/apps/*.c) tools/sim/sim.c
 SIM_CFLAGS := -std=gnu11 -O1 -g -Wall -Wextra -Wno-missing-field-initializers \
               -DBENCH_TRACE \
+              -Werror=implicit-function-declaration \
               -Wno-missing-braces \
               -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include
 SIM_HDR := $(wildcard src/*.h src/ui/*.h src/platform/*.h src/apps/*.h \

@@ -11,10 +11,33 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.2 - 2026-11-01
+## 1.2.3 - 2026-11-01
 
-Numbers here describe the source in `main`, not a run on hardware: 1.2.2 is
+Numbers here describe the source in `main`, not a run on hardware: 1.2.3 is
 built by CI from this commit, and nobody has had it on a calculator yet.
+
+- **The calculator build has been failing since the Pi game landed**:
+  `app_pi.c` calls `nt_append` without including `ui/numtext.h`. The host
+  preview took it as a warning and drew a perfect screenshot; the fxSDK build
+  runs `-Werror=implicit-function-declaration` and stopped, so there has been no
+  `.g3a` since 1.1.0 and the tagged release for 1.2.2 could not exist. The
+  include is one line; the reason it went unseen for four merges is that the two
+  builds disagreed about which warnings matter, so the preview now compiles with
+  the same `-Werror=implicit-function-declaration` as the calculator and the
+  candidate `.g3a` cannot be the only thing that finds it.
+- **The committed WebAssembly build is rebuilt from these sources**, so the
+  simulator on the site is the same code as the screenshots again. Its smoke
+  runs (`down,exe` and the worker path) pass. **Unverified on device.**
+- **The screen checker can see a label sitting on a border**: it compared
+  rectangles, so two things that merely touched were "not overlapping" and
+  passed. The menu's first-run hint spent eleven merged pull requests with its
+  ascenders on the bottom tile border, and 97 green screenshots said nothing
+  about it. `scr_frame` is traced now - `scr_fill` records only panels of 8x4 or
+  more, and a two-pixel border is exactly the size that goes wrong - and a label
+  within two pixels of any frame, inside or out, fails the run. Checked against
+  the old layout: it reports the hint and nothing else, so the rule has teeth
+  without inventing work on the other 96 screens. `docs/design.md` lists it.
+  **Unverified on device.**
 
 - **The softkey bar has room to breathe, and the first-run hint is no longer
   jammed into the tiles**: a 10-pixel label in a 16-pixel bar left three pixels

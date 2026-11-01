@@ -274,7 +274,7 @@ char const *drsize(char const *str, font_t const *font, int width, int *w)
  *
  * Run on the last frame of every key script when BENCH_CHECK=1:
  *
- *   1. no two labels overlap
+ *   1. no two labels overlap, and no label sits on a border
  *   2. no label leaves the visible window
  *   3. no label sits in the title bar or the softkey strip
  *   4. no softkey label is wider than its cell
@@ -464,6 +464,37 @@ static int check_frame(char const *label)
             if (rect_overlap(p->x, p->y, p->w, p->h, q->x, q->y, q->w, q->h))
                 finding("labels overlap", p->text, p->x, p->y, p->w, p->h);
         }
+
+    /* Pass three and a half: nothing sits on a border.
+     *
+     * A label one pixel off a border reads as clipped even though nothing
+     * overlaps: the menu's first-run hint sat on the bottom tile border, its
+     * ascenders cut by a line it was not drawn on, and eleven merged pull
+     * requests of screenshots said nothing.  A label may live inside a frame,
+     * but not within two pixels of its edge, and it may not come within two
+     * pixels of a frame from the outside either. */
+    for (int a = 0; a < alive_n; a++)
+    {
+        trace_rec_t const *t = &trace[alive[a]];
+
+        if (!trace_is_text(t->kind))
+            continue;
+        for (int b = 0; b < trace_n; b++)
+        {
+            trace_rec_t const *f = &trace[b];
+
+            if (f->kind != SCR_TR_FRAME)
+                continue;
+            if (!rect_overlap(t->x - 2, t->y - 2, t->w + 4, t->h + 4, f->x, f->y,
+                              f->w, f->h))
+                continue;
+            /* Inside, with two pixels to spare, is fine. */
+            if (rect_inside(t->x, t->y, t->w, t->h, f->x + 2, f->y + 2,
+                            f->w - 4, f->h - 4))
+                continue;
+            finding("label on a border", t->text, t->x, t->y, t->w, t->h);
+        }
+    }
 
     /* Pass four: readability, measured from the pixels, not from the constants. */
     for (int a = 0; a < alive_n; a++)

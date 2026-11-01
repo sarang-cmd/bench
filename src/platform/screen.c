@@ -112,6 +112,12 @@ void scr_frame(int x, int y, int w, int h, int color, int thickness)
 
     if (w <= 0 || h <= 0)
         return;
+    /* The outline is recorded too, thin as it is: scr_fill only records panels
+     * of 8x4 or more, and a two-pixel border is exactly what a label can end up
+     * sitting on.  The trace does not keep the thickness, so the check treats
+     * the outer four pixels of the rectangle as the edge. */
+    if (w >= 12 && h >= 12)
+        SCR_TRACE(SCR_TR_FRAME, x, y, w, h, color, C_NONE, NULL);
     scr_fill(x, y, w, t, color);
     scr_fill(x, y + h - t, w, t, color);
     scr_fill(x, y, t, h, color);

@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.2-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.3-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -44,8 +44,8 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | Screens captured | 97 |
 | Tour scripts | 97 |
 | Native test programs | 39 |
-| C source | 24,781 lines in 125 files |
-| Version | 1.2.2 |
+| C source | 24,788 lines in 125 files |
+| Version | 1.2.3 |
 <!-- STATS:END -->
 
 ## Screens

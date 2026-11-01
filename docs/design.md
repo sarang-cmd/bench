@@ -154,9 +154,16 @@ the `.g3a` is unchanged. The host preview then fails the run on:
 | title bar or softkey strip | a content label drawn in either |
 | softkey label wider than its cell | a softkey that does not fit 64 px |
 | label painted over | a later panel covering part of an earlier label |
+| label on a border | a label within 2 px of a panel, tile or key border, inside or out |
 | label under the contrast floor | measured from the pixels, not the constants |
 | icon and tile the same | an icon at 1.5:1 or less against its fill |
 | palette | a `TH_*` constant that is not the documented hex |
+
+The border check exists because "not overlapping" is not the same as "not
+touching": the menu's first-run hint sat with its ascenders on the bottom tile
+border, which reads as clipped text, and every screenshot check passed. Frames
+are traced through `scr_frame`, since `scr_fill` records only panels of 8x4 or
+more and a two-pixel border is exactly the size that goes wrong.
 
 The contrast check samples the framebuffer, so it catches what the constants
 say *and* what actually got drawn — the first version of this check found that
