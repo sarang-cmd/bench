@@ -11,7 +11,7 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.8 - unreleased
+## 1.2.8 - 2026-11-01
 
 The site's page check has been red since 1.2.6, and the release went out anyway:
 the add-in build, the core tests, the WebAssembly build and the toolchain job all
@@ -40,7 +40,9 @@ pack card to `/downloads`.
   files, unchanged since 1.2.7), so the repository does not accumulate a copy per
   release. The release job already deletes the old one before copying the new.
 
-Nothing about the add-in changed: no C, no screen, no key.
+Nothing about the add-in changed: no C, no screen, no key. The tag exists so the
+pipeline that builds a release is green end to end: the `v1.2.7` tag points at a
+commit from before this fix, so its own site job stays red for good.
 
 ## 1.2.7 - 2026-11-01
 

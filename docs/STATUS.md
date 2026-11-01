@@ -15,12 +15,13 @@ what is not, is in the table at the end of this file.
 
 ## One sentence
 
-The tree and the newest build are both 1.2.7, which renames the demo to the
-starter pack and changes nothing else. Bench 1.2.7 is tested on a PC and
-documented: the tag `v1.2.7` carries `Bench-1.2.7.g3a` as a release asset, in
-`dist/`, on the `builds` branch and on the website, with
-`Bench-starterpack-1.2.7.zip` beside it (1.2.6 shipped that file as
-`Bench-demo-1.2.6.zip`, the last use of the old word). The starter pack is
+The tree and the newest build are both 1.2.8: 1.2.7 renamed the demo to the
+starter pack and 1.2.8 fixes the site's page check, which had been failing since
+1.2.6 and made every pipeline look red although the add-in built fine both
+times. Bench 1.2.8 is tested on a PC and documented: the tag `v1.2.8` carries
+`Bench-1.2.8.g3a` as a release asset, in `dist/`, on the `builds` branch and on
+the website, with `Bench-starterpack-1.2.8.zip` beside it (1.2.6 shipped that
+file as `Bench-demo-1.2.6.zip`, the last use of the old word). The starter pack is
 compiled into the add-in and written to the card on the first run, so a fresh
 install has notes, decks, a study log and three formula booklets before
 anything is copied over USB. 1.0.0 and 1.1.0 have been run on a calculator; 1.1.0 went through every
