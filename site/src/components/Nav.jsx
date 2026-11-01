@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, ROUTES } from "../router.jsx";
 
-// The bar carries five; the sheet and the footer carry all eight, so a phone
-// never has to guess what else exists.
-const inBar = ["/features", "/tutorial", "/install", "/downloads", "/about"];
+// The bar carries six; the sheet and the footer carry all eight, so a phone
+// never has to guess what else exists. The simulator is in the bar on purpose:
+// it is the one page that shows what the add-in does without installing it, and
+// it is useless if it can only be found in the footer.
+const inBar = ["/features", "/simulator", "/tutorial", "/install", "/downloads", "/about"];
 const links = ROUTES.filter((route) => route.path !== "/")
   .map((route) => [route.label, route.path])
   .filter(([, path]) => inBar.includes(path));
@@ -32,12 +34,12 @@ export default function Nav({ version }) {
           />
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Sections">
+        <nav className="hidden items-center gap-4 md:flex lg:gap-6" aria-label="Sections">
           {links.map(([label, href]) => (
             <Link
               key={href}
               to={href}
-              className="border-b-3 border-transparent pb-0.5 text-sm font-bold uppercase tracking-wide hover:border-red"
+              className="border-b-3 border-transparent pb-0.5 text-[13px] font-bold uppercase tracking-wide hover:border-red lg:text-sm"
             >
               {label}
             </Link>

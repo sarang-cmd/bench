@@ -28,7 +28,7 @@ export const ROUTES = [
     label: "Simulator",
     title: "Simulator - Bench for the Casio fx-CG 50",
     description:
-      "Try the screens of Bench in the browser. The tour gallery is real output; the interactive WebAssembly build is not finished yet.",
+      "Run the add-in itself in the browser: the same C compiled to WebAssembly, driven by the key buttons, plus every captured screen.",
   },
   {
     path: "/tutorial",
