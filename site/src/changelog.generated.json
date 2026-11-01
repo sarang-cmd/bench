@@ -1,9 +1,21 @@
 {
   "releases": [
     {
-      "version": "1.2.4",
+      "version": "1.2.5",
       "date": "unreleased (source only)",
       "entries": [
+        {
+          "title": "\"No notes yet\" while the notes sat one folder away",
+          "body": "the calculator moves anything it will not keep in main memory to `SAVE-F` (fx-CG 50 manual, 13-6: contents past three levels of `@MainMem`, and anything it does not recognise). A `Bench` folder copied into `@MainMem` therefore lands in `SAVE-F/Bench` when the cable is pulled, and Bench - which reads `\\fls0\\Bench` and nothing else - reported an empty folder. The three list screens now check `SAVE-F/Bench/<folder>` when their own folder is empty, and say so: \"Notes are in SAVE-F / Move SAVE-F/Bench/notes to Bench/notes\". The default empty text also names the place - \"Put .md or .txt in Bench/notes on the card root\" - because \"Bench/notes\" alone was read as \"any Bench folder\". New tour step 98 covers it, with a sample note under `docs/samples/savef/`. **Unverified on device.**"
+        },
+        {
+          "title": "The README said where the files go without saying where they must not",
+          "body": "`@MainMem` was mentioned once, in passing, as a landmark. It is not a landmark, it is the trap, and the drive root / `@MainMem` / `SAVE-F` triangle now has a section of its own, plus four numbered install steps that put the `.g3a` and the `Bench` folder in the root and say \"never inside it\" twice. `docs/TUTORIAL.md` and `dist/README.md` carry the same warning."
+        },
+        {
+          "title": "Four more README corrections found while checking it against the tree",
+          "body": "the file list was missing `study/log.txt`, `formulas/*.txt` and `state/hwreport.txt`; the `settings.cfg` example listed five of the eight keys; the `builds` branch line still fetched `Bench-1.0.0.g3a`; and the \"make py-test\" line described a single converter when it now runs 68 tests over three tools. `docs/TUTORIAL.md`'s Notes key table was wrong in five rows - it promised ALPHA for search (F1, and it is the on-screen keyboard), F3/F4 for previous/next file (they are the heading list and the top), and EXE for page down (it goes back to the list)."
+        },
         {
           "title": "1.1.0 ran on the calculator, and everything in it worked",
           "body": "the owner of the hardware reported after the 1.1.0 build that every tool it shipped with - Pacer, Cards, Notes, the study log, Complex, Function, Sequences, Polynomials, Root finder, Triangle, Base and bits, Number theory, Statistics, Lab graph, Uncertainty, Sig figs, SUVAT, Moles, Settings, About and the hardware report screen - ran, and the one defect was the bottom bar: labels pressed into their slots and the first-run hint sitting on the tile borders, both fixed in 1.2.3. `docs/HARDWARE.md` records it as a summary from the person who ran it rather than a per-row log, because that is what it is. The claims that said only 1.0.0 had ever been on a calculator - README, `docs/STATUS.md`, the site - say 1.0.0 and 1.1.0 now, and the \"needs the calculator\" list is shortened to what is actually left: the four V2 tools, the new bar and hint, and the four settings rows added after 1.1.0. **1.2.3 itself is still unverified on device.**"

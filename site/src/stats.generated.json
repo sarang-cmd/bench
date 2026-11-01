@@ -1,8 +1,8 @@
 {
-  "version": "1.2.4",
+  "version": "1.2.5",
   "tools": 22,
-  "screens": 105,
-  "tourSteps": 97,
+  "screens": 106,
+  "tourSteps": 98,
   "testPrograms": 39,
-  "sourceLines": 24788
+  "sourceLines": 24833
 }

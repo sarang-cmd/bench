@@ -40,7 +40,7 @@ root); see `docs/STATUS.md` "What needs the calculator".
 | 4 | M2 shell + settings | **done** (`src/platform`, `src/ui`, `src/apps/app_menu.c`) |
 | 5 | M3..M8 wiring | **done**, all five tools and About |
 | 6 | M9 polish and release | **done**: icons, About screen, README, changelog, tag v1.0.0 + release asset |
-| 7 | V2 tools | **done in source**: 24 tools in four categories (Math gained prime factors and percentages, Study gained the Pi game and the formula book), 39 native test programs, 97 screens |
+| 7 | V2 tools | **done in source**: 24 tools in four categories (Math gained prime factors and percentages, Study gained the Pi game and the formula book), 39 native test programs, 98 screens |
 | 8 | the first round of use | **done in source**: back navigation, file detection, scrollbars, the page pill, centred rows, three more settings, a fuller About, the fx-CG 50 keypad and a Vercel deploy that runs once every twenty commits. All of it unverified on device |
 
 The milestone gate in the task files ("start only after the user confirms the

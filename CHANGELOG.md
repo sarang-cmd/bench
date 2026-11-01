@@ -11,10 +11,38 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.4 - unreleased (source only)
+## 1.2.5 - unreleased (source only)
 
 Numbers here describe the source in `main`. The newest build anyone can download
 is `Bench-1.2.3.g3a`.
+
+- **"No notes yet" while the notes sat one folder away**: the calculator moves
+  anything it will not keep in main memory to `SAVE-F` (fx-CG 50 manual, 13-6:
+  contents past three levels of `@MainMem`, and anything it does not recognise).
+  A `Bench` folder copied into `@MainMem` therefore lands in `SAVE-F/Bench` when
+  the cable is pulled, and Bench - which reads `\fls0\Bench` and nothing else -
+  reported an empty folder. The three list screens now check
+  `SAVE-F/Bench/<folder>` when their own folder is empty, and say so:
+  "Notes are in SAVE-F / Move SAVE-F/Bench/notes to Bench/notes". The default
+  empty text also names the place - "Put .md or .txt in Bench/notes on the card
+  root" - because "Bench/notes" alone was read as "any Bench folder". New tour
+  step 98 covers it, with a sample note under `docs/samples/savef/`.
+  **Unverified on device.**
+- **The README said where the files go without saying where they must not**:
+  `@MainMem` was mentioned once, in passing, as a landmark. It is not a
+  landmark, it is the trap, and the drive root / `@MainMem` / `SAVE-F` triangle
+  now has a section of its own, plus four numbered install steps that put the
+  `.g3a` and the `Bench` folder in the root and say "never inside it" twice.
+  `docs/TUTORIAL.md` and `dist/README.md` carry the same warning.
+- **Four more README corrections found while checking it against the tree**:
+  the file list was missing `study/log.txt`, `formulas/*.txt` and
+  `state/hwreport.txt`; the `settings.cfg` example listed five of the eight
+  keys; the `builds` branch line still fetched `Bench-1.0.0.g3a`; and the
+  "make py-test" line described a single converter when it now runs 68 tests
+  over three tools. `docs/TUTORIAL.md`'s Notes key table was wrong in five rows
+  - it promised ALPHA for search (F1, and it is the on-screen keyboard), F3/F4
+  for previous/next file (they are the heading list and the top), and EXE for
+  page down (it goes back to the list).
 
 - **1.1.0 ran on the calculator, and everything in it worked**: the owner of the
   hardware reported after the 1.1.0 build that every tool it shipped with - Pacer,

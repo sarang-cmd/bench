@@ -128,8 +128,12 @@ static void draw_list(void)
 
     if (book_count == 0)
     {
-        w_message("No booklets yet",
-                  "Copy .txt booklets into Bench/formulas");
+        if (store_elsewhere_exists("formulas"))
+            w_message("Booklets are in SAVE-F",
+                      "Move SAVE-F/Bench/formulas to Bench/formulas");
+        else
+            w_message("No booklets yet",
+                      "Put .txt booklets in Bench/formulas on the card root");
         w_strip(NULL, NULL);
         return;
     }

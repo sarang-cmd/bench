@@ -29,6 +29,11 @@ mkdir -p "$fs/notes" "$fs/cards" "$fs/state" "$fs/formulas"
 [ -d "$root/docs/samples/formulas" ] &&
     cp "$root"/docs/samples/formulas/*.txt "$fs/formulas/"
 # Every sample, so the worst-case screens have their files too.
+# A Bench folder copied into @MainMem ends up in SAVE-F; one script shows that.
+mkdir -p "$fs/SAVE-F/Bench/notes"
+if [ -d "$root/docs/samples/savef/notes" ]; then
+    cp "$root"/docs/samples/savef/notes/* "$fs/SAVE-F/Bench/notes/" 2>/dev/null || true
+fi
 for f in "$root"/docs/samples/*; do
     [ -f "$f" ] || continue
     case "$f" in

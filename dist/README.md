@@ -35,7 +35,9 @@ the `builds` branch at the time of the build.
 ## Installing
 
 1. Copy `Bench-<version>.g3a` to the root of the calculator's storage, next to
-   `@MainMem`, over USB Flash mode.
+   `@MainMem` and **not inside it**, over USB Flash mode. A `Bench` folder put
+   inside `@MainMem` is moved to `SAVE-F` by the calculator and Bench cannot see
+   it there.
 2. Eject, press MENU, open Bench.
 
 No folder, no extraction, nothing else.
