@@ -71,3 +71,16 @@ string.
 
 Rendered in a headless Chromium at 320, 390, 834 and 1440 px: no horizontal
 overflow, every lazy image decoded, no console errors.
+
+## When the site deploys
+
+`vercel.json` sets an ignored build step, `scripts/should-deploy.mjs`, so a
+commit to `main` does not rebuild and re-deploy the site every time. It deploys
+when either:
+
+- the commit message contains `[deploy]` - the manual switch; or
+- at least 20 commits have landed since the last deployment
+  (`VERCEL_GIT_PREVIOUS_SHA`).
+
+Pull request previews are unaffected. To publish now: put `[deploy]` in a commit
+message, or trigger a deployment from the Vercel dashboard.
