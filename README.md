@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.1.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.1.0)
+[![version](https://img.shields.io/badge/version-1.2.1-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -34,7 +34,7 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.1.0 |
+| Version | 1.2.0 in the tree; the newest build anyone can download is 1.1.0 |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -45,7 +45,7 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | Tour scripts | 97 |
 | Native test programs | 39 |
 | C source | 24,758 lines in 125 files |
-| Version | 1.1.0 |
+| Version | 1.2.1 |
 <!-- STATS:END -->
 
 ## Screens
@@ -542,7 +542,9 @@ fxsdk build-cg          # needs the fxSDK + SuperH toolchain, see docs/toolchain
 ```
 
 The version comes from `version.txt`, so the `.g3a` name, the About screen and
-the tag always agree.
+the tag always agree. **Every change bumps it** - `make bump-patch` for a fix,
+`make bump-minor` for a feature - and `make version-check` fails if the six places
+that quote it have drifted apart. See [docs/VERSIONING.md](docs/VERSIONING.md).
 
 ### Layout
 
@@ -565,6 +567,17 @@ site/           the landing page: React + Vite + Tailwind (see site/README.md)
 The split exists so maths and parsing bugs surface on a PC in seconds; only
 drawing and input need the calculator.
 
+### Review
+
+Pull requests get a CodeRabbit review written against
+[`.coderabbit.yaml`](.coderabbit.yaml), which is in the repository rather than in
+a dashboard: `src/core` may not include gint or libm, a screen may only use the
+nine palette colours, a regenerated table is not a code change, and no bot
+approves a build nobody ran on hardware. `make coderabbit-check` reads it with a
+parser of its own (no new dependency) and fails on a misspelt key or a rule for a
+directory that was renamed. Installing the GitHub App is the one manual step -
+see [docs/CODERABBIT.md](docs/CODERABBIT.md).
+
 ## Status
 
 Everything in this repository is code that builds and tests on a PC. **No
@@ -581,8 +594,9 @@ none of it has been on a calculator, and each changelog entry says so.
 
 ## Releasing
 
-`RELEASING.md` has the steps. Short version: bump `version.txt`, tag `vX.Y.Z`,
-push the tag; the workflow runs the tests, builds `Bench-X.Y.Z.g3a` with the
+`RELEASING.md` has the steps. Short version: the version is already bumped by
+the change that earned it (`docs/VERSIONING.md`), so a release is the changelog
+section renamed from "unreleased" to a date plus a tag `vX.Y.Z`; push the tag; the workflow runs the tests, builds `Bench-X.Y.Z.g3a` with the
 real fxSDK and attaches it to the release.
 
 There is a second, rolling release, tagged `auto`. Once a day at 03:30 UTC

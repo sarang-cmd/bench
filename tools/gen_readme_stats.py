@@ -54,7 +54,11 @@ def counts():
 
 
 def badges(c):
-    release = f"https://github.com/sarang-cmd/bench/releases/tag/v{c['version']}"
+    # The releases page, not the tag: the version in the tree is bumped by the
+    # change that earned it, so between a bump and a release there is no tag to
+    # link to, and a badge pointing at a 404 is worse than a badge pointing at
+    # the page where the tag will be.
+    release = "https://github.com/sarang-cmd/bench/releases"
     return "\n".join([
         BADGES_BEGIN,
         f"[![version](https://img.shields.io/badge/version-{c['version']}-2f2d2e)]"

@@ -1,0 +1,173 @@
+# CodeRabbit review configuration.
+#
+# The commit does not turn CodeRabbit on by itself: someone with admin rights on
+# the repository has to install the GitHub App once (docs/CODERABBIT.md). After
+# that, every pull request into main gets a review written with AGENTS.md and
+# docs/VERSIONING.md as its rulebook.
+#
+# tools/check_coderabbit.py validates this file without a YAML parser, because
+# this repository does not take new dependencies for tooling.  It rejects an
+# unknown key, a tab, a review path that matches no file, and a tool that is
+# switched on without a config file to read.
+
+language: en-US
+
+reviews:
+  # assertive, not the default chill: on this project the failures that hurt are
+  # small ones - a hand-edited generated list, a new screenshot claim, a screen
+  # that overlaps at 396 px, a missing version bump - and a quiet profile lets
+  # them through.
+  profile: assertive
+
+  high_level_summary: true
+  high_level_summary_instructions: |
+    Three to six sentences in plain English: what changed for a person holding
+    the calculator, which files carry the logic, and which claims in the pull
+    request are unverified on device. Do not repeat the file list, which is
+    already below this summary. Never call a feature tested on hardware.
+
+  # A song and a UML sequence diagram tell nobody anything about a fx-CG 50
+  # add-in written in C and assembly-adjacent gint calls.
+  poem: false
+  sequence_diagrams: false
+
+  collapse_walkthrough: false
+  estimate_code_review_effort: true
+  review_status: true
+  review_details: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    base_branches:
+      - "^main$"
+    ignore_title_keywords:
+      - "wip"
+      - "draft"
+      - "tmp"
+
+  # Included: the add-in, its tests and tools, the documentation and the site
+  # source. Excluded: everything generated, everything binary, and the lockfile.
+  # A review of a regenerated table is noise, and noise is how a real comment
+  # gets missed.
+  path_filters:
+    - "**"
+    - "!**/*.generated.json"
+    - "!**/*.ppm"
+    - "!**/*.png"
+    - "!**/*.g3a"
+    - "!**/*.ico"
+    - "!docs/tools.json"
+    - "!spike/spike.diff"
+    - "!dist/**"
+    - "!site/package-lock.json"
+    - "!site/public/**"
+
+  path_instructions:
+    - path: "src/core/**"
+      instructions: |
+        Pure C11 that a PC compiler and gint both accept. Reject:
+        - any `#include` of a gint header, or any gint call, in src/core;
+        - libm (`math.h`, `sqrt`, `pow`, `round`) - the calculator links no maths
+          library, so rounding and scaling are integer arithmetic by hand;
+        - dynamic allocation, `long double`, locale-dependent formatting;
+        - a new public function in a `*.h` with no test in tests/ using concrete
+          vectors (this project writes the vector first for parsers);
+        - behaviour that depends on the screen, a timer or the clock, because
+          core code is compiled and run on the host.
+        Name the missing test and the input that would have caught the bug.
+
+    - path: "src/apps/**"
+      instructions: |
+        gint screens. Only functions that exist in gint 2.10 - an invented call
+        is the worst possible review miss here, because the add-in builds
+        nowhere else. Check:
+        - colour literals are one of the nine palette entries in src/apps/theme.h
+          (paper f4f3ee, ink 2f2d2e, red d92d27, yellow f2c230, blue 2f5fd0,
+          teal 1f9c8a, violet 8b5cf6, shade d9d7cd) and never equal each other;
+        - 2 px ink borders, 3 px on the selected item, and the 3 px hard shadow
+          only under the selected item and on modals;
+        - the screen fits 396x224 with no overlap and no line that runs under
+          the scrollbar; long labels are ellipsised or wrapped, never shrunk;
+        - every key the screen reads has a row in its help screen and is listed
+          in its tour script under tools/sim/tour/;
+        - files are written to flash only at session end or on a settings change.
+        Refuse any code that touches the OS, the bootloader, flash directly, or
+        Examination Mode.
+
+    - path: "tests/**"
+      instructions: |
+        Native suites use run_tests() and T_MAIN and print "<name> <checks>
+        checks, <n> failed". Every new assertion needs a concrete vector, an
+        expected value computed by hand, and a failure message that names the
+        inputs. Boundaries get a case: 0, the maximum, one past it, empty input.
+
+    - path: "tools/**"
+      instructions: |
+        Python 3 standard library only, and only scripts that a CI job or a
+        Makefile target actually runs. A generator must be paired with the check
+        that fails when its output is stale. Never let an edit silently miss:
+        assert the string was replaced before writing.
+
+    - path: "docs/**"
+      instructions: |
+        Blocks between STATS:BEGIN and STATS:END, docs/tools.json,
+        spike/spike.diff and every *.generated.json are generated - a hand edit
+        is a defect, not a convenience. Check that any number in prose (tool
+        count, screen count, test count, checks) matches its source, and that no
+        screenshot or measurement is described as tested on device unless the
+        hardware run is recorded in docs/HARDWARE.md.
+
+    - path: "site/**"
+      instructions: |
+        Neobrutalist system: the nine palette colours only, flat fills, 2 px ink
+        borders, 3 px hard shadows on selected items and modals. Responsive from
+        320 px with no horizontal scrolling and no overlap. Keep Vercel Analytics
+        and Speed Insights. Downloads must not point at GitHub release assets.
+        Real screenshots only - never a mock-up presented as one.
+
+  tools:
+    markdownlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+    checkov:
+      enabled: false
+    tflint:
+      enabled: false
+    hadolint:
+      enabled: false
+    phpstan:
+      enabled: false
+    phpmd:
+      enabled: false
+    phpcs:
+      enabled: false
+    golangci-lint:
+      enabled: false
+    swiftlint:
+      enabled: false
+    detekt:
+      enabled: false
+    biome:
+      enabled: true
+
+  pre_merge_checks:
+    title:
+      mode: warning
+      requirements: "Sentence case, no ticket prefix, 60 characters or fewer. Say what changed, not which file changed."
+    description:
+      mode: warning
+    docstrings:
+      mode: off
+
+  # Merging is a human decision on this project, and the person who writes the
+  # pull request is also the person who tests on the calculator.
+  auto_approvals:
+    enabled: false
+
+knowledge_base:
+  code_guidelines:
+    filePatterns:
+      - "**/AGENTS.md"

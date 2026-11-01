@@ -15,6 +15,12 @@ Rules:
 - Write files only at session end or on a settings change.
 - Add no dependency. Add no feature outside the task.
 - Note every storage layout change in CHANGELOG.md.
+- Bump the version for every change, in the same commit: `make bump-patch` for a
+  fix or a doc, `make bump-minor` for a feature, `make bump-major` only for a
+  storage layout change. `make version-check` must pass (docs/VERSIONING.md).
+- Keep `.coderabbit.yaml` true to the tree: a review rule that names a directory
+  that no longer exists, or a key CodeRabbit does not know, is a silent no-op.
+  `make coderabbit-check` is part of `make py-test`, and covers it.
 - Ask the user when a header or doc does not answer a question.
 
 Done means:

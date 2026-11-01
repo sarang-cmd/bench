@@ -6,7 +6,7 @@
 #define BENCH_VERSION_H
 
 #ifndef BENCH_VERSION
-#define BENCH_VERSION "1.1.0"   /* keep in step with version.txt */
+#define BENCH_VERSION "1.2.1"   /* keep in step with version.txt */
 #endif
 
 #define BENCH_NAME "Bench"

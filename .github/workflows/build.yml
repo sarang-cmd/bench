@@ -86,6 +86,17 @@ jobs:
       - name: Python tool tests
         run: make py-test
 
+      # version.txt against version.h, CMakeLists.txt, the changelog heading and
+      # the README badge: a change that forgot to bump fails here rather than
+      # shipping a build whose About screen disagrees with its file name.
+      - name: The version is bumped and agrees everywhere
+        run: make version-check
+
+      # A review rule for a directory that was renamed, or a key CodeRabbit does
+      # not know, silently does nothing.  Catch it here, not on the next PR.
+      - name: The CodeRabbit configuration is valid
+        run: make coderabbit-check
+
       # docs/tools.json comes from the add-in's own registry and spike/spike.diff
       # from the spike's sources: a hand-edited copy, or a tool added without
       # regenerating them, fails here.
