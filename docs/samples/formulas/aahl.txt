@@ -1,0 +1,148 @@
+# Mathematics AA HL
+Transcribed for study. Check every line
+against the official booklet before
+relying on it in an exam.
+# Topic 1 Number and algebra
+## 1.2 arithmetic sequences
+u_n = u_1 + (n-1)d
+S_n = (n/2)(2u_1 + (n-1)d) = (n/2)(u_1 + u_n)
+## 1.3 geometric sequences
+u_n = u_1 r^(n-1)
+S_n = u_1(r^n - 1)/(r - 1) = u_1(1 - r^n)/(1 - r)
+## 1.4 compound interest
+FV = PV (1 + r/(100k))^(kn)
+k periods a year, r per cent a year
+## 1.5 exponents and logarithms
+a^x = b  <=>  x = log_a b   (a, b > 0, a != 1)
+## 1.7 laws of logarithms
+log_a xy = log_a x + log_a y
+log_a (x/y) = log_a x - log_a y
+log_a x^m = m log_a x
+log_b x = log_a x / log_a b
+## 1.8 infinite geometric series
+S = u_1/(1 - r),  |r| < 1
+## 1.9 binomial theorem
+(a+b)^n = sum C(n,r) a^(n-r) b^r
+C(n,r) = n! / (r! (n-r)!)
+## 1.10 fractional and negative powers
+(1+x)^n = 1 + nx + n(n-1)x^2/2! + ...
+valid for |x| < 1, any rational n
+## 1.12 complex numbers
+z = a + bi,  Re z = a,  Im z = b
+## 1.13 modulus and argument
+z = r(cos t + i sin t) = r cis t = r e^(it)
+r = |z| = sqrt(a^2 + b^2),  t = arg z
+## 1.14 De Moivre and roots
+(r cis t)^n = r^n cis (nt)
+nth roots: r^(1/n) cis ((t + 2 pi k)/n)
+for k = 0, 1, ... n-1
+# Topic 2 Functions
+## 2.1 straight lines
+y = mx + c;  ax + by + d = 0
+y - y_1 = m(x - x_1)
+## 2.6 axis of symmetry
+y = ax^2 + bx + c  has  x = -b/(2a)
+## 2.7 quadratic formula
+x = (-b +- sqrt(b^2 - 4ac)) / (2a)
+discriminant b^2 - 4ac
+## 2.12 sum and product of roots
+ax^2 + bx + c = 0, roots p and q
+p + q = -b/a,  pq = c/a
+# Topic 3 Geometry and trigonometry
+## 3.1 distance in space
+d = sqrt((x1-x2)^2 + (y1-y2)^2 + (z1-z2)^2)
+midpoint: ((x1+x2)/2, (y1+y2)/2, (z1+z2)/2)
+## 3.4 arc length
+l = r t,  t in radians
+## 3.5 sector area
+A = (1/2) r^2 t,  t in radians
+## 3.6 Pythagorean identity
+cos^2 t + sin^2 t = 1
+## 3.9 reciprocal functions
+sec t = 1/cos t,  csc t = 1/sin t,
+cot t = 1/tan t
+1 + tan^2 t = sec^2 t
+1 + cot^2 t = csc^2 t
+## 3.10 compound angles
+sin(A +- B) = sinA cosB +- cosA sinB
+cos(A +- B) = cosA cosB -+ sinA sinB
+tan(A +- B) = (tanA +- tanB)/(1 -+ tanA tanB)
+## 3.12 double angles
+sin 2A = 2 sinA cosA
+cos 2A = cos^2 A - sin^2 A
+       = 2 cos^2 A - 1 = 1 - 2 sin^2 A
+tan 2A = 2 tanA / (1 - tan^2 A)
+## 3.13 triangle rules
+a/sinA = b/sinB = c/sinC
+c^2 = a^2 + b^2 - 2ab cosC
+area = (1/2) ab sinC
+## 3.14 vector equation of a line
+r = a + L b
+## 3.15 cross product
+a x b = |a||b| sin t n
+## 3.16 scalar product
+a . b = |a||b| cos t
+## 3.17 vector equation of a plane
+r = a + L b + M c
+n . r = n . a
+# Topic 4 Statistics and probability
+## 4.2 quartiles and spread
+IQR = Q3 - Q1
+## 4.3 mean and standard deviation
+mean = sum x / n
+sd = sqrt(sum (x - mean)^2 / n)
+## 4.5 linear transformation
+E(aX + b) = a E(X) + b
+Var(aX + b) = a^2 Var(X)
+## 4.6 combined events
+P(A u B) = P(A) + P(B) - P(A n B)
+## 4.7 expected value
+E(X) = sum x P(X = x)
+## 4.8 binomial distribution
+X ~ B(n, p)
+P(X = r) = C(n,r) p^r (1-p)^(n-r)
+E(X) = np,  Var(X) = np(1-p)
+## 4.12 standard score
+z = (x - mean)/sd
+## 4.13 Bayes' theorem
+P(B|A) = P(A|B)P(B) / (P(A|B)P(B)
+       + P(A|B')P(B'))
+## 4.14 variance from moments
+Var(X) = E(X^2) - (E(X))^2
+# Topic 5 Calculus
+## 5.3 derivative of a power
+d/dx x^n = n x^(n-1)
+## 5.4 product and quotient
+(uv)' = u'v + uv'
+(u/v)' = (u'v - uv')/v^2
+## 5.6 trigonometric derivatives
+d/dx sin x = cos x
+d/dx cos x = -sin x
+d/dx tan x = 1/cos^2 x
+## 5.9 second derivative
+max, min and points of inflection
+## 5.10 standard integrals
+int x^n dx = x^(n+1)/(n+1) + C, n != -1
+int (1/x) dx = ln|x| + C
+## 5.11 area under a curve
+int from a to b of f(x) dx
+## 5.12 derivative from first principles
+f'(x) = lim (f(x+h) - f(x))/h
+## 5.15 more derivatives
+d/dx e^x = e^x,  d/dx ln x = 1/x
+d/dx arcsin x = 1/sqrt(1-x^2)
+d/dx arccos x = -1/sqrt(1-x^2)
+d/dx arctan x = 1/(1+x^2)
+## 5.16 more integrals
+int e^x dx = e^x + C
+int (1/x) dx = ln|x| + C
+int 1/(a^2+x^2) dx = (1/a) arctan(x/a) + C
+int 1/sqrt(a^2-x^2) dx = arcsin(x/a) + C
+## 5.17 volume of revolution
+V = pi int from a to b of y^2 dx
+## 5.18 Euler's method
+y(n+1) = y(n) + h f(x(n), y(n))
+x(n+1) = x(n) + h
+## 5.19 linear differential equations
+y' + P(x) y = Q(x)
+multiply by e^(int P dx)

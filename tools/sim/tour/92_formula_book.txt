@@ -1,0 +1,5 @@
+# tour step: 92_formula_book
+# starts at the home screen; see tools/sim/run_tour.sh
+# The AA HL booklet, opened: the title in red, topics in blue, formulae in ink.
+tool:formulas
+exe

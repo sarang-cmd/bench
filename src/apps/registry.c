@@ -249,6 +249,29 @@ static char const help_factor[] =
     "Keys: digits, DEL, F1 clear, F2\n"
     "halve, EXE factor, EXIT back.";
 
+static char const help_formula[] =
+    "Formula book\n"
+    "The IB formula and data booklets,\n"
+    "as plain text on the card.\n"
+    "\n"
+    "Copy them into Bench/formulas, one\n"
+    ".txt per booklet. The list shows\n"
+    "every file in that folder, so a\n"
+    "booklet you write yourself appears\n"
+    "there too.\n"
+    "\n"
+    "In the book: UP/DOWN scroll a line,\n"
+    "LEFT/RIGHT jump a section, F1 goes\n"
+    "to the top. Headings are red, blue\n"
+    "and ink by level.\n"
+    "\n"
+    "# is a booklet title, ## a topic,\n"
+    "### a sub-topic, one space after\n"
+    "the hashes.\n"
+    "\n"
+    "Keys: EXE open, LEFT/RIGHT section,\n"
+    "F1 top, EXIT back.";
+
 static char const help_pi[] =
     "Pi game\n"
     "The digits of pi, from memory.\n"
@@ -750,6 +773,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_PI,
         .needs_file = false,
         .help = help_pi,
+    },
+    {
+        .id = "formulas",
+        .title = "Formula book",
+        .subtitle = "IB booklets",
+        .category = TOOL_CAT_STUDY,
+        .accent = TH_YELLOW,
+        .icon = icon_frame,
+        .screen = APP_SCREEN_FORMULA,
+        .needs_file = true,
+        .help = help_formula,
     },
     {
         .id = "stats",

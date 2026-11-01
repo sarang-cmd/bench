@@ -15,6 +15,22 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **The formula book**: the IB AA HL, Physics 2025 and Chemistry 2025 booklet
+  content, as a Study tile called Formula book. The booklets are plain text in
+  `Bench/formulas/`, one `.txt` per booklet, so a teacher (or you) can add one
+  without a rebuild - the list shows every file in the folder and its first `#`
+  line as the description. The viewer scrolls a line at a time and jumps a
+  **topic** at a time with LEFT/RIGHT, headings coloured red, blue and ink by
+  level. New `src/core/formula.c` holds the line and heading arithmetic with 40
+  checks, including that a jump ignores `###` sub-headings - with those counted,
+  a booklet with a heading every few lines moved five lines a press, which is
+  not a section.
+  **The content is a transcription nobody has proofread yet**: the PDFs print
+  formulae as images, so the text was typed, and it is marked as unproofread in
+  three places - the first line of every booklet, `docs/samples/formulas/
+  needs-human-proofreading/README.md`, and the help page. Treat an unproofed
+  line as unchecked.
+
 - **The Pi game**: a Study tile. The digits you have earned stay on screen,
   grouped five to a line; type the next ones, EXE checks them, and the first
   wrong digit costs a life. Three lives, F2 gives the next digit away and costs

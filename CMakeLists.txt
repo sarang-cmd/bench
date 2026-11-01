@@ -38,6 +38,7 @@ set(SOURCES
   src/core/cplx.c
   src/core/expr.c
   src/core/filelist.c
+  src/core/formula.c
   src/core/exprs.c
   src/core/graph.c
   src/core/help.c
@@ -82,6 +83,7 @@ set(SOURCES
   src/apps/app_cards.c
   src/apps/app_cplx.c
   src/apps/app_function.c
+  src/apps/app_formula.c
   src/apps/app_graph.c
   src/apps/app_help.c
   src/apps/app_base.c

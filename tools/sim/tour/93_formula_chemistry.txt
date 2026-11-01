@@ -1,0 +1,21 @@
+# tour step: 93_formula_chemistry
+# starts at the home screen; see tools/sim/run_tour.sh
+# The Chemistry booklet: down to the second file, open, and scrolled past the
+# constants to the stoichiometry section.
+tool:formulas
+down
+exe
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down

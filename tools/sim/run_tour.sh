@@ -21,10 +21,13 @@ fs=/tmp/bench-tour-fs
 [ -x "$sim" ] || { echo "build the simulator first: make sim"; exit 1; }
 
 rm -rf "$fs"
-mkdir -p "$fs/notes" "$fs/cards" "$fs/state"
+mkdir -p "$fs/notes" "$fs/cards" "$fs/state" "$fs/formulas"
 # State files the tour needs to show a real screen (the six expressions).
 [ -f "$root/docs/samples/state/exprs.txt" ] &&
     cp "$root/docs/samples/state/exprs.txt" "$fs/state/"
+# The formula booklets, so the Formula book screen has something to show.
+[ -d "$root/docs/samples/formulas" ] &&
+    cp "$root"/docs/samples/formulas/*.txt "$fs/formulas/"
 # Every sample, so the worst-case screens have their files too.
 for f in "$root"/docs/samples/*; do
     [ -f "$f" ] || continue

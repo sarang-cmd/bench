@@ -126,6 +126,15 @@
     "help": "Pi game\nThe digits of pi, from memory.\n\nThe digits you have earned stay on\nscreen, grouped five at a time. Type\nthe next ones and press EXE: every\ndigit right moves you along, and the\nfirst wrong one costs a life.\n\nThree lives. F2 shows the next digit\nand costs one, so a hint is never\nfree. When the lives are gone the\npage shows how far you got and the\nbest of this session.\n\nNothing is written to the card: the\nbest score is gone when the add-in\ncloses.\n\nKeys: digits, DEL, EXE check, F1\nagain, F2 hint, EXIT back."
   },
   {
+    "id": "formulas",
+    "title": "Formula book",
+    "subtitle": "IB booklets",
+    "category": "Study",
+    "screen": 25,
+    "needs_file": true,
+    "help": "Formula book\nThe IB formula and data booklets,\nas plain text on the card.\n\nCopy them into Bench/formulas, one\n.txt per booklet. The list shows\nevery file in that folder, so a\nbooklet you write yourself appears\nthere too.\n\nIn the book: UP/DOWN scroll a line,\nLEFT/RIGHT jump a section, F1 goes\nto the top. Headings are red, blue\nand ink by level.\n\n# is a booklet title, ## a topic,\n### a sub-topic, one space after\nthe hashes.\n\nKeys: EXE open, LEFT/RIGHT section,\nF1 top, EXIT back."
+  },
+  {
     "id": "stats",
     "title": "Statistics",
     "subtitle": "mean to regression",
