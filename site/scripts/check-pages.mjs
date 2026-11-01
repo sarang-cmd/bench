@@ -9,6 +9,11 @@
 import { createServer } from "vite";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const ROUTES = [
   ["/", ["Bench", "tools"]],
@@ -69,6 +74,21 @@ try {
       console.log(`  ok   ${path} (${text.trim().length} chars)`);
     }
   }
+  // The browser simulator is only allowed to exist on a cross-origin isolated
+  // page, so the deployment has to send the two headers on every route.  A
+  // vercel.json edit that drops them would fail silently in the browser
+  // (SharedArrayBuffer undefined, the gallery instead of the add-in), which is
+  // exactly the kind of thing to catch here.
+  const vercel = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
+  const global = (vercel.headers ?? []).find((rule) => rule.source === "/(.*)");
+  const served = new Set((global?.headers ?? []).map((h) => h.key));
+  for (const key of ["Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Policy"]) {
+    if (!served.has(key)) {
+      failures++;
+      console.log(`  FAIL vercel.json: no ${key} on every route`);
+    }
+  }
+  console.log(`  ok   vercel.json sends the isolation headers`);
 } finally {
   await server.close();
 }
