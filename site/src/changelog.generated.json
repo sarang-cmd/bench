@@ -5,6 +5,10 @@
       "date": "",
       "entries": [
         {
+          "title": "Percentages tool",
+          "body": "the four questions a paper asks - percentage change, add or take a percentage, reverse percentage, compound growth or depreciation - on one Math screen, with the working written out under the answer. The point of the reverse question is that it divides (`34 / (1 - 15/100) = 40`), which is what people get wrong by adding 15% of 34 back on. `src/core/percent.c` with 41 checks covers the vectors (500 at 4.5% for 7 years is 680.43; a car at 12% for 5 years keeps 52.8%), zero years, a negative rate, and the three questions with no answer - a change from zero, a 100% discount, a period count outside 0..200 - each of which is a sentence on screen rather than a 0 or an inf. One bug caught by the tests before the screen existed: the fast exponentiation gave up on an overflow by returning the *principal*, so a question with an unshowable answer said \"no growth\". **Unverified on device.**"
+        },
+        {
           "title": "The formula book",
           "body": "the IB AA HL, Physics 2025 and Chemistry 2025 booklet content, as a Study tile called Formula book. The booklets are plain text in `Bench/formulas/`, one `.txt` per booklet, so a teacher (or you) can add one without a rebuild - the list shows every file in the folder and its first `#` line as the description. The viewer scrolls a line at a time and jumps a **topic** at a time with LEFT/RIGHT, headings coloured red, blue and ink by level. New `src/core/formula.c` holds the line and heading arithmetic with 40 checks, including that a jump ignores `###` sub-headings - with those counted, a booklet with a heading every few lines moved five lines a press, which is not a section. **The content is a transcription nobody has proofread yet**: the PDFs print formulae as images, so the text was typed, and it is marked as unproofread in three places - the first line of every booklet, `docs/samples/formulas/ needs-human-proofreading/README.md`, and the help page. Treat an unproofed line as unchecked."
         },

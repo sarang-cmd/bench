@@ -1,0 +1,11 @@
+# tour step: 96_percent_change
+# starts at the home screen; see tools/sim/run_tour.sh
+# From 40 to 46 is a rise of 15%.  The answer sits in a bordered panel, and the
+# page says which way it went because a minus sign is easy to miss.
+tool:percent
+4
+0
+right
+4
+6
+exe

@@ -48,6 +48,7 @@ typedef enum {
     VIEW_FACTOR,
     VIEW_PI,
     VIEW_FORMULA,
+    VIEW_PERCENT,
     VIEW_COUNT,
 } view_t;
 
@@ -113,6 +114,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
     [VIEW_PI] = { app_pi_init, app_pi_draw, app_pi_key, app_pi_timeout },
     [VIEW_FORMULA] = { app_formula_init, app_formula_draw, app_formula_key,
                        app_formula_timeout },
+    [VIEW_PERCENT] = { app_percent_init, app_percent_draw, app_percent_key,
+                       app_percent_timeout },
 };
 
 bench_settings_t *app_cfg(void)
@@ -161,6 +164,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_FACTOR: set_view(VIEW_FACTOR); break;
     case APP_SCREEN_PI: set_view(VIEW_PI); break;
     case APP_SCREEN_FORMULA: set_view(VIEW_FORMULA); break;
+    case APP_SCREEN_PERCENT: set_view(VIEW_PERCENT); break;
     default: set_view(VIEW_MENU); break;
     }
 }

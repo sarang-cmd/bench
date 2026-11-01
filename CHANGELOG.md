@@ -15,6 +15,19 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **Percentages tool**: the four questions a paper asks - percentage change,
+  add or take a percentage, reverse percentage, compound growth or depreciation -
+  on one Math screen, with the working written out under the answer. The point
+  of the reverse question is that it divides (`34 / (1 - 15/100) = 40`), which is
+  what people get wrong by adding 15% of 34 back on. `src/core/percent.c` with 41
+  checks covers the vectors (500 at 4.5% for 7 years is 680.43; a car at 12% for
+  5 years keeps 52.8%), zero years, a negative rate, and the three questions with
+  no answer - a change from zero, a 100% discount, a period count outside 0..200
+  - each of which is a sentence on screen rather than a 0 or an inf. One bug
+  caught by the tests before the screen existed: the fast exponentiation gave up
+  on an overflow by returning the *principal*, so a question with an unshowable
+  answer said "no growth". **Unverified on device.**
+
 - **The formula book**: the IB AA HL, Physics 2025 and Chemistry 2025 booklet
   content, as a Study tile called Formula book. The booklets are plain text in
   `Bench/formulas/`, one `.txt` per booklet, so a teacher (or you) can add one

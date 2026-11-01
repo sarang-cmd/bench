@@ -135,6 +135,15 @@
     "help": "Formula book\nThe IB formula and data booklets,\nas plain text on the card.\n\nCopy them into Bench/formulas, one\n.txt per booklet. The list shows\nevery file in that folder, so a\nbooklet you write yourself appears\nthere too.\n\nIn the book: UP/DOWN scroll a line,\nLEFT/RIGHT jump a section, F1 goes\nto the top. Headings are red, blue\nand ink by level.\n\n# is a booklet title, ## a topic,\n### a sub-topic, one space after\nthe hashes.\n\nKeys: EXE open, LEFT/RIGHT section,\nF1 top, EXIT back."
   },
   {
+    "id": "percent",
+    "title": "Percentages",
+    "subtitle": "change, growth",
+    "category": "Math",
+    "screen": 26,
+    "needs_file": false,
+    "help": "Percentages\nFour questions, chosen with UP/DOWN.\n\nChange: from 40 to 46 is a rise\nof 15%.\n\nAdd or take: 40 with 15% added is\n46, and the page shows the working.\n\nReverse: something costs 34 after\n15% off, so it was 40. Dividing by\n0.85, not taking 15% back off.\n\nCompound: 500 at 4.5% for 7 years\nis 680.43, with interest added each\nyear. A negative rate depreciates.\n\nA percentage change from zero, and\na 100% discount, have no answer and\nthe page says why.\n\nKeys: UP/DOWN question, LEFT/RIGHT\nfield, EXE work out, F1 clear."
+  },
+  {
     "id": "stats",
     "title": "Statistics",
     "subtitle": "mean to regression",
