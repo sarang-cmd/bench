@@ -30,7 +30,12 @@
 /* ---- layout ------------------------------------------------------------- */
 
 #define TH_TITLE_H 18
-#define TH_SOFT_H 16
+/* 20, not 16: a 10-pixel label in a 16-pixel bar left three pixels above and
+ * below, which reads as text jammed into a slot.  Five pixels on each side is
+ * the same padding the tiles use, and it is what the bottom bar needs to look
+ * like a row of buttons rather than a strip of text. */
+#define TH_SOFT_H 20
+#define TH_SOFT_PAD 4
 #define TH_CONTENT_Y (TH_TITLE_H + 1)
 #define TH_CONTENT_H (SCR_H - TH_TITLE_H - TH_SOFT_H - 2)
 #define TH_PAD 6

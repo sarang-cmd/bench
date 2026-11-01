@@ -479,6 +479,111 @@ export const toolCopy = {
     ],
   },
 
+  pi: {
+    rank: 5,
+    accent: "violet",
+    tag: "digits from memory",
+    summary:
+      "The digits of pi, from memory, five at a time and three lives deep.",
+    body:
+      "The digits you have already earned stay on screen, grouped in fives, and " +
+      "you type the next run and press EXE. Every digit right moves you on; the " +
+      "first wrong one costs a life. F2 gives the next digit away and costs a " +
+      "life too, so a hint is never free.",
+    points: [
+      "Three lives, and the score is how many digits you reached.",
+      "Nothing is written to the card: the best of the session goes when the add-in closes.",
+      "A wrong digit is shown against the right one, so the mistake is the lesson.",
+      "Keys: digits, DEL, EXE to check, F1 to start again, F2 for a hint.",
+    ],
+    lead: "88_pi_game.png",
+    leadCaption: "Three digits in, two lives left",
+    shots: [
+      ["88_pi_game.png", "Three digits in, two lives left"],
+      ["89_pi_game_wrong.png", "A wrong digit, shown against the right one"],
+      ["90_pi_game_over.png", "Out of lives: the digits reached"],
+    ],
+  },
+
+  formulas: {
+    rank: 6,
+    accent: "blue",
+    tag: "IB booklets",
+    summary:
+      "The IB formula and data booklets as plain text on the calculator, one file per booklet.",
+    body:
+      "Copy the booklets into Bench/formulas, one .txt per booklet, and the list " +
+      "shows every file in that folder, including one you write yourself. Inside a " +
+      "booklet, UP and DOWN scroll a line, LEFT and RIGHT jump a section, and F1 " +
+      "goes back to the top.",
+    points: [
+      "# is a booklet title, ## a topic, ### a sub-topic, one space after the hashes.",
+      "Headings are red, blue and ink by level, so a topic is findable at a glance.",
+      "AA HL, Physics 2025 and Chemistry 2025 are in docs/samples/formulas to copy across.",
+      "Those three are typed by hand and marked as needing a human proofread before use.",
+    ],
+    lead: "92_formula_book.png",
+    leadCaption: "A topic heading, then the formulas under it",
+    shots: [
+      ["91_formula_list.png", "Every .txt in Bench/formulas"],
+      ["92_formula_book.png", "A topic heading, then the formulas under it"],
+      ["93_formula_chemistry.png", "The chemistry data booklet"],
+      ["94_formula_physics.png", "The physics booklet"],
+      ["95_formula_section.png", "RIGHT jumps to the next topic"],
+    ],
+  },
+
+  factor: {
+    rank: 8,
+    accent: "red",
+    tag: "divisors, totient",
+    summary:
+      "A whole number into prime powers, with the divisors, their sum, the totient and the square-free part.",
+    body:
+      "Type a number and press EXE. The page writes the factorisation with powers " +
+      "and then the four things that follow from it, because those are what the " +
+      "questions ask for next: how many divisors there are, what they add up to, " +
+      "the totient, and the square-free part.",
+    points: [
+      "360 gives 2\u00b3 \u00d7 3\u00b2 \u00d7 5, 24 divisors, a divisor sum of 1170, totient 96, square-free part 30.",
+      "The square-free part throws the powers away, so it equals the number only when the number is already square free.",
+      "Up to 18 digits, worked in integers: no rounding anywhere.",
+      "F2 halves the number and factors it again.",
+    ],
+    lead: "86_prime_factors.png",
+    leadCaption: "360 as prime powers, then the four numbers that follow",
+    shots: [
+      ["86_prime_factors.png", "360 as prime powers, then the four numbers that follow"],
+      ["87_prime_factors_power.png", "A number with a high power in it"],
+    ],
+  },
+
+  percent: {
+    rank: 9,
+    accent: "teal",
+    tag: "change, growth",
+    summary:
+      "Percentage change, add and take, the reverse question, and compound growth, each with its working.",
+    body:
+      "Four questions chosen with UP and DOWN, and the page shows the working " +
+      "rather than only the answer. The reverse question divides by what is left " +
+      "after the change instead of taking the percentage back off, which is the " +
+      "mistake it exists to stop.",
+    points: [
+      "Change: 40 to 46 is a rise of 15%.",
+      "Add or take: 40 with 15% added is 46, with the sum written out.",
+      "Reverse: something costs 34 after 15% off, so it was 40, not 39.10.",
+      "Compound: 500 at 4.5% for 7 years is 680.43; a negative rate depreciates.",
+      "A change from zero and a 100% discount have no answer, and the page says which and why.",
+    ],
+    lead: "96_percent_change.png",
+    leadCaption: "From 40 to 46: a rise of 15%, with the difference shown",
+    shots: [
+      ["96_percent_change.png", "From 40 to 46: a rise of 15%, with the difference shown"],
+      ["97_percent_reverse.png", "The reverse question: 34 after 15% off was 40"],
+    ],
+  },
+
 };
 
 // Settings and About are registry entries too, but they are the shell around the

@@ -39,6 +39,25 @@ function fail(message, hint) {
   process.exit(1);
 }
 
+// "Bench-1.10.0.g3a" as [1, 10, 0], so 1.10 sorts above 1.9 and 1.2.1 above
+// 1.2.0.  Anything unreadable becomes -1 and sinks to the bottom.
+function versionKey(file) {
+  return file
+    .replace(/^Bench-/, "")
+    .replace(/\.g3a$/, "")
+    .split(".")
+    .map((part) => (/^\d+$/.test(part) ? Number(part) : -1));
+}
+
+function compareVersions(a, b) {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const left = a[i] ?? 0;
+    const right = b[i] ?? 0;
+    if (left !== right) return left - right;
+  }
+  return 0;
+}
+
 function looksLikeAddin(bytes) {
   return (
     bytes.length > 10_000 &&
@@ -54,7 +73,7 @@ function provenance() {
   if (!existsSync(file)) return out;
   for (const line of readFileSync(file, "utf8").split("\n")) {
     const [key, ...rest] = line.trim().split(" ");
-    if (["commit", "built", "sha256", "version"].includes(key)) out[key] = rest.join(" ");
+    if (["commit", "built", "sha256", "version", "file"].includes(key)) out[key] = rest.join(" ");
   }
   return out;
 }
@@ -112,11 +131,15 @@ if (existsSync(target)) {
    *    bump and the first tagged build for it: the page then names the version
    *    of the file it is actually handing out, not the one in version.txt. */
   if (!bytes) {
+    /* Newest by version number, not by modification time.  dist/ is a git
+     * checkout, so every file in it is "written" at the same moment and their
+     * order is whatever the filesystem hands back: sorting by mtime published
+     * 1.0.0 while 1.1.0 was sitting right next to it. */
     const older = existsSync(distDir)
       ? readdirSync(distDir)
           .filter((f) => /^Bench-.+\.g3a$/.test(f))
-          .map((f) => ({ f, mtime: statSync(join(distDir, f)).mtimeMs }))
-          .sort((a, b) => b.mtime - a.mtime)
+          .map((f) => ({ f, key: versionKey(f) }))
+          .sort((a, b) => compareVersions(b.key, a.key))
       : [];
 
     for (const { f } of older) {
@@ -146,6 +169,13 @@ if (!looksLikeAddin(bytes)) fail(`${name} does not look like an add-in (${bytes.
 
 const build = provenance();
 const fileVersion = dirFile === name ? repoVersion : dirFile.replace(/^Bench-/, "").replace(/\.g3a$/, "");
+/* BUILD.txt describes one file: the newest build CI wrote.  When the bytes came
+ * from an older file in dist/, its commit and date belong to that other build,
+ * so they are left out rather than printed against the wrong download. */
+if (build.file && build.file !== dirFile) {
+  delete build.commit;
+  delete build.built;
+}
 const info = {
   file: dirFile,
   version: fileVersion,

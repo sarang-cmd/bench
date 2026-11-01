@@ -206,7 +206,14 @@ void app_menu_draw(void)
     /* Only a category with pages gives up space for the pill; the rest keep the
      * full grid. */
     int const pages = tool_category_pages(category);
-    int dots_y = SCR_H - TH_SOFT_H - (pages > 1 ? 22 : 9);
+    /* The first-run hint sits in its own band above the softkeys, and the grid
+     * stops clear of it.  It used to be drawn at a fixed two pixels above the
+     * bar, which put its ascenders on the tile border below the grid: the words
+     * looked clipped because the line was touching them. */
+    int const show_hint = app_cfg()->show_hint && !app_cfg()->tour_done;
+    int const hint_h = show_hint ? scr_text_h() + 2 * TH_SOFT_PAD : 0;
+    int const hint_y = SCR_H - TH_SOFT_H - TH_SOFT_PAD - scr_text_h();
+    int dots_y = SCR_H - TH_SOFT_H - hint_h - (pages > 1 ? 22 : 9);
     int grid_h;
     int grid_y;
     int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
@@ -271,14 +278,14 @@ void app_menu_draw(void)
     }
 
     if (pages > 1)
-        draw_pager(pages, page, SCR_H - TH_SOFT_H - 21);
+        draw_pager(pages, page, SCR_H - TH_SOFT_H - hint_h - 21);
 
     /* First run: say what the four category keys and F5 do, once.  The line
-     * goes away for good the first time help is opened (app_cfg()->tour_done). */
-    if (app_cfg()->show_hint && !app_cfg()->tour_done)
-        scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                        "F1-F4 categories, F5 explains a tile, EXE opens it",
-                        TH_INK);
+     * goes away for good the first time help is opened (app_cfg()->tour_done).
+     * Shortened so it keeps a margin instead of running edge to edge. */
+    if (show_hint)
+        scr_text_center(0, SCR_W, hint_y,
+                        "F1-F4 categories, F5 explains, EXE opens", TH_INK);
 
     w_softkeys(soft, category);
     scr_present();

@@ -1,10 +1,10 @@
 {
   "file": "Bench-1.1.0.g3a",
   "version": "1.1.0",
-  "expected": "1.1.0",
+  "expected": "1.2.2",
   "size": 250500,
   "sha256": "5288af0e278ea0060c330585d34067462d96791218c5ceb58ddc0a27fa60fce3",
   "commit": "30c596d1b4686f62a31c4f88761d1a6496ef6356",
   "date": "2026-11-01",
-  "source": "public"
+  "source": "dist-newest"
 }

@@ -11,12 +11,36 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.1 - unreleased (source only)
+## 1.2.2 - 2026-11-01
 
-Numbers here describe the source in `main`, not a build on a calculator. The
-version is bumped with the change, not at release time (docs/VERSIONING.md);
-1.2.1 is what the tree says and 1.1.0 is still the newest `.g3a` anyone can
-download.
+Numbers here describe the source in `main`, not a run on hardware: 1.2.2 is
+built by CI from this commit, and nobody has had it on a calculator yet.
+
+- **The softkey bar has room to breathe, and the first-run hint is no longer
+  jammed into the tiles**: a 10-pixel label in a 16-pixel bar left three pixels
+  above and below, so the six labels read as text pressed into a slot rather
+  than six buttons. The bar is 20 pixels now, dividers stop short of its top and
+  bottom edges, a label keeps at least four pixels from the separator beside it
+  and is ellipsised rather than run into its neighbour, and the bar grows into
+  the content area on all thirteen screens at once because every screen places
+  its footer relative to `TH_SOFT_H`. The menu's first-run hint also had its
+  ascenders on the bottom tile border: it now has its own band, sized from the
+  text, and the grid stops clear of it, so there are eight pixels above the
+  words and five below. The line also lost the words "a tile" so it keeps a
+  margin at both ends instead of running edge to edge. **Unverified on device.**
+- **The site was not deploying at all**: `node scripts/gen-tools.mjs` has failed
+  on every push since the four V2 tools landed, because each says in its own
+  words what it does and `site/src/toolCopy.js` still listed twenty-two of them.
+  The build reported "registry tool \"factor\" (Prime factors) has no copy" and
+  stopped, so the last successful deployment predates Prime factors, Percentages,
+  the Formula book and the Pi game. All four are in `toolCopy.js` now, with their
+  real screenshots, and are in the "own words" set that needs proofreading.
+- **The download picks the newest build by version, not by file date**: `dist/`
+  is a git checkout, so every `.g3a` in it is written at the same moment and the
+  order the filesystem hands back decided which one the page offered. It offered
+  1.0.0 while 1.1.0 sat beside it. The fallback compares the numbers in the file
+  name now, and a build's commit and date are dropped when the bytes came from a
+  different file than the one `BUILD.txt` describes.
 
 - **CodeRabbit, configured in the repository instead of a dashboard**:
   `.coderabbit.yaml` tells the reviewer what this project actually breaks on -
