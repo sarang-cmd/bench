@@ -5,55 +5,99 @@
 #
 # This is the browser build of exactly the sources `make sim` uses: the add-in
 # (src/) plus tools/sim/sim.c, which stands in for gint.  The only difference is
-# that keys arrive from JavaScript and the frame is pulled out as RGBA; see the
-# __EMSCRIPTEN__ blocks in tools/sim/sim.c.
+# where keys come from and where the frame goes; see tools/sim/bench_wasm.h.
 #
-# Needs emscripten (emcc) on PATH.  Nothing in this repository requires it: CI
-# has an optional job that produces the binary, and the site shows the gallery
-# when the binary is not there.
+# Needs zig (0.13 or newer), which carries clang, wasm-ld and wasi-libc; the
+# PyPI package `ziglang` is one `pip install` and needs no root.  Nothing in
+# this repository requires it: the site shows the screenshot gallery when the
+# binary is not there, and the optional CI job builds it.
 #
-# Asyncify is required because the add-in's event loop blocks inside getkey();
-# Asyncify turns that sleep into a return to the browser, so the page stays
-# responsive while the add-in waits for a key.
+# Why zig and not emscripten: emscripten's Asyncify exists to return from a
+# blocking call back to the browser's main thread.  The page here runs the
+# module in a Web Worker and talks to it through a SharedArrayBuffer, so a
+# blocking getkey() is simply a blocked worker thread - no transform, no 40 MB
+# SDK, and the same C.
+#
+# Output, all of it copied to site/public/sim/ by site/scripts/copy-wasm.mjs:
+#   bench.wasm   the add-in plus the stand-in, WASI reactor
+#   demo.json    the demo notes, decks and study log, base64, for the in-memory
+#                filesystem the worker builds (the wasm has no real disk)
 set -e
 
 root=$(cd "$(dirname "$0")/../.." && pwd)
 out=${1:-$root/build-wasm}
+zig=${ZIG:-zig}
 
-command -v emcc >/dev/null 2>&1 || {
-    echo "build.sh: emcc not found - install emsdk, or skip this build" >&2
+command -v "$zig" >/dev/null 2>&1 || {
+    echo "build.sh: zig not found - pip install ziglang, or set ZIG=/path/to/zig" >&2
     exit 1
 }
 
 mkdir -p "$out"
+obj="$out/obj"
+rm -rf "$obj"
+mkdir -p "$obj"
 
-# The demo content is preloaded into the in-memory filesystem, so the browser
-# build opens on a calculator with something on it instead of empty folders.
-mkdir -p "$out/fs/notes" "$out/fs/cards" "$out/fs/state" "$out/fs/study"
-cp "$root"/demo/notes/*.md "$out/fs/notes/" 2>/dev/null || true
-cp "$root"/demo/cards/*.txt "$out/fs/cards/" 2>/dev/null || true
-cp "$root"/demo/study/log.txt "$out/fs/study/" 2>/dev/null || true
+cflags="-target wasm32-wasi -O2 -DBENCH_WASM -DBENCH_TRACE -std=gnu11 -w
+        -I$root/src -I$root/src/ui -I$root/src/core -I$root/src/apps
+        -I$root/tools/sim/include -I$root/tools/sim"
+
+compile() {
+    # $1 source, $2 object name
+    # shellcheck disable=SC2086
+    "$zig" cc $cflags "$1" -c -o "$obj/$2.o"
+}
 
 # src/main.c is the add-in's entry point; rename its main() so the stand-in's
-# main() is the only one, exactly as the desktop build does.
-emcc -std=gnu11 -O2 -DBENCH_TRACE -Dmain=bench_main \
-     -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include \
-     -c "$root/src/main.c" -o "$out/main.o"
+# own entry stays the only one, exactly as the desktop build does (where the
+# stand-in's main() is the program).
+# shellcheck disable=SC2086
+"$zig" cc $cflags -Dmain=bench_main "$root/src/main.c" -c -o "$obj/main.o"
+
+for f in "$root"/src/core/*.c "$root"/src/platform/*.c "$root"/src/ui/*.c "$root"/src/apps/*.c; do
+    base=$(basename "$f" .c)
+    [ "$base" = "main" ] && continue
+    compile "$f" "$base"
+done
+compile "$root/tools/sim/sim.c" sim
 
 # shellcheck disable=SC2086
-emcc -std=gnu11 -O2 -DBENCH_TRACE \
-     -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include \
-     -sASYNCIFY=1 -sALLOW_MEMORY_GROWTH=1 \
-     -sEXPORTED_FUNCTIONS='["_bench_wasm_run","_bench_wasm_key","_bench_wasm_frame","_bench_wasm_width","_bench_wasm_height","_malloc","_free"]' \
-     -sEXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
-     -sMODULARIZE=1 -sEXPORT_NAME=BenchSim \
-     --preload-file "$out/fs@/benchfs" \
-     -o "$out/bench.js" \
-     "$out/main.o" \
-     $(find "$root/src/core" "$root/src/platform" "$root/src/ui" "$root/src/apps" \
-            -name '*.c' ! -name main.c | sort) \
-     "$root/tools/sim/sim.c"
+"$zig" cc -target wasm32-wasi -O2 -mexec-model=reactor \
+    -Wl,--export=bench_wasm_run \
+    -Wl,--export=bench_wasm_frame \
+    -Wl,--export=bench_wasm_width \
+    -Wl,--export=bench_wasm_height \
+    -Wl,--export=malloc -Wl,--export=free \
+    -Wl,--export=__wasm_call_ctors -Wl,--export=__stack_pointer \
+    -Wl,--export-memory \
+    $( [ -n "$BENCH_WASM_DEBUG" ] || echo -Wl,--strip-all ) \
+    $( [ -n "$BENCH_WASM_DEBUG" ] && echo -g ) \
+    -o "$out/bench.wasm" "$obj"/*.o
 
-rm -f "$out/main.o"
-echo "built $out/bench.js and $out/bench.wasm"
-echo "copy both into site/public/sim/ to serve them (site/scripts/copy-wasm.mjs does it)"
+# The demo content as a JSON map of path -> base64, so the worker can put it in
+# the in-memory filesystem before the add-in starts.  Built here rather than in
+# JS so the wasm and the files it opens always come from the same run.
+python3 - "$root" "$out/demo.json" <<'PY'
+import base64, json, os, sys
+
+root, dest = sys.argv[1], sys.argv[2]
+files = {}
+for folder in ("notes", "cards", "study"):
+    path = os.path.join(root, "demo", folder)
+    if not os.path.isdir(path):
+        continue
+    for name in sorted(os.listdir(path)):
+        full = os.path.join(path, name)
+        if os.path.isfile(full):
+            with open(full, "rb") as fh:
+                files[f"{folder}/{name}"] = base64.b64encode(fh.read()).decode("ascii")
+with open(dest, "w", encoding="utf-8") as fh:
+    json.dump(files, fh, indent=0, sort_keys=True)
+    fh.write("\n")
+print(f"demo.json: {len(files)} files")
+PY
+
+rm -rf "$obj"
+ls -l "$out/bench.wasm"
+echo "built $out/bench.wasm - copy it, with demo.json and the page's worker, by"
+echo "running: node site/scripts/copy-wasm.mjs"

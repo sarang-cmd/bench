@@ -42,12 +42,19 @@ npx playwright install chromium
 node scripts/check-widths.mjs --url http://localhost:4173
 ```
 
-The WebAssembly build is optional and needs emscripten:
+The WebAssembly build needs zig, which carries clang, wasm-ld and wasi-libc:
 
 ```sh
-sh tools/wasm/build.sh      # writes build-wasm/bench.js and bench.wasm
-cd site && npm run wasm     # copies it into public/sim for the simulator page
+pip install --user ziglang
+export ZIG="$(python3 -c 'import os, ziglang; print(os.path.join(os.path.dirname(ziglang.__file__), "zig"))')"
+sh tools/wasm/build.sh                  # writes build-wasm/bench.wasm + demo.json
+node tools/wasm/smoke.mjs "down,exe"    # runs it in Node, frames to /tmp/*.ppm
+cd site && npm run wasm                 # copies it into public/sim/ and commits
 ```
+
+`site/public/sim/bench.wasm` is committed on purpose: Vercel cannot compile C, so
+the deployed simulator needs the bytes in the repository. CI rebuilds the module
+and fails when the committed copy no longer matches the C.
 
 ## Generated files
 

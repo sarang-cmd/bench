@@ -191,7 +191,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | D demo content | **done**: `demo/` = 3 notes (headings, bold, lists, quotes, code fences), 3 decks (26 cards) and a 16-session study log, all in my own words and marked **needs human proofreading**; `tests/test_demo_files.c` parses every file with the add-in's parsers (108 checks). Copy instructions are in `demo/README.md` |
 | E settings v2 | **done**: five rows (uncertainty figures, pacer checkpoint, note width, angles default, first-run hint); `angle_unit` seeds the Triangle tool's unit and `tour_done` retires the home-screen hint; 687 native checks in `tests/test_settings.c`; files from 1.0.0 still load. Unverified on device |
 | F tutorial and help | **done for the written tour**: help text lives in the registry and the shared help screen renders it (F5 everywhere, paging in `core/help.c`); the first-run hint and `tour_done` are in; `docs/TUTORIAL.md` walks the six steps the site's `/tutorial` page shows, with the key tables and the real empty-state strings. Not done: a multi-screen guided tour inside the add-in (the hint plus per-tool help is the whole of it) |
-| G WebAssembly simulator | **built, not verified**: `tools/sim/sim.c` has an `__EMSCRIPTEN__` path (keys from the page, RGBA frame out), `tools/wasm/build.sh` builds it with Asyncify from the same sources as the screenshots, `/simulator` loads it when deployed and falls back to the gallery when not, and an optional CI job produces the artifact. **No emscripten here, so it has never been compiled, let alone run** |
+| G WebAssembly simulator | **done and run**: `tools/wasm/build.sh` compiles the add-in plus `tools/sim/sim.c` to a 300 KiB wasm32-wasi module with zig (no emscripten, no Asyncify - the module runs in a Web Worker and `getkey()` simply blocks). Keys and frames cross through a SharedArrayBuffer; `tools/wasm/worker.js` is the other half, `site/src/components/WasmSim.jsx` is the page, and the deployment sends COOP/COEP so the buffer is allowed. `tools/wasm/smoke.mjs` drives it in Node with a scripted visitor, and the frames it writes are screenshots of the real add-in: the home screen, the Study log, and the study log after DEL removed a session. The binary is committed because Vercel has no C compiler; CI rebuilds and diffs it. Not verified: a real browser (none reachable from this sandbox), so the worker/SharedArrayBuffer path is checked by construction, not by a browser run |
 | H website v2 | **done**: eight routes (`/`, `/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog`, `/about`), a 120-line router with real links, per-route title/description/canonical/OG tags, eight generated Open Graph cards, About statistics and the SHA-256 from the build, changelog generated from `CHANGELOG.md`, `check-pages.mjs` rendering all eight routes in CI, `vercel.json` rewriting deep links, sitemap with all eight. The browser-width sweep (320..1440 px) is still **not** run: there is no browser here |
 | I README and metadata | **done**: badges and a generated stats block in the README (`make stats`, `tools/gen_readme_stats.py`, checked in CI), `CONTRIBUTING.md` with the check list and the generated-file table, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`, an issue template and an issue template config |
 | J hardware report | **done**: `docs/HARDWARE.md` is the checklist, and Settings has an **F3 hardware report** screen: the eight assumptions, marked on the device, written to `state/hwreport.txt` by F2 (`core/hwreport.c`, 63 checks). What is missing is the run itself |
@@ -273,7 +273,7 @@ the title-bar cut have been looked at in the host preview only.
 | D demo content | done, **needs human proofreading** |
 | E settings v2 | done |
 | F tutorial and help | done for the written tour; no in-app guided tour |
-| G WebAssembly simulator | built, **never compiled or run here** (no emscripten) |
+| G WebAssembly simulator | done: compiled, run in Node, served from the site |
 | H website v2 | done |
 | I README and metadata | done |
 | J hardware report | document ready, **no V2 run on a device** |
@@ -283,7 +283,9 @@ What is left is not code in this repository. It is:
 
 1. **A hardware pass on a real fx-CG 50** for every V2 feature, following
    `docs/HARDWARE.md`. Until then those features stay "unverified on device".
-2. **An emscripten build of the simulator**, first compile included. The glue is
-   written and the CI job is there; nothing has run it.
-3. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
-   then update the badges that name the version.
+2. **A browser run of the simulator.** The module is built, run in Node and
+   served from the site; what nobody has done is click it in a browser, because
+   this sandbox has none.
+3. **A Vercel deployment of the current `main`.** `bench-gdc.vercel.app` is on
+   Deployment Protection, so the site asks for a Vercel login before it serves a
+   page; nobody outside the account can see it until that is switched off.

@@ -61,7 +61,7 @@ export function SimulatorPage() {
         eyebrow="In the browser"
         accent="violet"
         title="The screens, without the calculator."
-        lede="Every picture below came out of the add-in itself: the same C, compiled against a stand-in for gint, driven by a key script and captured from its frame buffer. Above them is the same binary compiled to WebAssembly, when this deployment carries one."
+        lede="Every picture below came out of the add-in itself: the same C, compiled against a stand-in for gint, driven by a key script and captured from its frame buffer. Above them is that same binary compiled to WebAssembly: press the buttons and the calculator answers."
       >
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Card>
@@ -74,9 +74,9 @@ export function SimulatorPage() {
           <Card>
             <p className="font-mono text-xs uppercase tracking-widest text-ink/60">Interactive</p>
             <p className="mt-2 text-sm leading-relaxed">
-              When the WebAssembly build is deployed, the add-in itself runs above: no
-              re-implementation, the same C, keys from the buttons. When it is not, this page says
-              so and the gallery below stands in.
+              The add-in itself runs above, in WebAssembly: no re-implementation, the same C, keys
+              from the buttons, on an in-memory filesystem holding the demo notes and decks. Move
+              with the arrows, open a tool with EXE.
             </p>
           </Card>
           <Card>
@@ -319,7 +319,7 @@ const nots = [
   "Not a CAS. It does the arithmetic a paper asks for, and shows the working.",
   "Not a cloud service. No account, no sync, no network call from the calculator.",
   "Not a replacement for a textbook. The demo content is small on purpose.",
-  "Not finished. Workstreams G to K are listed on this page and in docs/STATUS.md, and the WebAssembly simulator is the big one.",
+  "Not finished. Nothing in 1.1.0 has been on a calculator yet: docs/HARDWARE.md lists what the next session has to run.",
 ];
 
 export function AboutPage() {
@@ -372,8 +372,8 @@ export function AboutPage() {
             </li>
             <li className="border-l-3 border-yellow pl-3">
               Hardware: version 1.0.0 was run on a real fx-CG 50 by the person who asked for it.
-              Everything after that - all of V2, including these pages - is marked "unverified on
-              device" until it has been run there too.
+              Everything after that - all of V2, including these pages and the browser simulator -
+              is marked "unverified on device" until it has been run there too.
             </li>
           </ul>
         </div>

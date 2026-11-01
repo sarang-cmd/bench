@@ -38,15 +38,18 @@ that stops the next one. **Not run on a device yet**: the 1.0.0 rows in
   it, with F4 to show the list - a panel, not a file, so nothing is written to
   flash.
 
-- **WebAssembly build, and the loader that copes without it (V2, workstream
-  G)**: `tools/sim/sim.c` gains an `__EMSCRIPTEN__` path - keys from the page,
-  the framebuffer handed back as RGBA - and `tools/wasm/build.sh` compiles the
-  same sources the screenshots come from with emscripten and Asyncify. The
-  binary is a build artifact and is not in git: the site's `/simulator` page
-  loads it when this deployment has one and says so in one line when it does
-  not, and the gallery stays underneath either way. CI has an optional job for
-  it. **Not built or run here**: there is no emscripten in this environment, so
-  the C is unverified by compilation.
+- **The simulator runs in the browser (V2, workstream G)**: `tools/wasm/build.sh`
+  compiles the add-in and `tools/sim/sim.c` - the same sources the screenshots
+  come from - to a 300 KiB WebAssembly module. No emscripten and no Asyncify:
+  zig carries clang, wasm-ld and wasi-libc, so the toolchain is one
+  `pip install ziglang`. Blocking `getkey()` is fine because the module runs in
+  a Web Worker, and keys and frames cross to the page through a
+  SharedArrayBuffer (the deployment sends the two headers that allows). The page
+  is `site/src/components/WasmSim.jsx`, the other half is
+  `tools/wasm/worker.js`, and `tools/wasm/smoke.mjs` runs the module in Node -
+  real keys in, real frames out as PPM - so the build is checked without a
+  browser. The binary is committed (`site/public/sim/bench.wasm`) because Vercel
+  has no C compiler; CI rebuilds it and fails if the committed copy is stale.
 
 - **Browser widths in CI (V2, workstream B)**: `site/scripts/check-widths.mjs`
   loads all eight routes at 320, 390, 768, 1024 and 1440 px and fails on a

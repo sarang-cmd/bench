@@ -90,6 +90,19 @@ check-screens: sim
 shots: sim
 	@tools/sim/run_tour.sh $(CURDIR)/docs/images
 
+# The browser build: the add-in and the stand-in compiled to WebAssembly with
+# zig, then driven through the page's own worker protocol in Node. Needs zig
+# (pip install ziglang) and nothing else; ZIG= points at it when it is not on
+# PATH. The binary it produces is committed in site/public/sim, because Vercel
+# has no C compiler and the deployed simulator needs the bytes in git.
+ZIG ?= zig
+
+wasm:
+	@ZIG=$(ZIG) tools/wasm/build.sh
+	@node tools/wasm/smoke.mjs "down,exe"
+	@node tools/wasm/worker-smoke.mjs "down,exe,f2"
+	@node site/scripts/copy-wasm.mjs
+
 # Type-check the platform sources against real gint headers.  Needs the gint
 # include folder, which the fxSDK installs (fxsdk path shows where).
 # This is not a build: it checks names, signatures and warnings only.
