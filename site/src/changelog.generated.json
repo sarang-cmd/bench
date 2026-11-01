@@ -5,6 +5,10 @@
       "date": "",
       "entries": [
         {
+          "title": "A folder full of notes that the add-in could not see",
+          "body": "three matching bugs, all on the way *out* of the filesystem rather than in it. The glob was built as `*` plus the extension, which CASIOWIN's `BFile_FindFirst` answers with nothing on some OS versions; the extension test was case sensitive, so a Windows copy saved as `.MD` was invisible; and the OS's `.`/`..` entries were not filtered. The rules are now `src/core/filelist.c` (56 native checks: case, leading dots, separators, double extensions, a buffer one byte too small), the listing tries both wildcard spellings and filters in C, and the empty screen names the folder and says the case does not matter. **Unverified on device**: the two-glob retry exists because of how CASIOWIN is documented, and only a calculator can confirm which spelling its Fugue build wants."
+        },
+        {
           "title": "EXIT goes back where you came from",
           "body": "closing a tool used to land on the home screen with Study selected, first tile, every single time - so a Maths or Science session meant walking back to the right category after every tool. The add-in now keeps a small stack of the screens it came through (`src/core/nav.c`, 525 native checks over push/pop, repeat pushes, a full stack and 500 random presses). EXIT and the help screen's way out both walk back one screen at a time, and the home screen remembers the category and the tile you were on instead of resetting itself. Two tour scripts record it: `78_back_to_maths` and `79_back_from_settings_about`."
         },

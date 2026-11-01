@@ -291,7 +291,7 @@ static void draw_list(void)
 
     if (file_count == 0)
     {
-        w_message("No notes yet", "Put .md or .txt files in Bench/notes");
+        w_message("No notes yet", "Copy .md or .txt into Bench/notes - .MD is fine");
         w_strip(NULL, NULL);
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "EXIT back", TH_INK);

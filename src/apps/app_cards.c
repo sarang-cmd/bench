@@ -206,7 +206,7 @@ static void draw_list(void)
 
     if (deck_count == 0)
     {
-        w_message("No decks yet", "Put .txt decks in Bench/cards");
+        w_message("No decks yet", "Copy .txt decks into Bench/cards - .TXT is fine");
         scr_text_center(0, SCR_W, TH_CONTENT_Y + TH_CONTENT_H / 2 + TH_LINE,
                         "One card per line: question | answer", TH_INK);
         w_strip(NULL, NULL);

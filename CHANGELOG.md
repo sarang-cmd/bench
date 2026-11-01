@@ -15,6 +15,18 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **A folder full of notes that the add-in could not see**: three matching bugs,
+  all on the way *out* of the filesystem rather than in it. The glob was built as
+  `*` plus the extension, which CASIOWIN's `BFile_FindFirst` answers with nothing
+  on some OS versions; the extension test was case sensitive, so a Windows copy
+  saved as `.MD` was invisible; and the OS's `.`/`..` entries were not filtered.
+  The rules are now `src/core/filelist.c` (56 native checks: case, leading dots,
+  separators, double extensions, a buffer one byte too small), the listing tries
+  both wildcard spellings and filters in C, and the empty screen names the folder
+  and says the case does not matter. **Unverified on device**: the two-glob retry
+  exists because of how CASIOWIN is documented, and only a calculator can confirm
+  which spelling its Fugue build wants.
+
 - **EXIT goes back where you came from**: closing a tool used to land on the home
   screen with Study selected, first tile, every single time - so a Maths or
   Science session meant walking back to the right category after every tool.
