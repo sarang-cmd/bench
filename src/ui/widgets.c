@@ -155,12 +155,17 @@ void w_scrollbar(int x, int y, int h, int count, int visible, int top)
 
     if (count <= visible || visible <= 0)
         return;
-    scr_fill(x, y, 2, h, TH_SHADE);
+
+    /* Three pixels wide on purpose. The old bar was two, which on a 384 pixel
+     * screen is a hairline: readers did not notice there was more to scroll.
+     * The track is shade and the thumb is ink - red against shade is 3.9:1,
+     * ink is 12:1, and the thumb is what has to be seen. */
+    scr_fill(x, y, 3, h, TH_SHADE);
     bar = h * visible / count;
-    if (bar < 6)
-        bar = 6;
+    if (bar < 8)
+        bar = 8;
     off = (h - bar) * top / (count - visible);
-    scr_fill(x, y + off, 2, bar, TH_RED);
+    scr_fill(x, y + off, 3, bar, TH_INK);
 }
 
 /* ---- fields ------------------------------------------------------------- */

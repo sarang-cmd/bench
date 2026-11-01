@@ -315,6 +315,9 @@ static void draw_table(int x, int y, int w)
     scr_fill(x, y + TH_LINE - 3, w, 1, TH_INK);
     y += TH_LINE;
 
+    w_scrollbar(x + w - 12, y, TABLE_ROWS * TH_LINE - 3, res.count,
+                TABLE_ROWS, top);
+
     for (i = top; i < res.count && i < top + TABLE_ROWS; i++)
     {
         root_step_t const *s = &res.step[i];

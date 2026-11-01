@@ -85,6 +85,11 @@ void app_help_draw(void)
         y += TH_LINE;
     }
 
+    /* The bar says how much is left, which a "UP/DOWN scroll" hint does not.
+     * It sits inside the right edge, clear of the text column. */
+    w_scrollbar(SCR_W - TH_PAD + 2, TH_CONTENT_Y + TH_PAD, fit * TH_LINE - 4,
+                lines, fit, first);
+
     w_strip(help_needs_scroll(text, fit) ? "UP/DOWN scroll" : NULL,
             "EXE back");
     scr_present();
