@@ -23,11 +23,11 @@ Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
 Live page: <https://bench-gdc.vercel.app> (source in `site/`). The page
-serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.2.7.g3a>.
+serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.2.8.g3a>.
 
 ```
-Bench-1.2.7.g3a              <- copy this to the calculator's storage root
-Bench-starterpack-1.2.7.zip  <- optional: the same files, to unzip onto D:\
+Bench-1.2.8.g3a              <- copy this to the calculator's storage root
+Bench-starterpack-1.2.8.zip  <- optional: the same files, to unzip onto D:\
 ```
 
 1.2.6 called that second file `Bench-demo-1.2.6.zip`: the same ten files,
@@ -39,7 +39,7 @@ while the docs say "starter pack".
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.8 in the tree; the newest build is 1.2.7, which the downloads page serves |
+| Version | 1.2.8, in the tree and on the downloads page |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -522,7 +522,7 @@ Only files that are **not there yet** are written, so nothing you wrote is ever
 overwritten, and a card that is full still gets a working add-in - just without
 the starter pack.
 
-**Or take it as a zip.** `Bench-starterpack-1.2.7.zip` is the same ten files on
+**Or take it as a zip.** `Bench-starterpack-1.2.8.zip` is the same ten files on
 their own, laid out as `Bench/notes`, `Bench/cards`, `Bench/study` and
 `Bench/formulas`: extract it onto `D:\` in USB Flash mode. That is for a full
 card, a second card, or editing the notes on a PC before they reach the
@@ -542,15 +542,15 @@ and check anything before you rely on it in an exam.
 
 ## Install
 
-`Bench-1.2.7.g3a` is in five places. Take whichever works from where you are:
+`Bench-1.2.8.g3a` is in five places. Take whichever works from where you are:
 
 | Where | How |
 |---|---|
-| This site | <https://bench-gdc.vercel.app/Bench-1.2.7.g3a> - one click, no account |
-| Release | [releases page](../../releases) - the same bytes, attached by CI, with `Bench-starterpack-1.2.7.zip` beside it |
+| This site | <https://bench-gdc.vercel.app/Bench-1.2.8.g3a> - one click, no account |
+| Release | [releases page](../../releases) - the same bytes, attached by CI, with `Bench-starterpack-1.2.8.zip` beside it |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
-| `dist/` in the repo | [`dist/Bench-1.2.7.g3a`](dist/Bench-1.2.7.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256; the starter pack zip sits beside it |
-| `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.2.7.g3a > Bench-1.2.7.g3a` - plain git, for when release downloads are blocked |
+| `dist/` in the repo | [`dist/Bench-1.2.8.g3a`](dist/Bench-1.2.8.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256; the starter pack zip sits beside it |
+| `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.2.8.g3a > Bench-1.2.8.g3a` - plain git, for when release downloads are blocked |
 
 The copy in `dist/` is the one to use when GitHub's release assets and artifacts
 are unreachable: it is a normal file in a normal clone.
@@ -558,13 +558,13 @@ are unreachable: it is a normal file in a normal clone.
 1. Download the file.
 2. Connect the calculator in **USB Flash** mode. One drive appears: that is
    storage memory, and its root is where things go.
-3. Copy `Bench-1.2.7.g3a` there — **beside** `@MainMem`, never inside it.
+3. Copy `Bench-1.2.8.g3a` there — **beside** `@MainMem`, never inside it.
 4. Open Bench once. It creates `Bench/notes`, `Bench/cards`, `Bench/study`,
    `Bench/formulas` and `Bench/state`, and fills the first four with the starter
    pack, so there is nothing to copy for a first look. Your own notes go in the
    same folders; only missing files are written, so nothing of yours is
    replaced. If you prefer the starter pack as files, extract
-   `Bench-starterpack-1.2.7.zip` onto the same root instead — it has the same
+   `Bench-starterpack-1.2.8.zip` onto the same root instead — it has the same
    ten files in the same folders.
 5. Eject or unmount properly, then press **MENU** on the calculator; Bench
    appears as a new add-in.
@@ -655,10 +655,10 @@ compiler and could not reach `git.planet-casio.com`. The workflow in
 GitHub runner; `docs/STATUS.md` lists the ten questions only a calculator can
 answer (file API behaviour, float printing, font coverage, redraw time, heap).
 
-The newest `.g3a`, `Bench-1.2.7.g3a`, is built by CI from the `v1.2.7` tag and
+The newest `.g3a`, `Bench-1.2.8.g3a`, is built by CI from the `v1.2.8` tag and
 carries the starter pack inside it: the notes, decks, study log and formula
 booklets are written to the card on the first run, and the same ten files are
-also on the release as `Bench-starterpack-1.2.7.zip`. Everything in `main`
+also on the release as `Bench-starterpack-1.2.8.zip`. Everything in `main`
 builds and passes its tests. 1.0.0 and 1.1.0 have been run on a calculator, the second of them through
 every tool it shipped with; 1.2.x has not, and each changelog entry says so.
 
