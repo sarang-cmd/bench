@@ -49,6 +49,7 @@ set(SOURCES
   src/core/numparse.c
   src/core/numedit.c
   src/core/history.c
+  src/core/hwreport.c
   src/core/numtheory.c
   src/core/poly.c
   src/core/roots.c
