@@ -24,6 +24,7 @@
 #include "core/numfmt.h"
 #include "core/numparse.h"
 #include "core/pacer.h"
+#include "core/settings.h"
 #include "platform/screen.h"
 #include "theme.h"
 #include "ui/numtext.h"
@@ -290,7 +291,15 @@ static void draw_run(void)
     nt_clock(pacer_remaining_minutes(&setup, t), num, (int)sizeof num);
     strcpy(line, "Left ");
     nt_append(line, (int)sizeof line, num);
-    scr_text(TH_PAD, y + TH_LINE, line, TH_INK);
+    /* Red inside the last few minutes, so the end of the paper does not arrive
+     * as a surprise.  0 in the setting means never. */
+    {
+        int const warn = app_cfg()->pacer_warn;
+        bool const late = warn > 0 && !paused &&
+                          pacer_remaining_minutes(&setup, t) <= (double)warn;
+
+        scr_text(TH_PAD, y + TH_LINE, line, late ? TH_RED : TH_INK);
+    }
 
     if (paused)
         scr_text_right(SCR_W - TH_PAD, y + TH_LINE, "PAUSED", TH_INK);

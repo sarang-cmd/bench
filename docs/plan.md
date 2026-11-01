@@ -449,3 +449,19 @@ Two additions the plan did not name, both small and both tested:
 
 Not done, because it needs the calculator: the ten spike answers, the Exam Mode
 check, the redraw-time measurement, and every hardware test in section 7.
+
+### Settings keys (V2)
+
+| key | range | default | reaches |
+|---|---|---|---|
+| `uncert_sig` | 1-2 | 1 | Uncertainty tool's figures |
+| `pacer_checkpoint` | 1-200 | 10 | Pacer checkpoints |
+| `notes_wrap` | 0, 50-150 | 0 | Notes line width |
+| `angle_unit` | 0 = degrees, 1 = radians | 0 | Triangle opens in |
+| `tour_done` | 0-1 | 0 | the first-run line, one way |
+| `startup_cat` | 0-3 | 0 | which category the home screen opens on |
+| `show_hint` | 0-1 | 1 | whether the first-run line is shown at all |
+| `pacer_warn` | 0-30 | 5 | minutes left when the Pacer clock turns red |
+
+Unknown keys are ignored and counted, so a file written by a newer build still
+loads in an older one.
