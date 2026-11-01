@@ -77,6 +77,11 @@ category is a bug that shipped once: nine Math tools meant three rows of height
 inside a two-row page, a negative centring offset, and the first row drawn over
 the title bar.
 
+A row that is not full is centred under the one above it: Tools holds two
+tiles, and two tiles against the left margin with a third of the display empty
+beside them is what "awkward" meant. `core/layout.c` holds that arithmetic so it
+can be tested without a screen. A full row lands on the margin either way.
+
 ## 4. Type
 
 One font, one size, `TH_LINE` of leading. Hierarchy comes from colour, weight

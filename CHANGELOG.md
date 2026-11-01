@@ -15,6 +15,14 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **The Tools category, centred**: "so awkward" was about Tools holding two
+  tiles hard against the left margin with a third of the screen empty beside
+  them. A row that is not full is centred under the one above it now, which
+  leaves a full row exactly where it was. `src/core/layout.c` (21 native checks:
+  full and short rows, a row wider than the screen, an empty row, the per-row
+  count at a page boundary). Study's fourth tile and Science's short row move
+  with it, since they were the same shape of problem. **Unverified on device.**
+
 - **The page indicator, and the missing Math title bar**: a category with more
   than six tools paged with two 4 px squares and a hole punched in the current
   one - "too subtle" was the report, and it was right: at 384 px that reads as
