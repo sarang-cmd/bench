@@ -458,7 +458,10 @@ static void draw_view(void)
             }
         }
     }
-    scr_vline(SCR_W - 3, y0, rows * TH_LINE, TH_SHADE);
+    /* The bar, not just the thin rule: the reading view is the screen someone
+     * scrolls most, and "top / count" in the footer does not tell them how much
+     * is left at a glance. */
+    w_scrollbar(SCR_W - 4, y0 + 1, rows * TH_LINE - 2, line_count, rows, top);
 
     /* Footer: position, search state, missing glyphs. */
     {

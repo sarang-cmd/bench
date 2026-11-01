@@ -167,6 +167,9 @@ static void draw_list(void)
         scr_text(TH_PAD, y + i * TH_LINE, a, TH_INK);
     }
 
+    w_scrollbar(SCR_W - TH_PAD + 2, y, LIST_ROWS * TH_LINE - 3, count,
+                LIST_ROWS, top);
+
     if (count > LIST_ROWS)
     {
         snprintf(a, sizeof a, "showing %d-%d of %d", top + 1,

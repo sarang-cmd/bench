@@ -15,6 +15,16 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **A scrollbar on every screen that scrolls**: a Notes file, a deck list, the
+  study log, the root finder's iteration table and a help page all scrolled with
+  nothing on screen saying so. The bar is now three pixels wide (it was two, a
+  hairline at 384 px), ink thumb on a shade track, 12:1 and 4:1 in the palette
+  with no new colours. It is drawn only when there is something off-screen, and
+  the position is a fraction of the list, so the last screen shows the thumb at
+  the bottom and nothing is drawn for a list that fits. **Unverified on
+  device**: the bar is checked in the simulator against the pixel rules
+  (`make check-screens`), not on the calculator's panel.
+
 - **A folder full of notes that the add-in could not see**: three matching bugs,
   all on the way *out* of the filesystem rather than in it. The glob was built as
   `*` plus the extension, which CASIOWIN's `BFile_FindFirst` answers with nothing

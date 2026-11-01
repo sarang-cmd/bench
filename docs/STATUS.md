@@ -1,7 +1,9 @@
 # Status
 
-Last updated: 31 October 2026, after the V2 tool push: Statistics, SUVAT,
-Moles, Base and bits and the Lab graph landed on top of the 1.0.0 tree.
+Last updated: 1 November 2026, after the second round of fixes from the first
+person to use the add-in on a desktop simulator: file detection, back
+navigation, the fx-CG 50 keypad, visible scrollbars and a page indicator that
+can actually be read.
 A fresh session should read this file first, then `AGENTS.md`, `docs/plan.md`
 and the task file for the milestone it is about to start.
 
