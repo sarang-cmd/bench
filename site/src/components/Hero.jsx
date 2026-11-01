@@ -29,23 +29,36 @@ export default function Hero({ version }) {
             <Chip>MIT</Chip>
           </div>
 
-          {/* The yellow band is exactly the words it sits behind, and nothing
-              about the heading's settings may push it onto its neighbours:
+          {/* The yellow band must cover the words and nothing else. Both
+              settings that do that were measured in Chromium at 320 to 1440px
+              with site/scripts/check-band.mjs, which counts the neighbour ink
+              the band would hide:
 
+              - the band is inline-block with line-height 1. An inline box
+                paints its background over the font's content area, which at
+                60px is taller than the line box, so it reached up into
+                "eighteen tools" and cut the tail of the g. An inline-block
+                takes its height from its own line-height instead: exactly the
+                em box, which is all the yellow should ever cover.
               - tracking-normal inside the band. The heading is tracked tight
-                (-0.025em), so each glyph paints a little past its own advance;
-                a band laid out with tight tracking therefore starts life a few
-                pixels left of the words it is meant to cover, and at heading
-                sizes that is enough for it to sit on the end of the word
-                before it.
-              - no vertical padding, and leading 1.3. The band is the glyph
-                box, and the line box has the spare height, so it cannot reach
-                into the line above or below.
+                (-0.025em), so glyphs paint a little past their advances; a
+                band laid out with tight tracking starts slightly left of the
+                words it is meant to sit behind.
+              - the heading's line-height is 1.35, which leaves 8px of
+                clearance at 32px and 16px at 60px above the band. At 1.3 it is
+                7 to 13px; 1.4 gives 10 to 19 but makes the three-line heading
+                noticeably taller.
               - padding only to the sides, which the words inside the band can
                 never collide with. */}
-          <h1 className="text-balance text-[2rem] font-black leading-[1.3] tracking-tight sm:text-5xl lg:text-[3.25rem] xl:text-6xl">
+          {/* The line-height is repeated at every breakpoint on purpose:
+              Tailwind's text-6xl and friends set a line-height of their own,
+              and they are emitted after the plain leading-* utilities, so a
+              single `leading-[1.35]` loses to them - which is exactly how the
+              band ended up on a 1.0 line box and cut the g. A responsive
+              variant is emitted after its base utility, so these win. */}
+          <h1 className="text-balance text-[2rem] font-black leading-[1.35] tracking-tight sm:text-5xl sm:leading-[1.35] lg:text-[3.25rem] lg:leading-[1.35] xl:text-6xl xl:leading-[1.35]">
             {TOOL_COUNT_WORD} tools{" "}
-            <span className="whitespace-nowrap bg-yellow px-2 tracking-normal [box-decoration-break:clone]">
+            <span className="inline-block whitespace-nowrap bg-yellow px-2 leading-none tracking-normal">
               in one
             </span>{" "}
             add-in.

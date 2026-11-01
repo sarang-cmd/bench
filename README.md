@@ -542,7 +542,9 @@ workflow.
 
 The `bench-spike` artifact in CI is the M1 diagnostic add-in, not Bench: it
 answers the hardware questions in `docs/spike.md` and has never been a release
-asset.
+asset. It is also committed as `dist/Bench-spike-0.0.2.g3a` (with a `SPIKE.txt`
+manifest) and downloadable from the site's downloads page, under its own
+"diagnostic add-in" heading, together with `spike.diff`.
 
 ## Credits
 

@@ -392,6 +392,26 @@ jobs:
             || { echo "::warning title=dist::cannot clone main; dist/ not updated"; exit 0; }
           mkdir -p "$dir/dist"
           cp "$file" "$dir/dist/$file"
+          # The M1 spike rides along: it is a diagnostic add-in, not Bench, but it
+          # is the thing a hardware session actually needs, and it was previously
+          # only reachable as a CI artifact on blob storage. dist/SPIKE.txt names
+          # the build the same way BUILD.txt does, so the two cannot be confused,
+          # and the site copies both from here (see site/scripts/fetch-spike.mjs).
+          shopt -s nullglob
+          spikes=(spike/Bench-spike-*.g3a)
+          if [ ${#spikes[@]} -gt 0 ]; then
+            spike=${spikes[0]}
+            cp "$spike" "$dir/dist/$(basename "$spike")"
+            {
+              printf 'file %s\n' "$(basename "$spike")"
+              printf 'size %s\n' "$(stat -c %s "$spike")"
+              printf 'sha256 %s\n' "$(sha256sum "$spike" | cut -d' ' -f1)"
+              printf 'commit %s\n' "$GITHUB_SHA"
+              printf 'built %s\n' "$(date -u +%Y-%m-%d)"
+            } > "$dir/dist/SPIKE.txt"
+          else
+            echo "::warning title=spike::no Bench-spike-*.g3a was built; dist/ keeps the previous one, if any"
+          fi
           {
             printf 'version %s\n' "$version"
             printf 'file %s\n' "$file"
@@ -485,6 +505,15 @@ jobs:
           if ! node scripts/check-widths.mjs --url http://localhost:4173 2>&1 | tee "$log"; then
             tail -n 20 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
               echo "::error title=width sweep::${line:-<blank>}"
+            done
+            exit 1
+          fi
+          # A bounding-box sweep cannot see the hero band bug: the boxes never
+          # touched, the glyph just overflowed its box. This one counts the
+          # neighbour ink the yellow would hide.
+          if ! node scripts/check-band.mjs --url http://localhost:4173 2>&1 | tee "$log"; then
+            tail -n 20 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+              echo "::error title=hero band::${line:-<blank>}"
             done
             exit 1
           fi

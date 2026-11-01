@@ -13,8 +13,9 @@ import Keys from "./components/Keys.jsx";
 import Tour from "./components/Tour.jsx";
 import Install from "./components/Install.jsx";
 import WasmSim from "./components/WasmSim.jsx";
+import Spike from "./components/Spike.jsx";
 import { Link } from "./router.jsx";
-import { Blurb, BruteButton, BruteLink, Chip, Eyebrow, Heading, Screen, Section } from "./ui.jsx";
+import { Blurb, BruteButton, BruteLink, Card, Chip, Eyebrow, Heading, Screen, Section } from "./ui.jsx";
 
 function Page({ eyebrow, accent = "red", title, lede, children }) {
   return (
@@ -24,12 +25,6 @@ function Page({ eyebrow, accent = "red", title, lede, children }) {
       <Blurb className="mt-4">{lede}</Blurb>
       {children}
     </Section>
-  );
-}
-
-function Card({ children, className = "" }) {
-  return (
-    <div className={"border-3 border-ink bg-paper p-5 shadow-brute-sm " + className}>{children}</div>
   );
 }
 
@@ -265,6 +260,8 @@ export function DownloadsPage() {
           sha256sum Bench-{VERSION}.g3a
         </p>
       </div>
+
+      <Spike />
 
       <p className="mt-6 text-sm text-ink/70">
         Installing it is three steps; the{" "}

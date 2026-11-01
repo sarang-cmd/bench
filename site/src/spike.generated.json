@@ -1,0 +1,8 @@
+{
+  "patch": {
+    "file": "spike.diff",
+    "size": 16988,
+    "sha256": "dfaa125c25c491ce5083e68361fe94697133a9eb51cd031eeb632f8cc337fd73"
+  },
+  "binary": null
+}

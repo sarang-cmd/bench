@@ -39,8 +39,14 @@ cd site
 npm run build
 npx vite preview --port 4173 &
 npx playwright install chromium
-node scripts/check-widths.mjs --url http://localhost:4173
+node scripts/check-widths.mjs --url http://localhost:4173   # layout at 320-1440px
+node scripts/check-band.mjs --url http://localhost:4173     # the hero's yellow band
 ```
+
+`check-band.mjs` is the narrow one: it hides the band's own words, keeps its
+box, and counts the neighbour ink the yellow covers. A bounding-box sweep cannot
+see that bug, because the boxes never touch - the glyph just overflows its box,
+which is how the band ended up cutting the tail of the g in "eighteen".
 
 The WebAssembly build needs zig, which carries clang, wasm-ld and wasi-libc:
 

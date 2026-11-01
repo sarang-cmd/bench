@@ -7,9 +7,10 @@
   "scripts": {
     "images": "node scripts/copy-images.mjs",
     "wasm": "node scripts/copy-wasm.mjs",
+    "spike": "node scripts/fetch-spike.mjs",
     "check": "node scripts/check-images.mjs",
-    "dev": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite",
-    "build": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/check-images.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite build",
+    "dev": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/fetch-spike.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite",
+    "build": "node scripts/gen-tools.mjs && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs && node scripts/fetch-addin.mjs && node scripts/fetch-spike.mjs && node scripts/check-images.mjs && node scripts/copy-images.mjs && node scripts/copy-wasm.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "addin": "node scripts/fetch-addin.mjs",
     "gen-tools": "node scripts/gen-tools.mjs",

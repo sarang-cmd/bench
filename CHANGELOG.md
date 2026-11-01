@@ -11,6 +11,28 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
+## Unreleased
+
+Numbers here describe the source in `main`, not a build on a calculator.
+
+- **The diagnostic add-in is on the site and in `dist/`**: `Bench-spike-0.0.2.g3a`
+  is now published beside Bench's own `.g3a` - in `dist/` with a `SPIKE.txt`
+  manifest, and on the downloads page under "The diagnostic add-in" - instead of
+  being reachable only as a CI artifact on blob storage. The patch
+  (`spike.diff`) is downloadable from the same place, so the spike can be had
+  even when no binary has been built. It is still labelled as a diagnostic
+  everywhere and still never appears on a release or next to the install button.
+
+- **The hero band stops cutting the `g`**: the yellow behind "in one" was
+  clipping the descender of the `g` in "eighteen". Two causes: Tailwind's
+  `text-5xl`/`text-6xl` set their own line-height and were beating the `h1`'s
+  `leading-[1.35]`, so the heading ran on a 1.0 line box; and the band was an
+  inline box, which paints over the font's content area, which at 60px is taller
+  than the line. The heading now sets its line-height at every breakpoint and
+  the band is an inline-block at line-height 1. `site/scripts/check-band.mjs`
+  counts the neighbour pixels the band covers - 331 at 1280px before, 0 at every
+  width from 320 to 1440px now - and runs in CI after the width sweep.
+
 ## 1.1.0 - 2026-11-01
 
 The two bugs from the first hardware session, the V2 tools, and the machinery

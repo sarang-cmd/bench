@@ -82,6 +82,12 @@ const chipTones = {
   yellow: "bg-yellow text-ink",
 };
 
+export function Card({ children, className = "" }) {
+  return (
+    <div className={"border-3 border-ink bg-paper p-5 shadow-brute-sm " + className}>{children}</div>
+  );
+}
+
 export function Chip({ children, tone = "paper", className = "" }) {
   return (
     <span
