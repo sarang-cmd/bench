@@ -15,10 +15,10 @@ what is not, is in the table at the end of this file.
 
 ## One sentence
 
-The tree says 1.2.2 (docs/VERSIONING.md: every change bumps the version);
-1.1.0 is the newest build until the v1.2.2 tag builds. Bench 1.1.0 is tested on a PC, documented **and built**: the tag `v1.1.0`
-carries `Bench-1.1.0.g3a` (250 500 bytes, sha256 `5288af0e...`) as a release
-asset, in `dist/`, on the `builds` branch and on the website. 1.0.0 is the only version anyone has run on a calculator. `.github/workflows/build.yml` is the only thing that can build
+The tree and the newest build are both 1.2.3. Bench 1.2.3 is tested on a PC and
+documented: the tag `v1.2.3` carries `Bench-1.2.3.g3a` (268 072 bytes, sha256
+`aca6f6ba...`, commit `62e63aa`) as a release asset, in `dist/`, on the `builds`
+branch and on the website. 1.0.0 is the only version anyone has run on a calculator. `.github/workflows/build.yml` is the only thing that can build
 it - this sandbox has no SuperH compiler and cannot reach
 `git.planet-casio.com` - and the toolchain it needs is cached, so a release
 takes about two and a half minutes.
@@ -201,7 +201,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | I README and metadata | **done**: badges and a generated stats block in the README (`make stats`, `tools/gen_readme_stats.py`, checked in CI), `CONTRIBUTING.md` with the check list and the generated-file table, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`, an issue template and an issue template config |
 | J hardware report | **done**: `docs/HARDWARE.md` is the checklist, and Settings has an **F3 hardware report** screen: the eight assumptions, marked on the device, written to `state/hwreport.txt` by F2 (`core/hwreport.c`, 63 checks). What is missing is the run itself |
 | J spike docs | **done**: `docs/spike.md` says what the spike is and why it is not released, `spike/spike.diff` rebuilds it, CI ships it in its own `bench-spike` artifact. A hardware report template and the Settings "Hardware report" screen are **not** done |
-| K CI and release | **done for 1.1.0** (`v1.1.0` tagged, `.g3a` on the release, in `dist/` and on `builds`): screen checks run in `make test`; the rolling `auto` release rebuilds every three days and replaces itself; the add-in is committed in `dist/`; the spike is out of the release; `build.yml` now also checks the README's numbers, the site's generated data and that all eight routes render; `dependabot.yml`, a pull request template and `docs/HARDWARE.md` as the release checklist are in. No badge JSON and no size report; the release body is the CHANGELOG section for the version |
+| K CI and release | **done, now for 1.2.3** (`v1.2.3` tagged, `.g3a` on the release, in `dist/` and on `builds`; 1.1.0 was the first version to go through it): screen checks run in `make test`; the rolling `auto` release rebuilds every three days and replaces itself; the add-in is committed in `dist/`; the spike is out of the release; `build.yml` now also checks the README's numbers, the site's generated data and that all eight routes render; `dependabot.yml`, a pull request template and `docs/HARDWARE.md` as the release checklist are in. No badge JSON and no size report; the release body is the CHANGELOG section for the version |
 
 ### Decisions taken without asking
 
