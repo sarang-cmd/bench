@@ -1,0 +1,11 @@
+# tour step: 83_settings_more
+# starts at the home screen; see tools/sim/run_tour.sh
+# Settings has eight rows now. The last three - which category the home screen
+# opens on, whether the hint line is shown, and when the Pacer clock turns red -
+# are the ones added after the first round of use.
+f6
+down
+down
+down
+down
+down

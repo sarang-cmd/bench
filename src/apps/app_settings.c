@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "core/settings.h"
+#include "registry.h"
 #include "platform/screen.h"
 #include "platform/store.h"
 #include "theme.h"
@@ -70,11 +71,24 @@ void app_cfg_save(void)
         saved_ok = store_write(SETTINGS_PATH, text, n) == STORE_OK;
 }
 
+#define SETTINGS_ROWS 8
+
 static void change(int delta)
 {
     bench_settings_t *cfg = app_cfg();
 
-    if (row == 0)
+    if (row == 5)
+        cfg->startup_cat = settings_clamp_startup_cat(
+            delta > 0 ? (cfg->startup_cat + 1) % SETTINGS_CATEGORY_COUNT
+                      : (cfg->startup_cat + SETTINGS_CATEGORY_COUNT - 1) %
+                            SETTINGS_CATEGORY_COUNT);
+    else if (row == 6)
+        cfg->show_hint = settings_clamp_flag(cfg->show_hint ? 0 : 1);
+    else if (row == 7)
+        cfg->pacer_warn = settings_clamp_warn(
+            delta > 0 ? (cfg->pacer_warn + 1) % (SETTINGS_WARN_MAX + 1)
+                      : (cfg->pacer_warn + SETTINGS_WARN_MAX) % (SETTINGS_WARN_MAX + 1));
+    else if (row == 0)
         cfg->uncert_sig = settings_clamp_uncert_sig(cfg->uncert_sig + delta);
     else if (row == 1)
         cfg->pacer_checkpoint =
@@ -132,6 +146,15 @@ void app_settings_draw(void)
     y += TH_LINE;
     w_row(TH_PAD, y, w, "First-run hint", cfg->tour_done ? "read" : "showing",
           row == 4);
+    y += TH_LINE;
+    w_row(TH_PAD, y, w, "Opens on",
+          tool_category_name((tool_category_t)cfg->startup_cat), row == 5);
+    y += TH_LINE;
+    w_row(TH_PAD, y, w, "Show hint line", cfg->show_hint ? "yes" : "no",
+          row == 6);
+    y += TH_LINE;
+    w_row(TH_PAD, y, w, "Pacer clock red at",
+          settings_warn_text(cfg->pacer_warn, num, (int)sizeof num), row == 7);
     y += TH_LINE + 6;
 
     scr_text(TH_PAD, y, settings_uncert_sig_text(cfg->uncert_sig), TH_INK);
@@ -150,8 +173,9 @@ void app_settings_draw(void)
     }
 
     w_softkeys((char const *const[6]){ "", "", "Report", "", "", "About" }, -1);
+    /* Short, because the softkey strip already names Report, Help and About. */
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                    "LEFT/RIGHT change   F3 hardware report   EXIT back", TH_INK);
+                    "UP/DOWN pick   LEFT/RIGHT change", TH_INK);
     scr_present();
 }
 
@@ -178,7 +202,7 @@ app_result_t app_settings_key(bench_event_t ev)
     }
     if (ev.key == BK_UP && row > 0)
         row--;
-    else if (ev.key == BK_DOWN && row < 4)
+    else if (ev.key == BK_DOWN && row < SETTINGS_ROWS - 1)
         row++;
     else if (ev.key == BK_LEFT)
         change(-1);

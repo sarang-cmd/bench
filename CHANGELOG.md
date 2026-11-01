@@ -15,6 +15,22 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **Three more settings, and three places they reach**: Settings had five rows
+  and two of them were read-only information. It has eight now, and each one
+  does something:
+  * **Opens on** - which category the home screen starts on, so someone who
+    lives in Science does not press F3 every launch.
+  * **Show hint line** - the first-run line on the home screen can be turned off
+    for good without having to open Help first.
+  * **Pacer clock red at** - minutes remaining when the Pacer's "Left mm:ss"
+    line turns red, 0 to never. Default 5.
+
+  All three are lines in `Bench/state/settings.cfg` as well, so they can be
+  edited by hand, and a file from an older build still loads: the new keys are
+  absent, the defaults stand (checked in `tests/test_settings.c`, 721 checks,
+  including an out-of-range hand edit being clamped rather than rejected).
+  **Unverified on device.**
+
 - **The Tools category, centred**: "so awkward" was about Tools holding two
   tiles hard against the left margin with a third of the screen empty beside
   them. A row that is not full is centred under the one above it now, which

@@ -24,6 +24,7 @@
 
 #include "core/color.h"
 #include "core/layout.h"
+#include "core/settings.h"
 #include "core/pageind.h"
 #include "platform/screen.h"
 #include "platform/store.h"
@@ -173,7 +174,9 @@ void app_menu_init(void)
 {
     if (!remembered)
     {
-        category = TOOL_CAT_STUDY;
+        /* Settings can say which category to open on. */
+        category = (tool_category_t)settings_clamp_startup_cat(
+            app_cfg()->startup_cat);
         sel = 0;
         remembered = 1;
     }
@@ -272,7 +275,7 @@ void app_menu_draw(void)
 
     /* First run: say what the four category keys and F5 do, once.  The line
      * goes away for good the first time help is opened (app_cfg()->tour_done). */
-    if (!app_cfg()->tour_done)
+    if (app_cfg()->show_hint && !app_cfg()->tour_done)
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "F1-F4 categories, F5 explains a tile, EXE opens it",
                         TH_INK);

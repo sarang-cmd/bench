@@ -32,11 +32,12 @@ static void test_format_round_trip(void)
     n = settings_format(&s, buf, sizeof buf);
     T_TRUE(n > 0);
     T_STR(buf, "# Bench settings v1\nuncert_sig 1\npacer_checkpoint 10\n"
-               "angle_unit 0\ntour_done 0\nnotes_wrap 0\n");
+               "angle_unit 0\ntour_done 0\nnotes_wrap 0\n"
+               "startup_cat 0\nshow_hint 1\npacer_warn 5\n");
 
     settings_defaults(&out);
     out.uncert_sig = 2;
-    T_TRUE(settings_parse(buf, n, &out, &ignored) == 5);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 8);
     T_INT(ignored, 0);
     T_INT(out.uncert_sig, 1);
     T_TRUE(settings_equal(&s, &out));
@@ -48,7 +49,7 @@ static void test_format_round_trip(void)
     n = settings_format(&s, buf, sizeof buf);
     T_TRUE(n > 0);
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, NULL) == 5);
+    T_TRUE(settings_parse(buf, n, &out, NULL) == 8);
     T_TRUE(settings_equal(&s, &out));
 
     /* Every checkpoint value in range formats and parses back. */
@@ -195,7 +196,7 @@ static void test_angles_and_hint(void)
     T_TRUE(strstr(buf, "angle_unit 1\n") != NULL);
     T_TRUE(strstr(buf, "tour_done 1\n") != NULL);
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, &ignored) == 5);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 8);
     T_INT(ignored, 0);
     T_INT(out.angle_unit, SETTINGS_ANGLE_RAD);
     T_INT(out.tour_done, 1);
@@ -238,6 +239,88 @@ static void test_text(void)
     T_STR(settings_uncert_sig_text(2), "1 or 2 if digit is 1");
 }
 
+/* The three keys the settings screen gained: which category the home screen
+ * opens on, whether the first-run hint is shown at all, and how many minutes
+ * are left when the pacer's clock turns red. */
+static void test_startup_hint_warn(void)
+{
+    bench_settings_t s;
+    bench_settings_t out;
+    char buf[SETTINGS_BUFSIZE];
+    char small[16];
+    char tiny[2];
+    int n;
+
+    T_SECTION("startup category, hint and pacer warning");
+
+    settings_defaults(&s);
+    T_INT(s.startup_cat, 0);
+    T_INT(s.show_hint, 1);
+    T_INT(s.pacer_warn, 5);
+
+    /* Ranges: four categories, a flag, and 0..30 minutes. */
+    T_INT(settings_clamp_startup_cat(-1), 0);
+    T_INT(settings_clamp_startup_cat(0), 0);
+    T_INT(settings_clamp_startup_cat(3), 3);
+    T_INT(settings_clamp_startup_cat(4), 0);
+    T_INT(settings_clamp_startup_cat(99), 0);
+
+    T_INT(settings_clamp_warn(-5), 0);
+    T_INT(settings_clamp_warn(0), 0);
+    T_INT(settings_clamp_warn(7), 7);
+    T_INT(settings_clamp_warn(30), 30);
+    T_INT(settings_clamp_warn(31), 30);
+
+    /* They survive a round trip, and the file names each one. */
+    s.startup_cat = 2;
+    s.show_hint = 0;
+    s.pacer_warn = 12;
+    n = settings_format(&s, buf, (int)sizeof buf);
+    T_TRUE(n > 0);
+    T_TRUE(strstr(buf, "startup_cat 2\n") != NULL);
+    T_TRUE(strstr(buf, "show_hint 0\n") != NULL);
+    T_TRUE(strstr(buf, "pacer_warn 12\n") != NULL);
+
+    settings_defaults(&out);
+    T_TRUE(settings_parse(buf, n, &out, NULL) == 8);
+    T_INT(out.startup_cat, 2);
+    T_INT(out.show_hint, 0);
+    T_INT(out.pacer_warn, 12);
+    T_TRUE(settings_equal(&s, &out));
+
+    /* A hand-edited out-of-range value is clamped, not rejected. */
+    settings_defaults(&out);
+    T_TRUE(settings_parse("startup_cat 9\npacer_warn 44\n",
+                          (int)strlen("startup_cat 9\npacer_warn 44\n"), &out,
+                          NULL) == 2);
+    T_INT(out.startup_cat, 0);
+    T_INT(out.pacer_warn, 30);
+
+    /* A file with no new keys loads: the defaults stay put. */
+    settings_defaults(&out);
+    out.startup_cat = 3;
+    T_TRUE(settings_parse("uncert_sig 2\n", 13, &out, NULL) == 1);
+    T_INT(out.startup_cat, 3);
+
+    /* A change in any of the three counts as a change to write. */
+    settings_defaults(&s);
+    settings_defaults(&out);
+    out.startup_cat = 1;
+    T_FALSE(settings_equal(&s, &out));
+    settings_defaults(&out);
+    out.show_hint = 0;
+    T_FALSE(settings_equal(&s, &out));
+    settings_defaults(&out);
+    out.pacer_warn = 0;
+    T_FALSE(settings_equal(&s, &out));
+
+    /* Text for the row. */
+    T_STR(settings_warn_text(0, buf, (int)sizeof buf), "off");
+    T_STR(settings_warn_text(5, small, (int)sizeof small), "5 min");
+    T_STR(settings_warn_text(12, small, (int)sizeof small), "12 min");
+    T_STR(settings_warn_text(5, tiny, (int)sizeof tiny), "5");
+}
+
 static void run_tests(void)
 {
     test_defaults();
@@ -248,6 +331,7 @@ static void run_tests(void)
     test_angles_and_hint();
     test_equality();
     test_text();
+    test_startup_hint_warn();
 }
 
 T_MAIN("test_settings")
