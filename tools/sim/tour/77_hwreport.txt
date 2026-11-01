@@ -1,0 +1,11 @@
+# tour step: 77_hwreport
+# F3 in Settings opens the hardware report: the eight assumptions, marked on
+# the device, written to state/hwreport.txt by F2.
+tool:settings
+f3
+down
+right
+down
+right
+right
+f2

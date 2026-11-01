@@ -16,6 +16,17 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **A hardware report you can fill in on the calculator (V2, workstream J)**:
+  Settings gained **F3**, which opens a screen listing the eight assumptions
+  Bench makes about the CASIO filesystem, the font, ALPHA, the clock and the
+  frame time. Each row starts at `not tried`; LEFT/RIGHT marks it `works` or
+  `fails` after the matching test in `docs/HARDWARE.md`. F2 writes
+  `state/hwreport.txt` in plain text, so the result comes off the calculator by
+  copy rather than by retyping, and nothing is written at any other moment.
+  The formatter is `src/core/hwreport.c` (63 native checks, including a buffer
+  that is one byte too small), and `docs/HARDWARE.md` says how the file slots
+  into the report.
+
 - **A shared number field and a history of answers (V2, workstream A5)**:
   `src/core/numedit.c` is the one place that decides what a numeric field
   accepts - digits, at most one dot, a lone zero replaced rather than stacked, a

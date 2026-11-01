@@ -41,10 +41,10 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | | |
 |---|---|
 | Tools | 18 in 3 categories |
-| Screens captured | 76 |
-| Tour scripts | 76 |
-| Native test programs | 31 |
-| C source | 21,832 lines in 104 files |
+| Screens captured | 77 |
+| Tour scripts | 77 |
+| Native test programs | 32 |
+| C source | 22,204 lines in 107 files |
 | Version | 1.0.0 |
 <!-- STATS:END -->
 
@@ -390,6 +390,7 @@ you leave the screen, never in a loop.
 | F4 / F3 | Sig figs | next / previous mode |
 | UP/DOWN | Settings | pick a row |
 | LEFT/RIGHT | Settings | change the selected row |
+| F3 | Settings | the hardware report: mark what the device does, F2 writes `state/hwreport.txt` |
 | EXE | Home screen | open the selected tile |
 | F5 | Home screen | explain the selected tile; the hint line goes away |
 | LEFT/RIGHT | Sig figs | the n of the rounding modes |

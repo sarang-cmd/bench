@@ -43,6 +43,7 @@ typedef enum {
     APP_SCREEN_GRAPH,
     APP_SCREEN_LOG,
     APP_SCREEN_SIGFIG,
+    APP_SCREEN_HWREPORT,
 } app_screen_t;
 
 /* Switch to another screen (implemented in main.c). */
@@ -87,5 +88,6 @@ DECLARE_APP(base);
 DECLARE_APP(graph);
 DECLARE_APP(log);
 DECLARE_APP(sigfig);
+DECLARE_APP(hwreport);
 
 #endif /* BENCH_APP_H */

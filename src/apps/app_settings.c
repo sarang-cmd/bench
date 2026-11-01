@@ -149,9 +149,9 @@ void app_settings_draw(void)
         scr_text_ellipsis(TH_PAD, y + TH_LINE, line, TH_INK, w);
     }
 
-    w_softkeys((char const *const[6]){ "", "", "", "", "", "About" }, -1);
+    w_softkeys((char const *const[6]){ "", "", "Report", "", "", "About" }, -1);
     scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                    "LEFT/RIGHT change   EXIT back", TH_INK);
+                    "LEFT/RIGHT change   F3 hardware report   EXIT back", TH_INK);
     scr_present();
 }
 
@@ -169,6 +169,11 @@ app_result_t app_settings_key(bench_event_t ev)
     if (ev.key == BK_F6)
     {
         app_open(APP_SCREEN_ABOUT);
+        return APP_CONTINUE;
+    }
+    if (ev.key == BK_F3)
+    {
+        app_open(APP_SCREEN_HWREPORT);
         return APP_CONTINUE;
     }
     if (ev.key == BK_UP && row > 0)

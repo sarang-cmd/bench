@@ -275,14 +275,13 @@ app_result_t app_menu_key(bench_event_t ev)
          * tool screen shows, so there is one help text per tool. */
         tool_t const *tool = tool_category_at(category, sel);
 
-        app_help_open(tool);
         /* Opening help once is the whole first-run tour. */
         if (!app_cfg()->tour_done)
         {
             app_cfg()->tour_done = 1;
             app_cfg_save();
         }
-        app_help_open(tool_category_at(category, sel));
+        app_help_open(tool);
         break;
     }
     case BK_F6:
