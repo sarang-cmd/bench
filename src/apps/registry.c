@@ -218,14 +218,24 @@ static char const help_settings[] =
     "change, EXIT back.";
 
 static char const help_about[] =
-    "About\n"
+    "About Bench\n"
     "Version, build date, target and the\n"
-    "storage Bench uses.\n"
+    "storage Bench uses, plus who made\n"
+    "it and how: the maths is plain C\n"
+    "tested on a PC, the screens are a\n"
+    "thin layer over gint, and every\n"
+    "picture in the docs is a real frame\n"
+    "from the simulator.\n"
+    "\n"
+    "UP/DOWN scroll the page.\n"
     "\n"
     "Bench never reads or changes Exam\n"
     "Mode. If the calculator is in Exam\n"
-    "Mode the add-in does not run at\n"
-    "all; that is the OS, not us.";
+    "Mode the add-in does not start at\n"
+    "all, which is the OS's rule, not\n"
+    "Bench's.\n"
+    "\n"
+    "Keys: UP/DOWN scroll, EXIT back.";
 
 
 static char const help_function[] =

@@ -15,6 +15,17 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **About says who made it**: the page was one screenful of version numbers. It
+  now says whose work it is (Sarang, `github.com/sarang-cmd`), what it is, how it
+  was made - maths in plain C tested without a calculator, screens a thin layer
+  over gint, every doc picture a real simulator frame, builds from GitHub
+  Actions - and keeps the build facts and the Exam Mode promise at the end. The
+  page is longer than the screen, so it scrolls with the bar and `UP/DOWN`;
+  scrolling reuses `core/help.c`'s tested rules. Tour 84 and 85 are its two
+  ends. Also: `src/version.h`'s fallback said 1.0.0 while `version.txt` said
+  1.1.0, so the simulator's About screen was a release behind the add-in it was
+  drawing - the fallback is 1.1.0 now. **Unverified on device.**
+
 - **Three more settings, and three places they reach**: Settings had five rows
   and two of them were read-only information. It has eight now, and each one
   does something:

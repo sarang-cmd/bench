@@ -1,0 +1,18 @@
+# tour step: 85_about_build
+# starts at the home screen; see tools/sim/run_tour.sh
+# Scrolled to the end: the build, the storage limits and the Exam Mode promise.
+# That the page scrolls at all is the change - it used to be one screenful.
+tool:about
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
+down
