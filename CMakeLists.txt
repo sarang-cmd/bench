@@ -90,6 +90,7 @@ set(SOURCES
   src/apps/app_stats.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
+  src/apps/app_hwreport.c
   src/apps/app_suvat.c
   src/apps/app_triangle.c
   src/apps/app_uncert.c
