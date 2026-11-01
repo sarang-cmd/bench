@@ -60,6 +60,22 @@ try {
    * state the build hands to Vite rather than whatever was left in the tree. */
   execFileSync(process.execPath, [join(root, "scripts", "fetch-spike.mjs")], { stdio: "pipe" });
 
+  /* Same for the add-in and its starter pack zip: fetch-addin.mjs puts
+   * Bench-<version>.g3a into public/, copies the zip out of dist/, and writes
+   * build-info.  Without it, public/ is empty in a fresh checkout (both files
+   * are gitignored) and the checks below would report a download that is only
+   * missing because nothing had fetched it yet - which is exactly how the route
+   * check failed on the 1.2.6 and 1.2.7 tags.  A failure here is reported, not
+   * fatal: the page still renders with what the tree has, and the checks say
+   * what is missing. */
+  try {
+    execFileSync(process.execPath, [join(root, "scripts", "fetch-addin.mjs")], {
+      stdio: "pipe",
+    });
+  } catch (error) {
+    console.log(`  note: fetch-addin.mjs did not finish (${error.status ?? error.message})`);
+  }
+
   const { default: App } = await server.ssrLoadModule("/src/App.jsx");
 
   for (const [path, phrases] of ROUTES) {
@@ -132,6 +148,24 @@ try {
   // downloads page must not offer a file that is not in public/, and the hash it
   // prints has to be the hash of the file it serves.
   const info = JSON.parse(readFileSync(join(root, "src", "build-info.generated.json"), "utf8"));
+
+  // The add-in itself: the file the download button serves has to be the file
+  // build-info describes, or the page is offering a hash that does not match
+  // what a visitor gets.
+  if (!existsSync(join(root, "public", info.file))) {
+    failures++;
+    console.log(`  FAIL add-in: ${info.file} is described but missing from public/`);
+  } else {
+    const addinBytes = readFileSync(join(root, "public", info.file));
+    const addinHash = createHash("sha256").update(addinBytes).digest("hex");
+    if (addinHash !== info.sha256 || addinBytes.length !== info.size) {
+      failures++;
+      console.log(`  FAIL add-in: ${info.file} does not match the size and hash on the page`);
+    } else {
+      console.log(`  ok   add-in: ${info.file} is there and matches its hash`);
+    }
+  }
+
   if (!info.starterpack) {
     console.log("  ok   starter pack zip: none built, so none is offered");
   } else {

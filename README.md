@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.7-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.8-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -39,7 +39,7 @@ while the docs say "starter pack".
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.7, in the tree and on the downloads page |
+| Version | 1.2.8 in the tree; the newest build is 1.2.7, which the downloads page serves |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -50,7 +50,7 @@ while the docs say "starter pack".
 | Tour scripts | 99 |
 | Native test programs | 40 |
 | C source | 25,273 lines in 129 files |
-| Version | 1.2.7 |
+| Version | 1.2.8 |
 <!-- STATS:END -->
 
 ## Screens

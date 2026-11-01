@@ -11,6 +11,37 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
+## 1.2.8 - unreleased
+
+The site's page check has been red since 1.2.6, and the release went out anyway:
+the add-in build, the core tests, the WebAssembly build and the toolchain job all
+passed, so `Bench-1.2.7.g3a` and its zip are real - only "Site build and page
+checks" failed, and it has been failing the same way since I added the starter
+pack card to `/downloads`.
+
+- **`check-pages.mjs` checked a file nothing had fetched.** A fresh checkout has
+  no `site/public/Bench-*.g3a` and no `site/public/Bench-starterpack-*.zip`; both
+  are gitignored and `fetch-addin.mjs` puts them there during `npm run build`,
+  which runs *after* the page check. So the new "the zip the page offers is
+  really there, and hashes to what the page prints" check reported
+  "described but missing from public/" on every run. It now runs
+  `fetch-addin.mjs` itself before rendering, exactly as it already ran
+  `fetch-spike.mjs` for the same reason; a failure there is reported, not fatal,
+  because the page still renders and the checks still say what is missing.
+- **The add-in gets the same check**: the page prints a size and a SHA-256 for
+  the `.g3a`, and that file is now compared with them too, so a stale download in
+  `public/` cannot be served under a hash that belongs to a different build.
+- **Reproduced before fixing**: a fresh `git clone --branch v1.2.7`, `npm ci`,
+  `node scripts/check-pages.mjs` fails with exactly the CI message
+  (`FAIL starter pack zip: Bench-starterpack-1.2.7.zip is described but missing
+  from public/`), and passes after the change.
+
+- **`dist/` keeps one starter pack zip**: `Bench-starterpack-1.2.8.zip` (the ten
+  files, unchanged since 1.2.7), so the repository does not accumulate a copy per
+  release. The release job already deletes the old one before copying the new.
+
+Nothing about the add-in changed: no C, no screen, no key.
+
 ## 1.2.7 - 2026-11-01
 
 Wording, not behaviour: the demo is the starter pack now. Everything the
