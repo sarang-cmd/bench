@@ -284,7 +284,5 @@ What is left is not code in this repository. It is:
    `docs/HARDWARE.md`. Until then those features stay "unverified on device".
 2. **An emscripten build of the simulator**, first compile included. The glue is
    written and the CI job is there; nothing has run it.
-3. **The shared number-entry widget and result history** (A5), which are the only
-   parts of the V2 brief with no code at all.
-4. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
+3. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
    then update the badges that name the version.
