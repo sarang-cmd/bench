@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Pack the demo notes, decks, study log and formula booklets as one zip.
+"""Pack the starter pack notes, decks, study log and formula booklets as one zip.
 
 Bench 1.2.6 carries the same text inside the .g3a and writes it to the card on
 first run, so this download is not required.  It is here for the two cases the
 in-app copy cannot serve:
 
   * a card that is full, or the second card someone keeps their own work on
-  * editing the demo on a PC before it ever reaches the calculator - the files
+  * editing the starter pack on a PC before it ever reaches the calculator - the files
     in the zip are the same bytes the add-in writes, so an edit here is an edit
     there
 
@@ -17,12 +17,12 @@ exactly the folders it creates.  Do not extract it into `@MainMem`: the
 calculator moves files it does not keep there into `SAVE-F\\Bench`, and then the
 lists look empty (manual 13-6).
 
-    python3 tools/make_demo_zip.py             write dist/Bench-demo-<version>.zip
-    python3 tools/make_demo_zip.py --check     fail if the committed zip is stale
+    python3 tools/make_starterpack_zip.py             write dist/Bench-starterpack-<version>.zip
+    python3 tools/make_starterpack_zip.py --check     fail if the committed zip is stale
 
 The zip is reproducible: entries are sorted, timestamps are fixed and the
 permissions are constant, so the same sources give the same bytes and a diff in
-`dist/` means the demo really changed.
+`dist/` means the starter pack really changed.
 """
 
 from pathlib import Path
@@ -34,10 +34,10 @@ DIST = ROOT / "dist"
 
 # (folder in Bench/, directory in the repository, extension)
 SOURCES = [
-    ("notes", "demo/notes", ".md"),
-    ("notes", "demo/notes", ".txt"),
-    ("cards", "demo/cards", ".txt"),
-    ("study", "demo/study", ".txt"),
+    ("notes", "starterpack/notes", ".md"),
+    ("notes", "starterpack/notes", ".txt"),
+    ("cards", "starterpack/cards", ".txt"),
+    ("study", "starterpack/study", ".txt"),
     ("formulas", "docs/samples/formulas", ".txt"),
 ]
 
@@ -50,7 +50,7 @@ def version():
 
 
 def out_path():
-    return DIST / ("Bench-demo-%s.zip" % version())
+    return DIST / ("Bench-starterpack-%s.zip" % version())
 
 
 def collect():
@@ -78,7 +78,7 @@ def collect():
                 )
             entries[name] = data
     if not entries:
-        raise SystemExit("nothing to pack: demo/ and docs/samples/formulas are empty")
+        raise SystemExit("nothing to pack: starterpack/ and docs/samples/formulas are empty")
     return entries
 
 
@@ -103,21 +103,21 @@ def main(argv):
 
     if "--check" in argv:
         if not path.exists():
-            print("MISSING: %s - run make demo-zip" % path.relative_to(ROOT))
+            print("MISSING: %s - run make starterpack-zip" % path.relative_to(ROOT))
             return 1
         if path.read_bytes() != data:
             print(
-                "STALE: %s does not match demo/ - run make demo-zip and commit it"
+                "STALE: %s does not match starterpack/ - run make starterpack-zip and commit it"
                 % path.relative_to(ROOT)
             )
             return 1
-        print("demo zip OK (%d files, %d bytes)" % (len(entries), len(data)))
+        print("starter pack zip OK (%d files, %d bytes)" % (len(entries), len(data)))
         return 0
 
     DIST.mkdir(exist_ok=True)
     path.write_bytes(data)
     print(
-        "demo zip: %d files, %d bytes -> %s"
+        "starter pack zip: %d files, %d bytes -> %s"
         % (len(entries), len(data), path.relative_to(ROOT))
     )
     for name in sorted(entries):

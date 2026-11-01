@@ -1,6 +1,36 @@
 {
   "releases": [
     {
+      "version": "1.2.7",
+      "date": "2026-11-01",
+      "entries": [
+        {
+          "title": "Every user-facing mention says starter pack",
+          "body": "the README section, the downloads page card, `docs/TUTORIAL.md`, `docs/STATUS.md`, `dist/README.md`, the hardware checklist and the in-app comments. No screen inside the add-in said \"demo\", so no tour script changed its content; step 99 is still the first-run screenshot and the image is now `99_starterpack_seeded.png`."
+        },
+        {
+          "title": "The names on disk follow",
+          "body": "`demo/` is `starterpack/`, `Bench-demo-<version>.zip` is `Bench-starterpack-<version>.zip`, `tools/gen_demo.py` is `tools/gen_starterpack.py`, `tools/make_demo_zip.py` is `tools/make_starterpack_zip.py`, and the make targets are `starterpack-gen`, `starterpack-check`, `starterpack-zip` and `starterpack-zip-check`. So is the code: `src/platform/starter.{h,c}` (`starter_install()`), `src/apps/starter_data.{h,c}` (`starter_files[]`, `starter_file_count`), and `tests/test_starter_data.c`, `tests/test_starter_files.c`, `tools/test_starterpack.py`."
+        },
+        {
+          "title": "The wasm build follows too",
+          "body": "the file the browser simulator seeds its in-memory filesystem with is `starterpack.json`, and the worker's message key is `starterpack`."
+        },
+        {
+          "title": "What did not change",
+          "body": "the ten files, their text, the destination folders (`Bench/notes`, `Bench/cards`, `Bench/study`, `Bench/formulas`), the rule that only missing files are written, the ASCII-only check and the size budget. The cards gained a few bytes because their own first line said \"sample content for the demo folder\" and now says \"starter pack folder\" - 17 877 B becomes 17 901 B, and the zip 10 479 B becomes 10 495 B. **Unverified on device.**"
+        },
+        {
+          "title": "1.2.6 keeps its own names",
+          "body": "that release carries `Bench-1.2.6.g3a` and `Bench-demo-1.2.6.zip`, and its entry below still says demo, because that is what it shipped. From this version on, the file to download is `Bench-starterpack-1.2.7.zip`."
+        },
+        {
+          "title": "two things the rename broke, both fixed here",
+          "body": "the wasm build looked for a directory called `starter pack` (a path hit by the rename), found none, and wrote a zero-file seed - the browser simulator would have booted with an empty card; it now fails the build rather than ship an empty seed. And `BENCH_NO_STARTERPACK=` counted as \"set\", because the tour passes an empty value when it wants the seed kept, so the first-run screenshot showed an empty card. It reads the value now, and step 99 runs against a fresh filesystem."
+        }
+      ]
+    },
+    {
       "version": "1.2.6",
       "date": "2026-11-01",
       "entries": [

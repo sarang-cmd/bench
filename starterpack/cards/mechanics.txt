@@ -1,5 +1,5 @@
 # Mechanics: quantities and units.  One card per line: question | answer
-# Sample content for the demo folder - read it before you trust it.
+# Sample content for the starter pack folder - read it before you trust it.
 What is the SI unit of force? | The newton, N. One N accelerates 1 kg at 1 m/s squared.
 What does a newton second measure? | Impulse, and it equals the change in momentum.
 Define momentum. | Mass times velocity, in kg m/s.

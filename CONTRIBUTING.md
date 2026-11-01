@@ -53,7 +53,7 @@ The WebAssembly build needs zig, which carries clang, wasm-ld and wasi-libc:
 ```sh
 pip install --user ziglang
 export ZIG="$(python3 -c 'import os, ziglang; print(os.path.join(os.path.dirname(ziglang.__file__), "zig"))')"
-sh tools/wasm/build.sh                  # writes build-wasm/bench.wasm + demo.json
+sh tools/wasm/build.sh                  # writes build-wasm/bench.wasm + starterpack.json
 node tools/wasm/smoke.mjs "down,exe"    # runs it in Node, frames to /tmp/*.ppm
 cd site && npm run wasm                 # copies it into public/sim/ and commits
 ```

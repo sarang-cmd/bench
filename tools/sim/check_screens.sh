@@ -34,16 +34,22 @@ for f in "$root"/docs/samples/*; do
     esac
 done
 
+# 99_* steps run against an empty card, so what they show is the seed and
+# nothing else (see run_tour.sh).
+fs_fresh=/tmp/bench-checkfs-fresh
+rm -rf "$fs_fresh"
+mkdir -p "$fs_fresh"
+
 fail=0
 count=0
 for step in "$root"/tools/sim/tour/*.txt; do
     name=$(basename "$step" .txt)
     count=$((count + 1))
     case "$name" in
-        99_*) no_demo= ;;
-        *)    no_demo=1 ;;   # the empty states, as above: no bundled demo
+        99_*) card=$fs_fresh; no_starterpack= ;;
+        *)    card=$fs;        no_starterpack=1 ;;   # the empty states: no seed
     esac
-    if ! out=$(BENCH_NO_DEMO=$no_demo BENCH_FS=$fs BENCH_KEYS=$step \
+    if ! out=$(BENCH_NO_STARTERPACK=$no_starterpack BENCH_FS=$card BENCH_KEYS=$step \
                BENCH_CHECK=1 BENCH_NAME=$name "$sim" 2>&1); then
         printf '%s\n' "$out"
         fail=$((fail + 1))

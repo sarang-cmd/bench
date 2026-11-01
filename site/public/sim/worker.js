@@ -16,7 +16,7 @@
 // No Asyncify, no emscripten runtime, and the worker never returns to the page
 // mid-call: the only cross-thread calls are Atomics.
 //
-// Messages in:  { type: "start", sab, wasm, demo, shim, width, height }
+// Messages in:  { type: "start", sab, wasm, starterpack, shim, width, height }
 // Messages out: { type: "ready", width, height } | { type: "failed", error }
 
 /* global SharedArrayBuffer */
@@ -52,7 +52,7 @@ function waitKey(module) {
   return Atomics.load(hdr, 1);
 }
 
-async function boot({ sab, wasm, demo, shim, width, height }) {
+async function boot({ sab, wasm, starterpack, shim, width, height }) {
   hdr = new Int32Array(sab, 0, 8);
   hdr[3] = width;
   hdr[4] = height;
@@ -61,11 +61,11 @@ async function boot({ sab, wasm, demo, shim, width, height }) {
   const { WASI, File, Directory, OpenFile, PreopenDirectory } = await import(shim);
 
   // The add-in expects notes/, cards/, study/ under its root.  The wasm has no
-  // real disk, so the demo content the build put next to it goes in here; the
+  // real disk, so the starter pack the build put next to it goes in here; the
   // add-in then sees a calculator with something on it, not empty folders.
-  const demoFiles = await (await fetch(demo)).json();
+  const packFiles = await (await fetch(starterpack)).json();
   const tree = new Map();
-  for (const [path, b64] of Object.entries(demoFiles)) {
+  for (const [path, b64] of Object.entries(packFiles)) {
     const [folder, name] = path.split("/");
     if (!tree.has(folder)) tree.set(folder, new Directory(new Map()));
     const raw = atob(b64);

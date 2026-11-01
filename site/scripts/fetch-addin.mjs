@@ -176,23 +176,23 @@ if (build.file && build.file !== dirFile) {
   delete build.commit;
   delete build.built;
 }
-/* The demo zip is optional on purpose: a checkout that has not run
- * `make demo-zip` (or a release that predates 1.2.6) simply has no second card
+/* The starter pack zip is optional on purpose: a checkout that has not run
+ * `make starterpack-zip` (or a release that predates 1.2.6) simply has no second card
  * on the downloads page, rather than a broken build. */
-/* Prefer the demo for the version being served, then for the version the tree
- * says, then the newest one in dist/: the demo files do not change between
- * patch releases, and a page that hands out 1.2.3 while the demo zip says 1.2.6
+/* Prefer the starter pack for the version being served, then for the version the tree
+ * says, then the newest one in dist/: the starter pack files do not change between
+ * patch releases, and a page that hands out 1.2.3 while the starter pack zip says 1.2.6
  * is still handing out the right notes. */
-const demoCandidates = [
-  `Bench-demo-${fileVersion}.zip`,
-  `Bench-demo-${repoVersion}.zip`,
+const packCandidates = [
+  `Bench-starterpack-${fileVersion}.zip`,
+  `Bench-starterpack-${repoVersion}.zip`,
   ...(existsSync(distDir)
     ? readdirSync(distDir)
-        .filter((f) => /^Bench-demo-.+\.zip$/.test(f))
+        .filter((f) => /^Bench-starterpack-.+\.zip$/.test(f))
         .map((f) => ({
           f,
           key: f
-            .replace(/^Bench-demo-/, "")
+            .replace(/^Bench-starterpack-/, "")
             .replace(/\.zip$/, "")
             .split(".")
             .map((part) => (/^\d+$/.test(part) ? Number(part) : -1)),
@@ -201,23 +201,23 @@ const demoCandidates = [
         .map(({ f }) => f)
     : []),
 ];
-const demoName = demoCandidates[0];
-const demoSource = demoCandidates
+const packName = packCandidates[0];
+const packSource = packCandidates
   .flatMap((file) => [join(root, "public", file), join(distDir, file)])
   .find((path) => existsSync(path));
-const demoFile = demoSource ? demoSource.split(/[\\/]/).pop() : null;
-let demo = null;
-if (demoSource) {
-  const demoPublic = join(root, "public", demoFile);
-  if (demoSource !== demoPublic) {
+const packFile = packSource ? packSource.split(/[\\/]/).pop() : null;
+let pack = null;
+if (packSource) {
+  const packPublic = join(root, "public", packFile);
+  if (packSource !== packPublic) {
     mkdirSync(join(root, "public"), { recursive: true });
-    copyFileSync(demoSource, demoPublic);
+    copyFileSync(packSource, packPublic);
   }
-  const demoBytes = readFileSync(demoPublic);
-  demo = {
-    file: demoFile,
-    size: demoBytes.length,
-    sha256: createHash("sha256").update(demoBytes).digest("hex"),
+  const packBytes = readFileSync(packPublic);
+  pack = {
+    file: packFile,
+    size: packBytes.length,
+    sha256: createHash("sha256").update(packBytes).digest("hex"),
   };
 }
 
@@ -230,11 +230,11 @@ const info = {
   commit: build.commit || null,
   date: build.built || null,
   source,
-  demo,
+  starterpack: pack,
 };
 writeFileSync(infoPath, JSON.stringify(info, null, 2) + "\n");
 
-if (demo) console.log(`download: ${demo.file}, ${demo.size} bytes`);
+if (pack) console.log(`download: ${pack.file}, ${pack.size} bytes`);
 
 console.log(
   `download: ${dirFile}, ${Math.round(info.size / 1024)} KiB, sha256 ${info.sha256.slice(0, 12)}...` +

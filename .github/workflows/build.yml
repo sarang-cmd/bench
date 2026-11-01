@@ -107,13 +107,13 @@ jobs:
           python3 tools/gen_spike_patch.py
           git diff --exit-code docs/tools.json spike/spike.diff
 
-      # The demo is embedded in the .g3a (src/apps/demo_data.c) and also shipped
-      # as its own zip.  Both are generated from demo/ and docs/samples/formulas:
+      # The starter pack is embedded in the .g3a (src/apps/starter_data.c) and also shipped
+      # as its own zip.  Both are generated from starterpack/ and docs/samples/formulas:
       # editing a note without regenerating fails here, not on a student's card.
-      - name: The bundled demo matches demo/
+      - name: The bundled starter pack matches starterpack/
         run: |
-          make demo-check
-          make demo-zip-check
+          make starterpack-check
+          make starterpack-zip-check
 
       - name: Host preview of the screens
         run: |
@@ -301,14 +301,14 @@ jobs:
             ls -lh spike/Bench-spike-*.g3a || true
           fi
 
-      # The same demo text as a separate download.  The add-in writes it to the
+      # The same starter pack text as a separate download.  The add-in writes it to the
       # card on first run, so this is for a full card, a second card, or editing
       # the notes on a PC first.
-      - name: Pack the demo zip
+      - name: Pack the starter pack zip
         shell: bash
         run: |
-          python3 tools/make_demo_zip.py
-          ls -lh dist/Bench-demo-*.zip || true
+          python3 tools/make_starterpack_zip.py
+          ls -lh dist/Bench-starterpack-*.zip || true
 
       - name: Attach the .g3a
         uses: actions/upload-artifact@v7
@@ -444,7 +444,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           files: |
             Bench-*.g3a
-            dist/Bench-demo-*.zip
+            dist/Bench-starterpack-*.zip
           body_path: /tmp/release-notes.md
 
       # The .g3a also lives in the repository, in dist/: a release asset and an
@@ -467,11 +467,11 @@ jobs:
             || { echo "::warning title=dist::cannot clone main; dist/ not updated"; exit 0; }
           mkdir -p "$dir/dist"
           cp "$file" "$dir/dist/$file"
-          # The demo zip is small and unversioned in content, so keeping only the
+          # The starter pack zip is small and unversioned in content, so keeping only the
           # current one is enough: the release asset is the archive of record.
-          rm -f "$dir"/dist/Bench-demo-*.zip
-          cp dist/Bench-demo-*.zip "$dir/dist/" 2>/dev/null || \
-            echo "::warning title=demo zip::no demo zip to keep in dist/"
+          rm -f "$dir"/dist/Bench-starterpack-*.zip
+          cp dist/Bench-starterpack-*.zip "$dir/dist/" 2>/dev/null || \
+            echo "::warning title=starter pack zip::no starter pack zip to keep in dist/"
           # The M1 spike rides along: it is a diagnostic add-in, not Bench, but it
           # is the thing a hardware session actually needs, and it was previously
           # only reachable as a CI artifact on blob storage. dist/SPIKE.txt names
@@ -627,7 +627,7 @@ jobs:
       - name: The committed binary is this build
         run: |
           node site/scripts/copy-wasm.mjs
-          git diff --exit-code site/public/sim/bench.wasm site/public/sim/demo.json \
+          git diff --exit-code site/public/sim/bench.wasm site/public/sim/starterpack.json \
             || { echo "::error title=bench.wasm::the committed WebAssembly build is stale - run tools/wasm/build.sh and commit site/public/sim"; exit 1; }
 
       - name: Keep the binary
@@ -636,5 +636,5 @@ jobs:
           name: bench-wasm
           path: |
             build-wasm/bench.wasm
-            build-wasm/demo.json
+            build-wasm/starterpack.json
           if-no-files-found: warn

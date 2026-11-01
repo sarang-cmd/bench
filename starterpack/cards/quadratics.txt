@@ -1,4 +1,4 @@
-# Quadratics.  Sample content for the demo folder.
+# Quadratics.  Sample content for the starter pack folder.
 What shape is the graph of a quadratic? | A parabola: a U shape, or an upside-down U when the leading coefficient is negative.
 How do you find the roots of a quadratic from its graph? | Where the curve crosses the x axis.
 What does the discriminant tell you? | b squared minus 4ac: positive gives two roots, zero gives one, negative gives none on the real line.

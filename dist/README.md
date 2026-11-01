@@ -6,7 +6,7 @@ build also lives here.
 
 | | |
 |---|---|
-| File | `Bench-<version>.g3a`, plus `Bench-demo-<version>.zip` and `Bench-spike-<version>.g3a` |
+| File | `Bench-<version>.g3a`, plus `Bench-starterpack-<version>.zip` and `Bench-spike-<version>.g3a` |
 | Version | from `version.txt` (the spike carries its own) |
 | Built from | the commit in `BUILD.txt` |
 | Refreshed by | CI, on every push to `main` and every tag, as a commit marked `[skip ci]` |
@@ -40,11 +40,11 @@ the `builds` branch at the time of the build.
    it there.
 2. Eject, press MENU, open Bench.
 
-No folder, no extraction, nothing else: the add-in carries the demo notes, decks,
-study log and formula booklets, and writes the ones that are missing to
+No folder, no extraction, nothing else: the add-in carries the starter pack notes,
+decks, study log and formula booklets, and writes the ones that are missing to
 `Bench/notes`, `Bench/cards`, `Bench/study` and `Bench/formulas` on the first run.
 
-`Bench-demo-<version>.zip` is that same demo as files, for a card that is full, a
-second card, or editing the notes on a PC first. It holds one `Bench` folder, so
-extract it onto the drive root (`D:\`) and not into `@MainMem`. Rebuilding it is
-`make demo-zip`.
+`Bench-starterpack-<version>.zip` is that same starter pack as files, for a card
+that is full, a second card, or editing the notes on a PC first. It holds one
+`Bench` folder, so extract it onto the drive root (`D:\`) and not into
+`@MainMem`. Rebuilding it is `make starterpack-zip`.

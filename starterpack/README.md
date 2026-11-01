@@ -1,12 +1,17 @@
-# Demo content
+# Starter pack content
 
-Copy these files onto the calculator to have something to look at before you
-write your own notes:
+The ten files in this folder are the starter pack. They travel inside the
+`.g3a` and are written to the card on the first run, so copying them on is
+optional; `dist/Bench-starterpack-<version>.zip` is the same ten files packed
+for a card that is full or a second card. Both are generated from here by
+`make starterpack-gen` and `make starterpack-zip`.
+
+To copy them on by hand:
 
 ```
-demo/notes/  ->  fls0/Bench/notes/
-demo/cards/  ->  fls0/Bench/cards/
-demo/study/  ->  fls0/Bench/study/
+starterpack/notes/  ->  fls0/Bench/notes/
+starterpack/cards/  ->  fls0/Bench/cards/
+starterpack/study/  ->  fls0/Bench/study/
 ```
 
 The add-in creates those three folders on its first run, so run it once, connect
@@ -14,8 +19,8 @@ in USB Flash mode, and drop the files in.
 
 ## Needs human proofreading
 
-**Everything in this folder was written for the demo and has not been checked by
-a teacher.** The physics, chemistry and biology are meant to be right, and they
+**Everything in this folder was written for the starter pack and has not been
+checked by a teacher.** The physics, chemistry and biology are meant to be right, and they
 are written in my own words rather than copied from a booklet or a past paper,
 but they are revision notes, not a specification. Read them before you trust a
 number in an exam.
@@ -32,6 +37,6 @@ number in an exam.
 | `cards/quadratics.txt` | Eight cards on quadratic graphs |
 | `study/log.txt` | Sixteen sessions across a fortnight, `YYYY-MM-DD minutes tool` |
 
-`make demo-check` parses every file with the same code the add-in uses and fails
-if a line would be skipped, so the demo cannot rot into something the calculator
-refuses to read.
+`make starterpack-check` parses every file with the same code the add-in uses and
+fails if a line would be skipped, so the starter pack cannot rot into something
+the calculator refuses to read.

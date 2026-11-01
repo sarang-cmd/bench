@@ -1,0 +1,6 @@
+# tour step: 99_starterpack_seeded
+# First run: the add-in has just written the starter pack to the card, so the Notes list
+# is not empty before anything was copied over USB.
+right
+right
+exe

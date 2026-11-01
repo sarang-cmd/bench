@@ -42,9 +42,9 @@ pattern is the same everywhere:
 
 ## 3. Open a note
 
-The demo notes come with the add-in: on the first run Bench writes three of them
-to `Bench/notes`, three decks to `Bench/cards`, a study log to `Bench/study` and
-three formula booklets to `Bench/formulas`. It only writes what is missing, so a
+The starter pack notes come with the add-in: on the first run Bench writes three
+of them to `Bench/notes`, three decks to `Bench/cards`, a study log to
+`Bench/study` and three formula booklets to `Bench/formulas`. It only writes what is missing, so a
 file you made yourself is never replaced. Open **Notes** in the Study category
 and they are there.
 
@@ -52,8 +52,8 @@ To add your own, connect the calculator in USB Flash mode, copy `.md` or `.txt`
 files into `Bench/notes` in the **drive root** — the same place the `.g3a` went,
 beside `@MainMem` and not inside it — and open Notes again.
 
-Prefer files to the built-in copy? `Bench-demo-1.2.6.zip` on the downloads page
-holds the same ten files as `Bench/notes`, `Bench/cards`, `Bench/study` and
+Prefer files to the built-in copy? `Bench-starterpack-1.2.7.zip` on the downloads
+page holds the same ten files as `Bench/notes`, `Bench/cards`, `Bench/study` and
 `Bench/formulas`; extract it onto `D:\` in USB Flash mode and it lands in the
 same place.
 
@@ -142,5 +142,6 @@ name and the expected file shape.
 - `docs/plan.md` - what each tool does and why
 - `docs/STATUS.md` - what is finished, what is not, and what has been checked on
   hardware
-- `demo/` - the notes, decks and study log that ship inside the add-in (and in
-  `Bench-demo-1.2.6.zip`), editable here and regenerated with `make demo-gen`
+- `starterpack/` - the notes, decks and study log that ship inside the add-in
+  (and in `Bench-starterpack-<version>.zip`), editable here and regenerated with
+  `make starterpack-gen`

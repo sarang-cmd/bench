@@ -17,7 +17,7 @@
 #include "core/nav.h"
 #include "platform/input.h"
 #include "platform/screen.h"
-#include "platform/demo.h"
+#include "platform/starter.h"
 #include "platform/store.h"
 #include "theme.h"
 #include "version.h"
@@ -176,10 +176,10 @@ int main(void)
 
     scr_init();
     store_init();
-    /* The demo travels inside the .g3a and lands here on the first run, so a
+    /* The starter pack travels inside the .g3a and lands here on the first run, so a
      * fresh card has notes, decks, a study log and three booklets to look at
      * before anything is copied over USB.  Only missing files are written. */
-    demo_install();
+    starter_install();
     nav_reset();
     app_settings_load(&cfg);
     set_view(VIEW_MENU);

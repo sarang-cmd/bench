@@ -1,8 +1,8 @@
-/* test_demo_files.c - the demo folder, read by the add-in's own parsers.
+/* test_starter_files.c - the starter pack folder, read by the add-in's own parsers.
  *
- * demo/ ships notes, decks and a study log so a new install has something to
+ * starterpack/ ships notes, decks and a study log so a new install has something to
  * look at.  Those files are documentation, and documentation rots: a line the
- * parser skips is a line the student never sees.  This test reads every demo
+ * parser skips is a line the student never sees.  This test reads every starter pack
  * file with the same code the calculator runs and fails on a single skipped
  * line.
  *
@@ -17,7 +17,7 @@
 #include "logbook.h"
 #include "md_parse.h"
 
-/* Wide enough for the longest demo file, with room to spare. */
+/* Wide enough for the longest starter pack file, with room to spare. */
 static char text[16384];
 
 /* Reads a whole file.  Returns the length, or -1 when it cannot be opened. */
@@ -39,13 +39,13 @@ static void decks(void)
     static deck_t deck;
     static cards_issue_t issues[8];
     static char const *const files[] = {
-        "demo/cards/mechanics.txt",
-        "demo/cards/moles-and-concentration.txt",
-        "demo/cards/quadratics.txt",
+        "starterpack/cards/mechanics.txt",
+        "starterpack/cards/moles-and-concentration.txt",
+        "starterpack/cards/quadratics.txt",
     };
     static int const wanted[] = { 10, 8, 8 };
 
-    T_SECTION("demo decks parse with nothing skipped");
+    T_SECTION("starter pack decks parse with nothing skipped");
 
     for (int i = 0; i < 3; i++) {
         int len = slurp(files[i]);
@@ -70,12 +70,12 @@ static void notes(void)
 {
     static md_block_t blocks[256];
     static char const *const files[] = {
-        "demo/notes/photosynthesis.md",
-        "demo/notes/constant-acceleration.md",
-        "demo/notes/uncertainty-rules.md",
+        "starterpack/notes/photosynthesis.md",
+        "starterpack/notes/constant-acceleration.md",
+        "starterpack/notes/uncertainty-rules.md",
     };
 
-    T_SECTION("demo notes have blocks the reader can draw");
+    T_SECTION("starter pack notes have blocks the reader can draw");
 
     for (int i = 0; i < 3; i++) {
         int len = slurp(files[i]);
@@ -101,11 +101,11 @@ static void notes(void)
 static void study_log(void)
 {
     static log_entry_t entry[LOG_MAX];
-    int len = slurp("demo/study/log.txt");
+    int len = slurp("starterpack/study/log.txt");
     int skipped = -1;
     int n;
 
-    T_SECTION("the demo study log adds up");
+    T_SECTION("the starter pack study log adds up");
 
     T_TRUE(len > 0);
     if (len <= 0)
@@ -128,4 +128,4 @@ static void run_tests(void)
     study_log();
 }
 
-T_MAIN("test_demo_files")
+T_MAIN("test_starter_files")

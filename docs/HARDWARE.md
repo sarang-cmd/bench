@@ -80,13 +80,15 @@ Not yet run on hardware:
 | The bottom bar | That six labels and a selected tab sit right at 396x224, not just in the preview |
 | First-run hint | That it clears the tiles, and that F5 still makes it go away for good |
 | Settings v2 | The rows added after 1.1.0: note width, opens on, show hint line, pacer clock red at |
-| Demo content | `demo/` copied to the three folders and read by every tool |
+| Starter pack content | That the first run writes the ten files into `Bench/notes`, `Bench/cards`, `Bench/study` and `Bench/formulas`, that every tool reads them, and that a second run writes nothing over them |
 
 
 ## How to run the next pass
 
 1. Copy `Bench-<version>.g3a` to `fls0/` in USB Flash mode.
-2. Run it once, then copy `demo/notes`, `demo/cards` and `demo/study` into
+2. Run it once (it writes the starter pack itself), then, if you want the files
+   on the card by hand, copy `starterpack/notes`, `starterpack/cards` and
+   `starterpack/study` into
    `Bench/notes`, `Bench/cards` and `Bench/study`.
 3. Walk the table above, top to bottom.
 4. For anything that misbehaves, note the tool, the keys pressed and what the
@@ -113,7 +115,7 @@ Pi game          pass/fail
 Bottom bar       pass/fail   six labels, selected tab, no crowding
 First-run hint   pass/fail   clear of the tiles, gone after F5
 Settings v2      pass/fail   note width, opens on, hint line, clock red at
-Demo content     pass/fail
+Starter pack content     pass/fail
 
 Anything else:
 ```

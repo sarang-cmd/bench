@@ -1,4 +1,4 @@
-# Amount of substance.  Sample content for the demo folder.
+# Amount of substance.  Sample content for the starter pack folder.
 How many particles are in one mole? | 6.02 x 10^23, the Avogadro constant.
 What is the molar mass? | The mass of one mole of a substance, in g/mol.
 How do you find the number of moles from a mass? | Divide the mass in grams by the molar mass.

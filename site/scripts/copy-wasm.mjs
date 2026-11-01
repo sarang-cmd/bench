@@ -39,7 +39,7 @@ let source = "public/sim (committed)";
 
 if (fresh) {
   copyFileSync(join(buildDir, "bench.wasm"), served);
-  copyFileSync(join(buildDir, "demo.json"), join(target, "demo.json"));
+  copyFileSync(join(buildDir, "starterpack.json"), join(target, "starterpack.json"));
   source = "build-wasm (just built)";
 }
 
