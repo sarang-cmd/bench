@@ -21,6 +21,11 @@ mkdir -p "$fs/notes" "$fs/cards" "$fs/state"
 # State files the tour needs to show a real screen (the six expressions).
 [ -f "$root/docs/samples/state/exprs.txt" ] &&
     cp "$root/docs/samples/state/exprs.txt" "$fs/state/"
+# A Bench folder copied into @MainMem ends up in SAVE-F; one script shows that.
+mkdir -p "$fs/SAVE-F/Bench/notes"
+if [ -d "$root/docs/samples/savef/notes" ]; then
+    cp "$root"/docs/samples/savef/notes/* "$fs/SAVE-F/Bench/notes/" 2>/dev/null || true
+fi
 for f in "$root"/docs/samples/*; do
     [ -f "$f" ] || continue
     case "$f" in

@@ -291,7 +291,17 @@ static void draw_list(void)
 
     if (file_count == 0)
     {
-        w_message("No notes yet", "Copy .md or .txt into Bench/notes - .MD is fine");
+        /* Two ways to be empty, and they are not the same problem: the folder
+         * is empty, or the files went somewhere that looks right.  Copying a
+         * Bench folder into @MainMem gets it moved to SAVE-F by the calculator
+         * the moment the cable is pulled, and the screen used to say "no notes
+         * yet" while the notes were one folder away. */
+        if (store_elsewhere_exists("notes"))
+            w_message("Notes are in SAVE-F",
+                      "Move SAVE-F/Bench/notes to Bench/notes");
+        else
+            w_message("No notes yet",
+                      "Put .md or .txt in Bench/notes on the card root");
         w_strip(NULL, NULL);
         scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
                         "EXIT back", TH_INK);

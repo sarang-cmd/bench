@@ -43,15 +43,18 @@ pattern is the same everywhere:
 ## 3. Put a note in `Bench/notes`
 
 Connect the calculator in USB Flash mode and copy `.md` or `.txt` files into
-`fls0/Bench/notes`. Then open **Notes** in the Study category.
+`Bench/notes` in the **drive root** — the same place the `.g3a` went, beside
+`@MainMem` and not inside it. Then open **Notes** in the Study category.
 
 | Key | What it does |
 |---|---|
 | UP / DOWN | Scroll a line |
-| EXE | Page down |
-| ALPHA | Search inside the file |
-| F2 | Jump to the next heading |
-| F3 / F4 | Previous / next file |
+| LEFT / RIGHT | Page up / page down |
+| F1 | Search: opens the on-screen keyboard |
+| F2 | Next search hit |
+| F3 | Heading list (UP/DOWN, EXE jumps to one) |
+| F4 | Back to the top |
+| EXE / EXIT | Back to the file list |
 
 Notes draws headings, bold, italics, code, bullets, numbered lists and quotes in
 the palette, and wraps long lines. The wrap width is a setting.
@@ -112,7 +115,8 @@ Every screen that can be empty says why instead of showing a blank page:
 | Screen | What it says |
 |---|---|
 | Cards, no decks | "No decks yet" / "Put .txt decks in Bench/cards" |
-| Notes, no notes | "No notes yet" / "Put .md or .txt files in Bench/notes" |
+| Notes, no notes | "No notes yet" / "Put .md or .txt in Bench/notes on the card root" |
+| Notes, folder in the wrong place | "Notes are in SAVE-F" / "Move SAVE-F/Bench/notes to Bench/notes" |
 | Notes, empty file | "Empty note" / "Nothing to show in this file" |
 | Study log, no file | "No sessions yet." then "F1 adds one, or write Bench/study/log.txt by hand." |
 | Statistics, empty list | "Type a value, then EXE to add it." |

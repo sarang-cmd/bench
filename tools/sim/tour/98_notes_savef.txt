@@ -1,0 +1,8 @@
+# tour step: 98_notes_savef
+# starts at the home screen; see tools/sim/run_tour.sh
+# The folder Bench reads is empty and the one it cannot read has a file in it:
+# that is a Bench folder copied into @MainMem, which the calculator moves to
+# SAVE-F when the cable is pulled.  The screen says where the note went.
+right
+right
+exe

@@ -3,7 +3,7 @@
 <img src="docs/images/brand-wordmark.svg" alt="Bench" width="420">
 
 <!-- BADGES:BEGIN -->
-[![version](https://img.shields.io/badge/version-1.2.4-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
+[![version](https://img.shields.io/badge/version-1.2.5-2f2d2e)](https://github.com/sarang-cmd/bench/releases)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
 [![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
@@ -34,18 +34,18 @@ Bench-1.2.3.g3a     <- copy this to the calculator's storage root
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.4 in the tree; the newest build is 1.2.3, which the downloads page serves |
+| Version | 1.2.5 in the tree; the newest build is 1.2.3, which the downloads page serves |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
 | | |
 |---|---|
 | Tools | 22 in 3 categories |
-| Screens captured | 97 |
-| Tour scripts | 97 |
+| Screens captured | 98 |
+| Tour scripts | 98 |
 | Native test programs | 39 |
-| C source | 24,788 lines in 125 files |
-| Version | 1.2.4 |
+| C source | 24,833 lines in 125 files |
+| Version | 1.2.5 |
 <!-- STATS:END -->
 
 ## Screens
@@ -456,14 +456,35 @@ of the things only the calculator can confirm.
 Everything lives in one folder. The add-in creates the subfolders on first run.
 
 ```
-fls0/
+fls0/                       <- storage memory: the drive Windows shows
   Bench/
-    notes/*.md, *.txt      your notes        (Notes)
-    cards/*.txt            decks             (Cards)
-    state/cards.sav        Leitner boxes     (Cards, written at session end)
-    state/settings.cfg     settings          (Settings, written on change)
-    state/exprs.txt        f, g, h, p, q, r  (Function table, written on exit)
+    notes/*.md, *.txt       your notes        (Notes)
+    cards/*.txt             decks             (Cards)
+    study/log.txt           study log         (Study log, written on exit)
+    formulas/*.txt          booklets          (Formula book)
+    state/cards.sav         Leitner boxes     (Cards, written at session end)
+    state/settings.cfg      settings          (Settings, written on change)
+    state/exprs.txt         f, g, h, p, q, r  (Function table, written on exit)
+    state/hwreport.txt      device report     (Settings F3, written on F2)
 ```
+
+The add-in reads and writes nothing outside `fls0/Bench/`.
+
+### The two folders that look right and are not
+
+`@MainMem` is **main memory**, mirrored inside the drive. The calculator takes
+what is in it and **moves anything it will not keep to `SAVE-F`** when the cable
+is pulled (`fx-CG 50` manual, 13-6: contents past three levels, and anything it
+does not recognise). A `Bench` folder copied into `@MainMem` therefore ends up in
+`SAVE-F/Bench`, and Bench cannot read it there.
+
+`SAVE-F` is that bin. Files in it are not lost, they are just not where the
+add-in looks.
+
+So: the `.g3a`, and the `Bench` folder with your notes in it, both go in the
+**drive root**, next to `@MainMem` — never inside it. If the Notes screen says
+"Notes are in SAVE-F", that is exactly what happened, and moving
+`SAVE-F/Bench/notes` to `Bench/notes` fixes it.
 
 Storage rules the code follows, to spare the flash: write a file once and rename
 it into place, never write inside a loop or on a timer, save cards only at the
@@ -478,13 +499,16 @@ pacer_checkpoint 10   # marks between checkpoints, 1..200
 angle_unit 0          # 0 = degrees, 1 = radians; the unit Triangle opens in
 tour_done 0           # 1 once the first-run line on the home screen is gone
 notes_wrap 0          # 0 = fit the screen, else 50..150 percent
+startup_cat 0         # 0..3: the category the home screen opens on
+show_hint 1           # 1 to show the first-run line at all
+pacer_warn 5          # minutes left when the clock turns red; 0 = never
 ```
 
 ## Demo content
 
 `demo/` has something to look at before you have written a single note: three
-Markdown notes, three decks of cards and a fortnight of study log, ready to copy
-into `Bench/notes`, `Bench/cards` and `Bench/study`.
+Markdown notes, three decks of cards and eighteen lines of study log, ready to
+copy into `Bench/notes`, `Bench/cards` and `Bench/study`.
 
 **The text needs human proofreading.** It is written for the demo, in my own
 words, and has not been checked by a teacher; treat it as revision notes and
@@ -500,15 +524,20 @@ check anything before you rely on it in an exam.
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
 | `dist/` in the repo | [`dist/Bench-1.2.3.g3a`](dist/Bench-1.2.3.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
-| `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
+| `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.2.3.g3a > Bench-1.2.3.g3a` - plain git, for when release downloads are blocked |
 
 The copy in `dist/` is the one to use when GitHub's release assets and artifacts
 are unreachable: it is a normal file in a normal clone.
 
 1. Download the file.
-2. Connect the calculator in **USB Flash** mode and copy the file to the
-   storage root (next to the `@MainMem` folder).
-3. Press **MENU** on the calculator; Bench appears as a new add-in.
+2. Connect the calculator in **USB Flash** mode. One drive appears: that is
+   storage memory, and its root is where things go.
+3. Copy `Bench-1.2.3.g3a` there — **beside** `@MainMem`, never inside it.
+4. Copy the `Bench` folder with your notes in it to the same root, so you have
+   `D:\Bench\notes`, `D:\Bench\cards` and so on. Bench creates these folders
+   on its first run; copy into them rather than replacing them.
+5. Eject or unmount properly, then press **MENU** on the calculator; Bench
+   appears as a new add-in.
 
 Exam Mode disables add-ins entirely. Bench never reads, changes or works around
 Exam Mode; if the calculator is in Exam Mode, the add-in simply does not run.
@@ -520,8 +549,9 @@ Two builds, on purpose.
 **On a PC, no calculator and no toolchain needed:**
 
 ```sh
-make test     # the core modules, 2 300+ checks, no gint
-make py-test  # the md2bench converter
+make test     # the core modules: 39 programs, no gint
+make py-test  # every Python tool: the md2bench converter, the version bump, the
+              # CodeRabbit configuration (68 tests)
 make sim      # the whole add-in compiled against a small gint stand-in
 make shots    # render every screen into docs/images
 ```

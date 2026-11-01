@@ -72,6 +72,14 @@ int store_remove(char const *rel);
 /* List files in `folder` ("notes", "cards", "state") whose name ends with
  * `ext` (".md", ".txt"; NULL for every file).  Sorted by name.  Returns the
  * number written, or a negative error. */
+/* True when the same folder exists under SAVE-F\Bench instead - the place the
+ * calculator parks files it will not keep in main memory (fx-CG 50 manual,
+ * 13-6: anything in @MainMem past three levels, and anything it does not
+ * recognise, is moved there).  A Bench folder copied into @MainMem ends up
+ * here, and without this check the screen just says "nothing yet" while the
+ * files sit one folder away. */
+bool store_elsewhere_exists(char const *folder);
+
 int store_list(char const *folder, char const *ext, store_entry_t *out,
                int max);
 

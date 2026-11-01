@@ -388,8 +388,11 @@ int store_join(char *buf, int size, char const *folder, char const *name)
     return n >= size - 1 ? STORE_ERR_PATH : STORE_OK;
 }
 
-int store_list(char const *folder, char const *ext, store_entry_t *out,
-               int max)
+/* The listing below, rooted somewhere other than \\fls0\Bench.  Only the
+ * SAVE-F check uses the other root, and it asks for one name: the whole list
+ * machinery would be a wasteful way to answer "is anything in there". */
+static int list_from(char const *root, char const *folder, char const *ext,
+                     store_entry_t *out, int max)
 {
     static glob_pair_t globs;
     list_args_t a;
@@ -419,7 +422,7 @@ int store_list(char const *folder, char const *ext, store_entry_t *out,
             pattern = alt;
         }
 
-        path_len = append_ascii(globs.glob[globs.globs], 0, "\\\\fls0\\Bench");
+        path_len = append_ascii(globs.glob[globs.globs], 0, root);
         path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
         path_len = append_ascii(globs.glob[globs.globs], path_len, folder);
         path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
@@ -457,4 +460,19 @@ int store_list(char const *folder, char const *ext, store_entry_t *out,
         out[j + 1] = key;
     }
     return count;
+}
+
+int store_list(char const *folder, char const *ext, store_entry_t *out,
+               int max)
+{
+    return list_from("\\\\fls0\\Bench", folder, ext, out, max);
+}
+
+bool store_elsewhere_exists(char const *folder)
+{
+    static store_entry_t one[1];
+
+    if (!folder || !*folder)
+        return false;
+    return list_from("\\\\fls0\\SAVE-F\\Bench", folder, "", one, 1) > 0;
 }
