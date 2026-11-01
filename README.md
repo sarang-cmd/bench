@@ -339,6 +339,55 @@ hardware, see `docs/spike.md` - so a new entry takes the day after the newest
 one in the log, and UP/DOWN on the day moves it. The file is written once, when
 you leave the screen, never in a loop.
 
+### Prime factors
+`360 = 2^3 x 3^2 x 5`, then the four numbers that follow from it:
+
+| | 360 | 1024 |
+|---|---|---|
+| divisors | 24 | 11 |
+| their sum | 1170 | 2047 |
+| totient | 96 | 512 |
+| square-free part | 30 | 2 |
+| perfect square | no | yes |
+
+Up to 18 digits, with Miller-Rabin and Pollard's rho behind it. F2 halves the
+number and factors again. The factorisation text is written with `^` because the
+calculator's default font has no superscript digits, and inventing a glyph is
+worse than an honest `2^3`.
+
+### Percentages
+Four questions on one screen, with the working under the answer:
+
+| question | example | answer |
+|---|---|---|
+| change | from 40 to 46 | 15.00%, a rise |
+| add or take | 40 with 15% added | 46.00 |
+| reverse | 34 after 15% off | 40.00, as `34 / (1 - 15/100)` |
+| compound | 500 at 4.5% for 7 years | 680.43 |
+
+The reverse case prints the division, because "add 15% of 34 back on" is the
+mistake the screen exists to catch. Three questions have no answer - a change
+measured from zero, a 100% discount, a year count outside 0-200 - and the page
+says which rather than showing a 0.
+
+### Formula book
+The IB AA HL, Physics 2025 and Chemistry 2025 booklets as plain text in
+`Bench/formulas/`, one `.txt` per booklet. UP/DOWN scrolls a line, LEFT/RIGHT
+jumps a topic, `#`/`##`/`###` are the three heading levels. Any `.txt` in that
+folder appears in the list, so a booklet you write yourself needs no rebuild.
+
+**The three shipped booklets have not been proofread against the official PDFs**
+- the PDFs print formulae as images, so every line was typed. Each booklet says
+so on its first line, and `docs/samples/formulas/needs-human-proofreading/`
+lists what to check first.
+
+### Pi game
+Type the next digits of pi; every digit right moves you along, the first wrong
+one costs a life, and F2 gives a digit away at the cost of one. Three lives.
+200 digits, checked against a spigot computed from the algorithm rather than
+copied from the table. Nothing is written to the card, so the best score lives
+as long as the session.
+
 ## Keys
 
 | Key | Where | What |
@@ -524,6 +573,11 @@ compiler and could not reach `git.planet-casio.com`. The workflow in
 `.github/workflows/build.yml` installs fxSDK and gint and builds the file on a
 GitHub runner; `docs/STATUS.md` lists the ten questions only a calculator can
 answer (file API behaviour, float printing, font coverage, redraw time, heap).
+
+The V2 tools landed after the last release, so the newest `.g3a` on the
+downloads page is 1.1.0 and does **not** contain prime factors, percentages, the
+Pi game or the formula book. Everything in `main` builds and passes its tests;
+none of it has been on a calculator, and each changelog entry says so.
 
 ## Releasing
 
