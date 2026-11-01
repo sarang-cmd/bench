@@ -37,6 +37,7 @@ set(SOURCES
   src/core/color.c
   src/core/cplx.c
   src/core/expr.c
+  src/core/filelist.c
   src/core/exprs.c
   src/core/graph.c
   src/core/help.c

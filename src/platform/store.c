@@ -11,6 +11,8 @@
 
 #include <string.h>
 
+#include "core/filelist.h"
+
 #define PATH_MAX_U16 128
 
 static uint16_t path_buf[PATH_MAX_U16];
@@ -190,27 +192,19 @@ typedef struct {
     char const *ext;
 } list_args_t;
 
+/* The two wildcard spellings a listing tries.  CASIOWIN's BFile_FindFirst
+ * returns nothing for a bare "*" on some OS versions, so a folder that looks
+ * empty is listed again as "*.*" and filtered in C. */
+typedef struct {
+    uint16_t glob[2][PATH_MAX_U16];
+    int globs;
+} glob_pair_t;
+
 typedef struct {
     struct BFile_FileInfo info;
     uint16_t name[PATH_MAX_U16];
 } find_rec_t;
 
-static bool ends_with(char const *s, char const *suffix)
-{
-    int ls = (int)strlen(s);
-    int lf = (int)strlen(suffix);
-
-    if (lf == 0)
-        return true;
-    if (ls < lf)
-        return false;
-    for (int i = 0; i < lf; i++)
-        if (s[ls - lf + i] != suffix[i])
-            return false;
-    return true;
-}
-
-/* Keep the last path component of a found path, ASCII only. */
 static void base_name(uint16_t const *path, char *out, int size)
 {
     int start = 0;
@@ -252,7 +246,10 @@ static int body_list(void *arg)
             char name[STORE_NAME_MAX];
 
             base_name(find_rec.name, name, (int)sizeof name);
-            if (ends_with(name, a->ext ? a->ext : ""))
+            /* The rules are in core/filelist.c, where they are tested: the
+             * name has to be a real name, and the extension match ignores case
+             * so a Windows copy saved as ".MD" still appears. */
+            if (filelist_name_ok(name) && filelist_has_ext(name, a->ext))
             {
                 strncpy(a->out[count].name, name, STORE_NAME_MAX - 1);
                 a->out[count].name[STORE_NAME_MAX - 1] = 0;
@@ -393,31 +390,55 @@ int store_join(char *buf, int size, char const *folder, char const *name)
 int store_list(char const *folder, char const *ext, store_entry_t *out,
                int max)
 {
+    static glob_pair_t globs;
     list_args_t a;
     static store_entry_t tmp[STORE_LIST_MAX];
-    int count;
+    char tail[16], alt[16];
+    int count = 0;
 
     if (!folder || !out || max <= 0)
         return STORE_ERR_PATH;
     if (max > STORE_LIST_MAX)
         max = STORE_LIST_MAX;
+    if (filelist_glob(ext, tail, (int)sizeof tail) < 0)
+        return STORE_ERR_PATH;
 
-    /* Glob: \\fls0\Bench\notes\*.md */
-    path_len = append_ascii(path_buf, 0, "\\\\fls0\\Bench");
-    path_len = append_ascii(path_buf, path_len, "\\");
-    path_len = append_ascii(path_buf, path_len, folder);
-    path_len = append_ascii(path_buf, path_len, "\\*");
-    if (ext && *ext)
-        path_len = append_ascii(path_buf, path_len, ext);
+    /* \\fls0\Bench\<folder>\<glob>, then the same with the other spelling. */
+    globs.globs = 0;
+    for (int pass = 0; pass < 2; pass++)
+    {
+        char const *pattern = tail;
 
-    a.glob = path_buf;
-    a.out = tmp;
-    a.max = max;
-    a.ext = ext;
-    a.count = 0;
-    count = gint_world_switch(GINT_CALL(body_list, (void *)&a));
-    if (count < 0)
-        return 0;               /* no folder yet: treat as empty */
+        if (pass == 1)
+        {
+            if (filelist_glob_alt(ext, alt, (int)sizeof alt) < 0)
+                break;
+            if (strcmp(alt, tail) == 0)
+                break;          /* same wildcard twice is a waste of a scan */
+            pattern = alt;
+        }
+
+        path_len = append_ascii(globs.glob[globs.globs], 0, "\\\\fls0\\Bench");
+        path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
+        path_len = append_ascii(globs.glob[globs.globs], path_len, folder);
+        path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
+        append_ascii(globs.glob[globs.globs], path_len, pattern);
+        globs.globs++;
+    }
+
+    for (int pass = 0; pass < globs.globs && count == 0; pass++)
+    {
+        a.glob = globs.glob[pass];
+        a.out = tmp;
+        a.max = max;
+        a.ext = ext;
+        a.count = 0;
+        count = gint_world_switch(GINT_CALL(body_list, (void *)&a));
+        if (count < 0)
+            count = 0;          /* no folder yet: treat as empty */
+    }
+    if (count <= 0)
+        return 0;
 
     /* Insertion sort by name: at most 32 entries. */
     for (int i = 0; i < count; i++)
