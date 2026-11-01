@@ -29,7 +29,7 @@ root); see `docs/STATUS.md` "What needs the calculator".
 | Stage | Task | State |
 |-------|------|-------|
 | 1 | M0 toolchain + blank add-in | **done**: `.g3a` built by CI, release v1.0.0 |
-| 2 | M1 spike add-in | source done; `docs/spike.md` still has an empty result column |
+| 2 | M1 spike add-in | source done; the built `.g3a` now ships in `dist/` and on the downloads page as well as in its CI artifact; `docs/spike.md` still has an empty result column |
 | 3 | core logic, no hardware | **done**, 11 modules, 2 791 checks |
 | 4 | M2 shell + settings | **done** (`src/platform`, `src/ui`, `src/apps/app_menu.c`) |
 | 5 | M3..M8 wiring | **done**, all five tools and About |

@@ -9,7 +9,8 @@
 import { createServer } from "vite";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
-import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -21,7 +22,7 @@ const ROUTES = [
   ["/simulator", ["WebAssembly"]],
   ["/tutorial", ["home screen"]],
   ["/install", ["USB Flash mode"]],
-  ["/downloads", ["SHA-256"]],
+  ["/downloads", ["SHA-256", "diagnostic add-in"]],
   ["/changelog", ["1.1.0"]],
   ["/about", ["unverified on device"]],
 ];
@@ -89,6 +90,37 @@ try {
     }
   }
   console.log(`  ok   vercel.json sends the isolation headers`);
+
+  // The spike card is drawn from spike.generated.json, which scripts/fetch-spike.mjs
+  // writes only after copying the file it describes into public/. Check the two
+  // sides agree, so the page cannot offer a download that is not there - and
+  // cannot hide one that is.
+  const spike = JSON.parse(readFileSync(join(root, "src", "spike.generated.json"), "utf8"));
+  const spikeChecks = [
+    ["patch", "spike.diff"],
+    ["binary", spike.binary?.file],
+  ];
+  for (const [kind, file] of spikeChecks) {
+    if (!file) {
+      console.log(`  ok   spike ${kind}: none built, so none is offered`);
+      continue;
+    }
+    const onDisk = join(root, "public", file);
+    if (!existsSync(onDisk)) {
+      failures++;
+      console.log(`  FAIL spike ${kind}: ${file} is described but missing from public/`);
+      continue;
+    }
+    const bytes = readFileSync(onDisk);
+    const hash = createHash("sha256").update(bytes).digest("hex");
+    const stated = kind === "patch" ? spike.patch.sha256 : spike.binary.sha256;
+    if (hash !== stated) {
+      failures++;
+      console.log(`  FAIL spike ${kind}: ${file} hashes to ${hash.slice(0, 12)}..., page says ${stated.slice(0, 12)}...`);
+    } else {
+      console.log(`  ok   spike ${kind}: ${file} is there and matches its hash`);
+    }
+  }
 } finally {
   await server.close();
 }

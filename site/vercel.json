@@ -16,6 +16,13 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=600" }]
     },
     {
+      "source": "/spike.diff",
+      "headers": [
+        { "key": "Content-Type", "value": "text/x-diff; charset=utf-8" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"spike.diff\"" }
+      ]
+    },
+    {
       "source": "/Bench-(.*)",
       "headers": [
         { "key": "Content-Type", "value": "application/octet-stream" },

@@ -6,16 +6,20 @@ build also lives here.
 
 | | |
 |---|---|
-| File | `Bench-<version>.g3a` |
-| Version | from `version.txt` |
+| File | `Bench-<version>.g3a`, plus `Bench-spike-<version>.g3a` |
+| Version | from `version.txt` (the spike carries its own) |
 | Built from | the commit in `BUILD.txt` |
 | Refreshed by | CI, on every push to `main` and every tag, as a commit marked `[skip ci]` |
 
 `BUILD.txt` records the commit, the size and the SHA-256, so a file found here can
-be checked against the release without downloading it again.
+be checked against the release without downloading it again. `SPIKE.txt` does the
+same for the diagnostic add-in.
 
-The M1 diagnostic add-in (`spike/`) is **not** here and never was. It has its own
-`bench-spike` CI artifact; see `docs/spike.md`.
+The M1 diagnostic add-in (`spike/`) sits next to it as
+`Bench-spike-<version>.g3a`, described by `SPIKE.txt` instead of `BUILD.txt`.
+It is a diagnostic, not Bench: it runs ten measurements and prints the numbers.
+Both files are here so that a hardware session needs one clone and nothing from
+blob storage; `docs/spike.md` says which is which.
 
 ## Which copy is which
 

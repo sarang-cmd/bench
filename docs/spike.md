@@ -8,20 +8,24 @@ rate, heap, drawable area, redraw cost, empty-add-in size). Bench does not call
 it and does not need it at runtime.
 
 It is still built by CI, so it stays compiled and available when a hardware
-session needs it, but it travels in its own `bench-spike` artifact. The
-`bench-g3a` artifact, the `builds` branch, `dist/` and every release hold the
-add-in and nothing else, so downloading "the build" cannot hand anyone the
-wrong file:
+session needs it. It travels in three places now:
+
+- its own `bench-spike` CI artifact,
+- `dist/` in this repository, as `Bench-spike-0.0.2.g3a` beside Bench's own
+  `.g3a`, with `dist/SPIKE.txt` recording its commit, size and SHA-256,
+- the site's downloads page, where it has its own card under the heading
+  "The diagnostic add-in", or the patch when no binary has been built yet.
 
 ```sh
 gh run download --name bench-g3a   --dir dist   # Bench-<version>.g3a
 gh run download --name bench-spike --dir dist   # Bench-spike-0.0.2.g3a
 ```
 
-Keeping it off the release page is deliberate: two `.g3a` files with similar
-names, one of which prints debug numbers, is a trap for anyone who just wants
-the add-in. `dist/` in this repository holds Bench's `.g3a` and only that, for
-the same reason.
+The release page still carries Bench and nothing else, and the site's install
+page still offers one button for one file: two `.g3a` files with similar names is
+a trap for anyone who just wants the add-in, so the spike is always labelled as a
+diagnostic and never sits where Bench is downloaded. `dist/` keeps the two apart
+with two manifest files rather than one.
 
 ## Where the files are
 
@@ -29,8 +33,9 @@ the same reason.
 |---|---|
 | `spike/main.c`, `spike/CMakeLists.txt` | the source, kept so the patch can be regenerated |
 | `spike/spike.diff` | the same two files as one patch, checked by CI |
-| `Bench-spike-0.0.2.g3a` | the built add-in: `bench-spike` artifact only, never a release |
-| `dist/Bench-<version>.g3a` | Bench itself, committed; no spike |
+| `Bench-spike-0.0.2.g3a` | the built add-in: the `bench-spike` artifact, `dist/`, and the site's downloads page; never a release |
+| `dist/Bench-<version>.g3a` | Bench itself, committed |
+| `dist/Bench-spike-0.0.2.g3a`, `dist/SPIKE.txt` | the spike and its manifest, committed |
 
 ## The patch
 
