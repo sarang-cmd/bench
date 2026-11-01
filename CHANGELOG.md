@@ -15,6 +15,16 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **EXIT goes back where you came from**: closing a tool used to land on the home
+  screen with Study selected, first tile, every single time - so a Maths or
+  Science session meant walking back to the right category after every tool.
+  The add-in now keeps a small stack of the screens it came through
+  (`src/core/nav.c`, 525 native checks over push/pop, repeat pushes, a full
+  stack and 500 random presses). EXIT and the help screen's way out both walk
+  back one screen at a time, and the home screen remembers the category and the
+  tile you were on instead of resetting itself. Two tour scripts record it:
+  `78_back_to_maths` and `79_back_from_settings_about`.
+
 - **The browser simulator has the calculator's keypad**: it was a flat 5-column
   grid that followed no physical keyboard - DEL next to 9, ALPHA where x² is,
   arrows spread over two rows. It is now the fx-CG 50 layout: six function keys

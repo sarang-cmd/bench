@@ -44,6 +44,7 @@ set(SOURCES
   src/core/logbook.c
   src/core/mathfn.c
   src/core/md_layout.c
+  src/core/nav.c
   src/core/md_parse.c
   src/core/numfmt.c
   src/core/numparse.c

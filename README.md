@@ -41,10 +41,10 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | | |
 |---|---|
 | Tools | 18 in 3 categories |
-| Screens captured | 77 |
-| Tour scripts | 77 |
-| Native test programs | 32 |
-| C source | 22,204 lines in 107 files |
+| Screens captured | 79 |
+| Tour scripts | 79 |
+| Native test programs | 33 |
+| C source | 22,317 lines in 109 files |
 | Version | 1.1.0 |
 <!-- STATS:END -->
 

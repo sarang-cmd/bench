@@ -33,6 +33,10 @@
 
 static tool_category_t category;
 static int sel;          /* index inside the category */
+/* Non-zero once the menu has been shown.  Returning from a tool must not
+ * reset the category and the tile the user was on: that is how EXIT used to
+ * drop them back on Study, first tile, every time. */
+static int remembered;
 static int cards_files;  /* dashboard: decks on the card, counted once */
 static int notes_files;
 
@@ -147,8 +151,21 @@ static void draw_dots(int pages, int page, int y)
 
 void app_menu_init(void)
 {
-    category = TOOL_CAT_STUDY;
-    sel = 0;
+    if (!remembered)
+    {
+        category = TOOL_CAT_STUDY;
+        sel = 0;
+        remembered = 1;
+    }
+    else if (sel >= tool_category_size(category))
+    {
+        /* The tool list shrank under a stale selection: land on the last tile. */
+        sel = tool_category_size(category) - 1;
+        if (sel < 0)
+            sel = 0;
+    }
+    /* The counts can have changed while a tool was open, so they are always
+     * re-read; only the cursor is remembered. */
     dashboard_count();
 }
 

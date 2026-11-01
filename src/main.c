@@ -14,6 +14,7 @@
 #include <gint/display.h>
 
 #include "apps/app.h"
+#include "core/nav.h"
 #include "platform/input.h"
 #include "platform/screen.h"
 #include "platform/store.h"
@@ -56,8 +57,6 @@ typedef struct {
 
 static bench_settings_t cfg;
 static view_t view = VIEW_MENU;
-/* The screen to come back to when a screen opened a modal-ish one (help). */
-static view_t view_before = VIEW_MENU;
 
 /* Declared before the table so the initialisers below can name the apps. */
 static app_entry_t const apps[VIEW_COUNT] = {
@@ -121,9 +120,12 @@ static void set_view(view_t v)
     apps[view].init();
 }
 
+/* Open another screen.  The screen being left is remembered in core/nav.c, so
+ * EXIT and the help screen's way out both walk back the way the user came
+ * instead of dropping them on the home screen every time. */
 void app_open(app_screen_t screen)
 {
-    view_before = view;
+    nav_push((int)view);
     switch (screen)
     {
     case APP_SCREEN_PACER: set_view(VIEW_PACER); break;
@@ -158,6 +160,7 @@ int main(void)
 
     scr_init();
     store_init();
+    nav_reset();
     app_settings_load(&cfg);
     set_view(VIEW_MENU);
 
@@ -180,10 +183,17 @@ int main(void)
         r = cur->key(ev);
         if (r == APP_QUIT)
             break;
-        if (r == APP_BACK)
-            set_view(VIEW_MENU);
-        if (r == APP_UP)
-            set_view(view_before);
+        if (r == APP_BACK || r == APP_UP)
+        {
+            /* Back the way we came; the home screen when there is nothing
+             * behind this one.  nav_pop() never returns this screen, so EXIT
+             * cannot stand still. */
+            int const previous = nav_pop();
+
+            set_view(previous < 0 || previous >= (int)VIEW_COUNT
+                         ? VIEW_MENU
+                         : (view_t)previous);
+        }
     }
 
     /* Leave the display in a known state for the OS. */
