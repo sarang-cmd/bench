@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "version": "1.2.8",
+      "date": "unreleased",
+      "entries": [
+        {
+          "title": "`check-pages.mjs` checked a file nothing had fetched.",
+          "body": "A fresh checkout has no `site/public/Bench-*.g3a` and no `site/public/Bench-starterpack-*.zip`; both are gitignored and `fetch-addin.mjs` puts them there during `npm run build`, which runs *after* the page check. So the new \"the zip the page offers is really there, and hashes to what the page prints\" check reported \"described but missing from public/\" on every run. It now runs `fetch-addin.mjs` itself before rendering, exactly as it already ran `fetch-spike.mjs` for the same reason; a failure there is reported, not fatal, because the page still renders and the checks still say what is missing."
+        },
+        {
+          "title": "The add-in gets the same check",
+          "body": "the page prints a size and a SHA-256 for the `.g3a`, and that file is now compared with them too, so a stale download in `public/` cannot be served under a hash that belongs to a different build."
+        },
+        {
+          "title": "Reproduced before fixing",
+          "body": "a fresh `git clone --branch v1.2.7`, `npm ci`, `node scripts/check-pages.mjs` fails with exactly the CI message (`FAIL starter pack zip: Bench-starterpack-1.2.7.zip is described but missing from public/`), and passes after the change."
+        },
+        {
+          "title": "`dist/` keeps one starter pack zip",
+          "body": "`Bench-starterpack-1.2.8.zip` (the ten files, unchanged since 1.2.7), so the repository does not accumulate a copy per release. The release job already deletes the old one before copying the new."
+        }
+      ]
+    },
+    {
       "version": "1.2.7",
       "date": "2026-11-01",
       "entries": [

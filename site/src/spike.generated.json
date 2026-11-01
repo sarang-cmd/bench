@@ -8,9 +8,9 @@
     "file": "Bench-spike-0.0.2.g3a",
     "version": "0.0.2",
     "size": 60100,
-    "sha256": "229fd53116fc7b808c5def25e6070af9f9a70fc5b18dbdd9e9313e76944aff55",
+    "sha256": "b1b6a545bf0117a16548102a9d591e97810f862d52e0fa9a97724afd56005c58",
     "source": "public",
-    "commit": "9ed9435bdab06641f14d46b8a438fed24b431530",
+    "commit": "c01ad4ab62ff9201dd2b122fb14c89a3adcb51cf",
     "built": "2026-11-01",
     "verified": true
   }
