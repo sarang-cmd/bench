@@ -299,6 +299,51 @@ jobs:
           path: spike/Bench-spike-*.g3a
           if-no-files-found: ignore
 
+      # dist/ is only rewritten by tagged and automatic builds, which would leave
+      # a plain push to main with no way to add a file that is missing from it -
+      # exactly the case the first time the spike was published there. This fills
+      # that one gap and nothing else: it writes dist/Bench-spike-*.g3a and
+      # dist/SPIKE.txt only when the file is not already in dist/, so a commit
+      # that lands on main cannot rewrite the repository every time.
+      - name: Backfill the spike into dist/ if it is missing
+        if: github.ref == 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -uo pipefail
+          shopt -s nullglob
+          spikes=(spike/Bench-spike-*.g3a)
+          if [ ${#spikes[@]} -eq 0 ]; then
+            echo "no spike was built here; nothing to backfill"
+            exit 0
+          fi
+          spike=${spikes[0]}
+          name=$(basename "$spike")
+          dir=$(mktemp -d)
+          git clone --quiet --depth 1 --branch main \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$dir" \
+            || { echo "::warning title=dist::cannot clone main; spike not backfilled"; exit 0; }
+          if [ -f "$dir/dist/$name" ]; then
+            echo "dist/ already holds $name"
+            exit 0
+          fi
+          cp "$spike" "$dir/dist/$name"
+          {
+            printf 'file %s\n' "$name"
+            printf 'size %s\n' "$(stat -c %s "$spike")"
+            printf 'sha256 %s\n' "$(sha256sum "$spike" | cut -d' ' -f1)"
+            printf 'commit %s\n' "$GITHUB_SHA"
+            printf 'built %s\n' "$(date -u +%Y-%m-%d)"
+          } > "$dir/dist/SPIKE.txt"
+          cd "$dir"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A dist
+          git commit --quiet -m "dist: add the M1 spike ${name##Bench-spike-} from ${GITHUB_SHA:0:7} [skip ci]"
+          git push --quiet origin HEAD:main \
+            || echo "::warning title=dist::main moved during the build; spike not backfilled"
+
       # The release notes are the CHANGELOG section for this version, written by
       # hand and committed: generate_release_notes calls a second API that the
       # token in this repository cannot reach. An automatic build has no
