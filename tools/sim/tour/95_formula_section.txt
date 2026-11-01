@@ -1,0 +1,11 @@
+# tour step: 95_formula_section
+# starts at the home screen; see tools/sim/run_tour.sh
+# RIGHT jumps a topic, not every sub-heading: the third booklet, from its title
+# straight to "Mechanics".
+tool:formulas
+down
+down
+exe
+right
+right
+right

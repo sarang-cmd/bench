@@ -1,0 +1,10 @@
+# tour step: 94_formula_physics
+# starts at the home screen; see tools/sim/run_tour.sh
+# The Physics booklet: the third file, open, LEFT and RIGHT jump whole sections
+# the way a reader turns to a topic.
+tool:formulas
+down
+down
+exe
+right
+right

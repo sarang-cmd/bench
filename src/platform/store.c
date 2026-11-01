@@ -268,7 +268,8 @@ static int body_list(void *arg)
 
 int store_init(void)
 {
-    static char const *folders[] = { "", "notes", "cards", "state", "study" };
+    static char const *folders[] = { "", "notes", "cards", "state", "study",
+                                     "formulas" };
 
     for (unsigned int i = 0; i < sizeof folders / sizeof folders[0]; i++)
     {

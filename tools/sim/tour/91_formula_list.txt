@@ -1,0 +1,5 @@
+# tour step: 91_formula_list
+# starts at the home screen; see tools/sim/run_tour.sh
+# The booklets on the card. Every .txt in Bench/formulas appears, so a booklet
+# someone writes themselves shows up without a rebuild.
+tool:formulas

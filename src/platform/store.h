@@ -8,6 +8,7 @@
  *     cards/<name>.txt
  *     state/cards.sav
  *     state/settings.cfg
+ *     formulas/<name>.txt
  *
  * gint 2.10.0 facts this file is built on (headers checked):
  *   BFile_Create(path, BFile_File|BFile_Folder, &size), BFile_Open/Read/Write/
@@ -36,6 +37,11 @@
 #define STORE_ERR_WRITE (-4)
 #define STORE_ERR_TOO_BIG (-5)  /* the file does not fit the caller's buffer */
 #define STORE_ERR_EXISTS (-6)
+
+/* Largest file Bench will read into memory.  Notes are capped far lower; this
+ * is the ceiling for a formula booklet, which is the biggest thing the add-in
+ * ever loads, and it is checked before a single byte is read. */
+#define STORE_FILE_MAX 24576
 
 #define STORE_NAME_MAX 72
 #define STORE_LIST_MAX 32
