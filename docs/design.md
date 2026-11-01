@@ -63,6 +63,20 @@ a 20x20 icon with two lines under it, both left aligned to the same 7 px margin:
   the selected tile gets, and it is why the selected tile reads at 12:1
   whatever the accent is.
 
+### Paging
+
+More than six tools in a category get pages. The marker is a bordered pill under
+the grid, `1 / 2`, with a red arrow on each side that leads somewhere — only the
+live arrows are drawn, because a greyed one would be shade on paper at 1.31:1
+and the screen checker rejects it (correctly: at that contrast it is a smudge).
+The pill only takes the extra band when the category actually pages, so a
+category with one page keeps the whole grid.
+
+The grid is centred on the rows **of the page being drawn**. Counting the whole
+category is a bug that shipped once: nine Math tools meant three rows of height
+inside a two-row page, a negative centring offset, and the first row drawn over
+the title bar.
+
 ## 4. Type
 
 One font, one size, `TH_LINE` of leading. Hierarchy comes from colour, weight

@@ -1,0 +1,6 @@
+# tour step: 80_math_page_one
+# starts at the home screen; see tools/sim/run_tour.sh
+# Math has nine tools, so it is the first category with a second page.  The
+# "1 / 2" pill sits under the grid, with an arrow only on the side that leads
+# somewhere.
+f2

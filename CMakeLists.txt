@@ -53,6 +53,7 @@ set(SOURCES
   src/core/history.c
   src/core/hwreport.c
   src/core/numtheory.c
+  src/core/pageind.c
   src/core/poly.c
   src/core/roots.c
   src/core/pacer.c

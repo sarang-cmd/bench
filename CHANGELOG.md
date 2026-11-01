@@ -15,6 +15,21 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **The page indicator, and the missing Math title bar**: a category with more
+  than six tools paged with two 4 px squares and a hole punched in the current
+  one - "too subtle" was the report, and it was right: at 384 px that reads as
+  dust. The indicator is now a bordered pill reading `1 / 2` with an arrow on
+  each side that leads somewhere (only the live ones are drawn; a greyed one
+  would be shade on paper at 1.3:1, which the screen checker rejects). The pill
+  takes the space it needs only in categories that page, so every other category
+  keeps the full grid. Chasing it found a second bug: the centring maths counted
+  every tool in the category rather than the tools on the page, so Math's nine
+  tools meant three rows of height, a negative offset, and the first row drawn
+  over the title bar - the Math category had no title at all since the V2 push.
+  Both are fixed, and `tests/test_pageind.c` checks the label, the arrow states
+  and the clamping (31 checks), including the 10 / 12 two-digit case and a
+  buffer one byte too small. **Unverified on device.**
+
 - **A scrollbar on every screen that scrolls**: a Notes file, a deck list, the
   study log, the root finder's iteration table and a help page all scrolled with
   nothing on screen saying so. The bar is now three pixels wide (it was two, a
