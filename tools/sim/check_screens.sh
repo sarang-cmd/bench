@@ -45,4 +45,4 @@ if [ "$fail" -ne 0 ]; then
     echo "SCREEN CHECKS FAILED ($fail of $count scripts)"
     exit 1
 fi
-echo "SCREEN CHECKS PASSED ($count scripts: no overlaps, all text readable)"
+echo "SCREEN CHECKS PASSED ($count scripts: no overlaps, no labels on borders, all text readable)"

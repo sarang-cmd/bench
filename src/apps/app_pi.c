@@ -29,6 +29,7 @@
 #include "platform/input.h"
 #include "platform/screen.h"
 #include "theme.h"
+#include "ui/numtext.h"
 #include "ui/widgets.h"
 
 #define LIVES 3

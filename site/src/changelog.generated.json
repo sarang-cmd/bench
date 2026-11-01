@@ -1,9 +1,21 @@
 {
   "releases": [
     {
-      "version": "1.2.2",
+      "version": "1.2.3",
       "date": "2026-11-01",
       "entries": [
+        {
+          "title": "The calculator build has been failing since the Pi game landed",
+          "body": "`app_pi.c` calls `nt_append` without including `ui/numtext.h`. The host preview took it as a warning and drew a perfect screenshot; the fxSDK build runs `-Werror=implicit-function-declaration` and stopped, so there has been no `.g3a` since 1.1.0 and the tagged release for 1.2.2 could not exist. The include is one line; the reason it went unseen for four merges is that the two builds disagreed about which warnings matter, so the preview now compiles with the same `-Werror=implicit-function-declaration` as the calculator and the candidate `.g3a` cannot be the only thing that finds it."
+        },
+        {
+          "title": "The committed WebAssembly build is rebuilt from these sources",
+          "body": ", so the simulator on the site is the same code as the screenshots again. Its smoke runs (`down,exe` and the worker path) pass. **Unverified on device.**"
+        },
+        {
+          "title": "The screen checker can see a label sitting on a border",
+          "body": "it compared rectangles, so two things that merely touched were \"not overlapping\" and passed. The menu's first-run hint spent eleven merged pull requests with its ascenders on the bottom tile border, and 97 green screenshots said nothing about it. `scr_frame` is traced now - `scr_fill` records only panels of 8x4 or more, and a two-pixel border is exactly the size that goes wrong - and a label within two pixels of any frame, inside or out, fails the run. Checked against the old layout: it reports the hint and nothing else, so the rule has teeth without inventing work on the other 96 screens. `docs/design.md` lists it. **Unverified on device.**"
+        },
         {
           "title": "The site was not deploying at all",
           "body": "`node scripts/gen-tools.mjs` has failed on every push since the four V2 tools landed, because each says in its own words what it does and `site/src/toolCopy.js` still listed twenty-two of them. The build reported \"registry tool \\\"factor\\\" (Prime factors) has no copy\" and stopped, so the last successful deployment predates Prime factors, Percentages, the Formula book and the Pi game. All four are in `toolCopy.js` now, with their real screenshots, and are in the \"own words\" set that needs proofreading."
