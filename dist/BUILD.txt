@@ -1,6 +1,6 @@
-version 1.2.7
-file Bench-1.2.7.g3a
+version 1.2.8
+file Bench-1.2.8.g3a
 size 287228
-sha256 8d902660c5f897e2a27a0a261bdd0fc5f0d38cc014a5c0cbc4323ac73cf43f5e
-commit c01ad4ab62ff9201dd2b122fb14c89a3adcb51cf
+sha256 311e6f95d265fe502284a47db659c2451be0d13b074ddf1deab86ccc353ed20c
+commit 9c5258ec96bb2188e72e573553b4ffba8650ca64
 built 2026-11-01
