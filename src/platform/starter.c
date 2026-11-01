@@ -50,9 +50,10 @@ int starter_install(void)
             continue;
         if (store_join(rel, (int)sizeof rel, file->folder, file->name) != STORE_OK)
             continue;
-        /* Never overwrite: the starter pack is a starting point, and a note the user
-         * edited under the same name is theirs. */
-        if (store_exists(rel))
+        /* Never overwrite, and never shadow: a file of that name anywhere Bench
+         * can read - Bench, SAVE-F or the card root - counts as the user's, so
+         * seeding cannot add a second copy that hides theirs. */
+        if (store_exists_any(file->folder, file->name))
             continue;
 
         /* Join the parts.  The literal limit is why they are parts at all. */

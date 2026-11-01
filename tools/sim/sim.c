@@ -836,13 +836,18 @@ static void path_to_host(uint16_t const *path, char *out, int size)
     }
     ascii[n] = 0;
 
-    /* "\\fls0/Bench/..." becomes "$BENCH_FS/..." */
-    if (strncmp(ascii, "//fls0/Bench", 12) == 0)
-        snprintf(out, (size_t)size, "%s%s", root, ascii + 12);
-    else if (strncmp(ascii, "//fls0", 6) == 0)
-        snprintf(out, (size_t)size, "%s%s", root, ascii + 6);
+    /* "\\fls0\\Bench\\notes\\a.md" becomes "$BENCH_FS/fls0/Bench/notes/a.md".
+     *
+     * The drive gets its own folder in the scratch tree, because the drive is
+     * what the calculator shows in USB Flash mode: the Bench folder, SAVE-F and
+     * loose files all sit in it side by side.  Flattening \\fls0\\Bench onto the
+     * scratch root - which this used to do - made "Bench/notes" and the card
+     * root the same directory, so the host preview could not tell a file in the
+     * right folder from one in the wrong one. */
+    if (strncmp(ascii, "//fls0", 6) == 0)
+        snprintf(out, (size_t)size, "%s/fls0%s", root, ascii + 6);
     else
-        snprintf(out, (size_t)size, "%s/%s", root, ascii);
+        snprintf(out, (size_t)size, "%s/fls0/%s", root, ascii);
 }
 
 #define SIM_MAX_FILES 16

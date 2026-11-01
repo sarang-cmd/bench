@@ -63,15 +63,23 @@ async function boot({ sab, wasm, starterpack, shim, width, height }) {
   // The add-in expects notes/, cards/, study/ under its root.  The wasm has no
   // real disk, so the starter pack the build put next to it goes in here; the
   // add-in then sees a calculator with something on it, not empty folders.
+  // Keys are paths from the drive root ("fls0/Bench/notes/a.md"), so the
+  // scratch filesystem has the same shape as the calculator's: a drive holding
+  // Bench, SAVE-F and whatever else.
   const packFiles = await (await fetch(starterpack)).json();
   const tree = new Map();
   for (const [path, b64] of Object.entries(packFiles)) {
-    const [folder, name] = path.split("/");
-    if (!tree.has(folder)) tree.set(folder, new Directory(new Map()));
+    const parts = path.split("/");
+    const name = parts.pop();
+    let dir = tree;
+    for (const part of parts) {
+      if (!dir.has(part)) dir.set(part, new Directory(new Map()));
+      dir = dir.get(part).contents;
+    }
     const raw = atob(b64);
     const bytes = new Uint8Array(raw.length);
     for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
-    tree.get(folder).contents.set(name, new File([...bytes]));
+    dir.set(name, new File([...bytes]));
   }
 
   const fds = [

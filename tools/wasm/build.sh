@@ -91,7 +91,11 @@ for folder in ("notes", "cards", "study"):
         full = os.path.join(path, name)
         if os.path.isfile(full):
             with open(full, "rb") as fh:
-                files[f"{folder}/{name}"] = base64.b64encode(fh.read()).decode("ascii")
+                # The key is the path from the drive root, the same way the
+                # calculator sees it: the drive holds Bench, not the other way
+                # round.  The worker makes the folders from these keys.
+                files[f"fls0/Bench/{folder}/{name}"] = base64.b64encode(
+                    fh.read()).decode("ascii")
 with open(dest, "w", encoding="utf-8") as fh:
     json.dump(files, fh, indent=0, sort_keys=True)
     fh.write("\n")

@@ -200,9 +200,16 @@ typedef struct {
     int globs;
 } glob_pair_t;
 
+/* BFile_FindFirst/FindNext write the *full path* of the match into this buffer,
+ * not just the name, and gint's bfile.h asks for 262 FONTCHARACTER of room.
+ * A shorter buffer worked on the host preview, where names are short, and is
+ * memory corruption on the calculator - which is exactly the kind of thing that
+ * shows up as "it cannot see my files" and nowhere else. */
+#define FIND_NAME_MAX 264
+
 typedef struct {
     struct BFile_FileInfo info;
-    uint16_t name[PATH_MAX_U16];
+    uint16_t name[FIND_NAME_MAX];
 } find_rec_t;
 
 static void base_name(uint16_t const *path, char *out, int size)
@@ -414,12 +421,31 @@ int store_join(char *buf, int size, char const *folder, char const *name)
     return n >= size - 1 ? STORE_ERR_PATH : STORE_OK;
 }
 
-/* The listing below, rooted somewhere other than \\fls0\Bench.  Only the
- * SAVE-F check uses the other root, and it asks for one name: the whole list
- * machinery would be a wasteful way to answer "is anything in there". */
-static int list_from(char const *root, char const *folder, char const *ext,
+/* The roots, in the order they are tried.  All three are relative to the drive
+ * the calculator shows as a letter in USB Flash mode. */
+static char const *root_path(store_location_t at)
+{
+    switch (at)
+    {
+        case STORE_AT_SAVEF: return "\\\\fls0\\SAVE-F\\Bench";
+        case STORE_AT_ROOT:
+        case STORE_AT_LOOSE: return "\\\\fls0";
+        default:             return "\\\\fls0\\Bench";
+    }
+}
+
+/* A "loose" place has the files directly in it, with no folder of their own:
+ * someone who copies `photosynthesis.md` onto D:\\ rather than into
+ * D:\\Bench\\notes should still see it in Notes. */
+static bool location_is_flat(store_location_t at)
+{
+    return at == STORE_AT_LOOSE;
+}
+
+static int list_from(store_location_t at, char const *folder, char const *ext,
                      store_entry_t *out, int max)
 {
+    char const *root = root_path(at);
     static glob_pair_t globs;
     list_args_t a;
     static store_entry_t tmp[STORE_LIST_MAX];
@@ -450,8 +476,11 @@ static int list_from(char const *root, char const *folder, char const *ext,
 
         path_len = append_ascii(globs.glob[globs.globs], 0, root);
         path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
-        path_len = append_ascii(globs.glob[globs.globs], path_len, folder);
-        path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
+        if (!location_is_flat(at))
+        {
+            path_len = append_ascii(globs.glob[globs.globs], path_len, folder);
+            path_len = append_ascii(globs.glob[globs.globs], path_len, "\\");
+        }
         append_ascii(globs.glob[globs.globs], path_len, pattern);
         globs.globs++;
     }
@@ -472,7 +501,10 @@ static int list_from(char const *root, char const *folder, char const *ext,
 
     /* Insertion sort by name: at most 32 entries. */
     for (int i = 0; i < count; i++)
+    {
         out[i] = tmp[i];
+        out[i].at = (uint8_t)at;
+    }
     for (int i = 1; i < count; i++)
     {
         store_entry_t key = out[i];
@@ -488,10 +520,129 @@ static int list_from(char const *root, char const *folder, char const *ext,
     return count;
 }
 
+static store_location_t last_list_at = STORE_AT_BENCH;
+
+/* The first place that has anything wins, so one screen never mixes files from
+ * two folders without saying so (and the reader then opens them from there). */
 int store_list(char const *folder, char const *ext, store_entry_t *out,
                int max)
 {
-    return list_from("\\\\fls0\\Bench", folder, ext, out, max);
+    /* Deliberately not reset here: a screen lists ".md" and then ".txt", and
+     * the second call finding nothing must not make the caption claim the files
+     * are in Bench when the first call took them from SAVE-F. */
+    for (int at = STORE_AT_BENCH; at < STORE_AT_COUNT; at++)
+    {
+        int n;
+
+        /* The drive root also holds the .g3a and whatever else lives there, so
+         * it is only scanned when the caller named an extension to want. */
+        if (at == STORE_AT_LOOSE && (!ext || !*ext))
+            continue;
+        n = list_from((store_location_t)at, folder, ext, out, max);
+
+        if (n > 0)
+        {
+            last_list_at = (store_location_t)at;
+            return n;
+        }
+    }
+    /* Nothing anywhere: the caller gets the same 0 it always got, and the
+     * empty-state screens behave as they did before. */
+    return 0;
+}
+
+store_location_t store_list_location(void)
+{
+    return last_list_at;
+}
+
+char const *store_location_name(store_location_t at)
+{
+    switch (at)
+    {
+        case STORE_AT_SAVEF: return "SAVE-F";
+        case STORE_AT_ROOT:  return "card root";
+        default:             return "Bench";
+    }
+}
+
+/* Build \\fls0\\<root>\\<folder>\\<name> for one location.  `at` of
+ * STORE_AT_BENCH reuses build_path(), which is the same path spelled once. */
+static void build_at(store_location_t at, char const *folder, char const *name)
+{
+    char const *root = root_path(at);
+
+    path_len = append_ascii(path_buf, 0, root);
+    path_len = append_ascii(path_buf, path_len, "\\");
+    if (!location_is_flat(at))
+    {
+        path_len = append_ascii(path_buf, path_len, folder);
+        path_len = append_ascii(path_buf, path_len, "\\");
+    }
+    append_ascii(path_buf, path_len, name);
+}
+
+int store_read_at(int at, char const *folder, char const *name, char *buf,
+                  int size, int *len)
+{
+    read_args_t a;
+
+    if (len)
+        *len = 0;
+    if (!folder || !name || !buf || size <= 0)
+        return STORE_ERR_PATH;
+
+    for (int pass = 0; pass < STORE_AT_COUNT; pass++)
+    {
+        store_location_t here;
+        int rc;
+
+        if (at != STORE_AT_ANY && pass > 0)
+            break;
+        here = (at == STORE_AT_ANY) ? (store_location_t)pass
+                                    : (store_location_t)at;
+
+        build_at(here, folder, name);
+        a.path = path_buf;
+        a.buf = buf;
+        a.size = size;
+        a.len = 0;
+        rc = gint_world_switch(GINT_CALL(body_read, (void *)&a));
+        if (len)
+            *len = a.len;
+        if (rc != STORE_ERR_OPEN)
+            return rc;             /* read, or too big: both are answers */
+        buf[0] = 0;
+    }
+    return STORE_ERR_OPEN;
+}
+
+bool store_exists_any(char const *folder, char const *name)
+{
+    if (!folder || !name)
+        return false;
+    for (int at = STORE_AT_BENCH; at < STORE_AT_COUNT; at++)
+    {
+        exists_args_t a;
+
+        build_at((store_location_t)at, folder, name);
+        a.path = path_buf;
+        if (gint_world_switch(GINT_CALL(body_exists, (void *)&a)) > 0)
+            return true;
+    }
+    return false;
+}
+
+void store_probe(char const *folder, char const *ext,
+                 int counts[STORE_AT_COUNT])
+{
+    static store_entry_t one[STORE_LIST_MAX];
+
+    if (!counts)
+        return;
+    for (int at = 0; at < STORE_AT_COUNT; at++)
+        counts[at] = list_from((store_location_t)at, folder, ext, one,
+                               STORE_LIST_MAX);
 }
 
 bool store_elsewhere_exists(char const *folder)
@@ -500,5 +651,6 @@ bool store_elsewhere_exists(char const *folder)
 
     if (!folder || !*folder)
         return false;
-    return list_from("\\\\fls0\\SAVE-F\\Bench", folder, "", one, 1) > 0;
+    return list_from(STORE_AT_SAVEF, folder, "", one, 1) > 0 ||
+           list_from(STORE_AT_ROOT, folder, "", one, 1) > 0;
 }
