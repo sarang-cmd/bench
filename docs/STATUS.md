@@ -14,8 +14,8 @@ what is not, is in the table at the end of this file.
 ## One sentence
 
 Bench 1.1.0 is tested on a PC, documented **and built**: the tag `v1.1.0`
-carries `Bench-1.1.0.g3a` as a release asset, on the `builds` branch and on the
-website. 1.0.0 is the only version anyone has run on a calculator. `.github/workflows/build.yml` is the only thing that can build
+carries `Bench-1.1.0.g3a` (250 500 bytes, sha256 `5288af0e...`) as a release
+asset, in `dist/`, on the `builds` branch and on the website. 1.0.0 is the only version anyone has run on a calculator. `.github/workflows/build.yml` is the only thing that can build
 it - this sandbox has no SuperH compiler and cannot reach
 `git.planet-casio.com` - and the toolchain it needs is cached, so a release
 takes about two and a half minutes.
