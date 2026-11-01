@@ -1,0 +1,8 @@
+# tour step: 88_pi_game
+# starts at the home screen; see tools/sim/run_tour.sh
+# Two digits earned: the page shows what you have, the lives left, and where
+# the next digits go.
+tool:pi
+1
+4
+exe

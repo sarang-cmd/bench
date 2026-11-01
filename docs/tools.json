@@ -117,6 +117,15 @@
     "help": "Prime factors\nType a whole number and press EXE.\nThe page shows the factorisation\nwith powers, then the four things\nthat follow from it.\n\n360 = 2^3 x 3^2 x 5\n  divisors 24, their sum 1170\n  totient 96\n  square-free part 30\n\nSquare-free part is the primes\nmultiplied with their powers thrown\naway: 30 for 360. If it equals the\nnumber, the number is square free.\n\nUp to 18 digits. F2 halves the\nnumber and factors again.\n\nKeys: digits, DEL, F1 clear, F2\nhalve, EXE factor, EXIT back."
   },
   {
+    "id": "pi",
+    "title": "Pi game",
+    "subtitle": "digits from memory",
+    "category": "Study",
+    "screen": 24,
+    "needs_file": false,
+    "help": "Pi game\nThe digits of pi, from memory.\n\nThe digits you have earned stay on\nscreen, grouped five at a time. Type\nthe next ones and press EXE: every\ndigit right moves you along, and the\nfirst wrong one costs a life.\n\nThree lives. F2 shows the next digit\nand costs one, so a hint is never\nfree. When the lives are gone the\npage shows how far you got and the\nbest of this session.\n\nNothing is written to the card: the\nbest score is gone when the add-in\ncloses.\n\nKeys: digits, DEL, EXE check, F1\nagain, F2 hint, EXIT back."
+  },
+  {
     "id": "stats",
     "title": "Statistics",
     "subtitle": "mean to regression",

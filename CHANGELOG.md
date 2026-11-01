@@ -15,6 +15,20 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **The Pi game**: a Study tile. The digits you have earned stay on screen,
+  grouped five to a line; type the next ones, EXE checks them, and the first
+  wrong digit costs a life. Three lives, F2 gives the next digit away and costs
+  one - a hint that is free is not part of a game - and the round ends with how
+  far you got and the best of the session. Nothing is written to the card, so
+  the best score lives and dies with the session, which is what the file-write
+  rule allows. The digits are `src/core/pi.c`: 200 of them, and
+  `tests/test_pi.c` checks the table against a Rabinowitz-Wagon spigot computed
+  from the algorithm rather than copied - a typo in the table cannot hide by
+  being duplicated in the test (40 checks, first 100 digits plus the human
+  check that the 100th decimal is 9). `pi_match` stops at the first wrong digit
+  so a guess that runs off the end cannot read past the table.
+  **Unverified on device.**
+
 - **Prime factors, on its own screen in Math**: factorisation existed, three
   levels down a list of nine Number theory functions, which is not where anyone
   looks for it. The new screen takes a number up to 18 digits and shows the

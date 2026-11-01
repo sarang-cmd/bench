@@ -55,6 +55,7 @@ set(SOURCES
   src/core/hwreport.c
   src/core/numtheory.c
   src/core/pageind.c
+  src/core/pi.c
   src/core/poly.c
   src/core/roots.c
   src/core/pacer.c
@@ -67,6 +68,7 @@ set(SOURCES
   src/core/textsearch.c
   src/core/uncert.c
 
+  src/apps/app_pi.c
   src/platform/input.c
   src/platform/mem.c
   src/platform/screen.c

@@ -1,0 +1,11 @@
+# tour step: 90_pi_game_over
+# starts at the home screen; see tools/sim/run_tour.sh
+# Three wrong digits, and the round ends with how far you got and the best of
+# the session. F1 starts again.
+tool:pi
+9
+exe
+9
+exe
+9
+exe
