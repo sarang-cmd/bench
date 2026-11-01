@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "core/color.h"
+#include "core/layout.h"
 #include "core/pageind.h"
 #include "platform/screen.h"
 #include "platform/store.h"
@@ -197,6 +198,7 @@ void app_menu_draw(void)
 {
     int const size = tool_category_size(category);
     int const page = sel / TILES_PER_PAGE;
+    int const left = tool_category_size(category) - page * TILES_PER_PAGE;
     int top = TH_CONTENT_Y + TH_PAD;
     /* Only a category with pages gives up space for the pill; the rest keep the
      * full grid. */
@@ -231,7 +233,6 @@ void app_menu_draw(void)
      * first row was drawn over the title bar, which is why the Math screen
      * arrived with no title at all. */
     {
-        int const left = size - page * TILES_PER_PAGE;
         int const shown = left > TILES_PER_PAGE ? TILES_PER_PAGE : left;
         int const rows = shown > 0 ? (shown + TILE_COLS - 1) / TILE_COLS : 0;
 
@@ -243,12 +244,18 @@ void app_menu_draw(void)
     {
         int const index = page * TILES_PER_PAGE + i;
         tool_t const *tool = tool_category_at(category, index);
-        int const col = i % TILE_COLS;
         int const row = i / TILE_COLS;
+        int const col = i % TILE_COLS;
+        /* A short row is centred under the one above it.  Tools holds two
+         * tiles, and drawing them hard against the left margin left a third of
+         * the screen empty beside them. */
+        int const in_row = layout_row_count(i - col, left, TILE_COLS);
+        int const x0 = layout_centre_row(in_row, tile_w, TH_GAP,
+                                         SCR_W - 2 * TH_PAD) + TH_PAD;
 
         if (!tool)
             continue;
-        draw_tile(tool, TH_PAD + col * (tile_w + TH_GAP),
+        draw_tile(tool, x0 + col * (tile_w + TH_GAP),
                   grid_y + row * (tile_h + TH_GAP), tile_w, tile_h,
                   index == sel);
     }

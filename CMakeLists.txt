@@ -41,6 +41,7 @@ set(SOURCES
   src/core/exprs.c
   src/core/graph.c
   src/core/help.c
+  src/core/layout.c
   src/core/leitner.c
   src/core/logbook.c
   src/core/mathfn.c

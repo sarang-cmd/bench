@@ -1,0 +1,6 @@
+# tour step: 82_tools_centred
+# starts at the home screen; see tools/sim/run_tour.sh
+# Tools holds two tiles. A short row is centred now, so the pair sits in the
+# middle of the screen instead of against the left margin with a third of the
+# display empty beside it.
+f4

@@ -5,6 +5,10 @@
       "date": "",
       "entries": [
         {
+          "title": "The Tools category, centred",
+          "body": "\"so awkward\" was about Tools holding two tiles hard against the left margin with a third of the screen empty beside them. A row that is not full is centred under the one above it now, which leaves a full row exactly where it was. `src/core/layout.c` (21 native checks: full and short rows, a row wider than the screen, an empty row, the per-row count at a page boundary). Study's fourth tile and Science's short row move with it, since they were the same shape of problem. **Unverified on device.**"
+        },
+        {
           "title": "The page indicator, and the missing Math title bar",
           "body": "a category with more than six tools paged with two 4 px squares and a hole punched in the current one - \"too subtle\" was the report, and it was right: at 384 px that reads as dust. The indicator is now a bordered pill reading `1 / 2` with an arrow on each side that leads somewhere (only the live ones are drawn; a greyed one would be shade on paper at 1.3:1, which the screen checker rejects). The pill takes the space it needs only in categories that page, so every other category keeps the full grid. Chasing it found a second bug: the centring maths counted every tool in the category rather than the tools on the page, so Math's nine tools meant three rows of height, a negative offset, and the first row drawn over the title bar - the Math category had no title at all since the V2 push. Both are fixed, and `tests/test_pageind.c` checks the label, the arrow states and the clamping (31 checks), including the 10 / 12 two-digit case and a buffer one byte too small. **Unverified on device.**"
         },
