@@ -475,10 +475,19 @@ jobs:
       - name: Browser widths
         working-directory: site
         run: |
+          set -o pipefail
           npx playwright install --with-deps chromium
           npx vite preview --port 4173 --strictPort &
           sleep 3
-          node scripts/check-widths.mjs --url http://localhost:4173
+          # The job log lives on blob storage, which some networks cannot fetch.
+          # A finding is repeated as an annotation so it can still be read.
+          log=/tmp/bench-widths.log
+          if ! node scripts/check-widths.mjs --url http://localhost:4173 2>&1 | tee "$log"; then
+            tail -n 20 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+              echo "::error title=width sweep::${line:-<blank>}"
+            done
+            exit 1
+          fi
 
   wasm:
     name: WebAssembly simulator (optional)
