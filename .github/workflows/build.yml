@@ -107,6 +107,14 @@ jobs:
           python3 tools/gen_spike_patch.py
           git diff --exit-code docs/tools.json spike/spike.diff
 
+      # The demo is embedded in the .g3a (src/apps/demo_data.c) and also shipped
+      # as its own zip.  Both are generated from demo/ and docs/samples/formulas:
+      # editing a note without regenerating fails here, not on a student's card.
+      - name: The bundled demo matches demo/
+        run: |
+          make demo-check
+          make demo-zip-check
+
       - name: Host preview of the screens
         run: |
           sudo apt-get update
@@ -293,6 +301,15 @@ jobs:
             ls -lh spike/Bench-spike-*.g3a || true
           fi
 
+      # The same demo text as a separate download.  The add-in writes it to the
+      # card on first run, so this is for a full card, a second card, or editing
+      # the notes on a PC first.
+      - name: Pack the demo zip
+        shell: bash
+        run: |
+          python3 tools/make_demo_zip.py
+          ls -lh dist/Bench-demo-*.zip || true
+
       - name: Attach the .g3a
         uses: actions/upload-artifact@v7
         with:
@@ -425,7 +442,9 @@ jobs:
           tag_name: ${{ inputs.release_tag != '' && inputs.release_tag || github.ref_name }}
           name: ${{ inputs.release_name != '' && inputs.release_name || (github.ref_type == 'tag' && github.ref_name || 'Bench build') }}
           target_commitish: ${{ github.sha }}
-          files: Bench-*.g3a
+          files: |
+            Bench-*.g3a
+            dist/Bench-demo-*.zip
           body_path: /tmp/release-notes.md
 
       # The .g3a also lives in the repository, in dist/: a release asset and an
@@ -448,6 +467,11 @@ jobs:
             || { echo "::warning title=dist::cannot clone main; dist/ not updated"; exit 0; }
           mkdir -p "$dir/dist"
           cp "$file" "$dir/dist/$file"
+          # The demo zip is small and unversioned in content, so keeping only the
+          # current one is enough: the release asset is the archive of record.
+          rm -f "$dir"/dist/Bench-demo-*.zip
+          cp dist/Bench-demo-*.zip "$dir/dist/" 2>/dev/null || \
+            echo "::warning title=demo zip::no demo zip to keep in dist/"
           # The M1 spike rides along: it is a diagnostic add-in, not Bench, but it
           # is the thing a hardware session actually needs, and it was previously
           # only reachable as a CI artifact on blob storage. dist/SPIKE.txt names

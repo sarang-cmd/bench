@@ -285,6 +285,32 @@ int store_init(void)
     return STORE_OK;
 }
 
+typedef struct {
+    uint16_t const *path;
+} exists_args_t;
+
+static int body_exists(void *arg)
+{
+    exists_args_t *a = arg;
+    int fd = BFile_Open(a->path, BFile_ReadOnly);
+
+    if (fd < 0)
+        return 0;
+    BFile_Close(fd);
+    return 1;
+}
+
+bool store_exists(char const *rel)
+{
+    exists_args_t a;
+
+    if (!rel || !*rel)
+        return false;
+    build_path(rel);
+    a.path = path_buf;
+    return gint_world_switch(GINT_CALL(body_exists, (void *)&a)) > 0;
+}
+
 int store_read(char const *rel, char *buf, int size, int *len)
 {
     read_args_t a;

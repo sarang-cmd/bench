@@ -83,6 +83,10 @@ bool store_elsewhere_exists(char const *folder);
 int store_list(char const *folder, char const *ext, store_entry_t *out,
                int max);
 
+/* True when the file exists.  Used to seed the demo without ever overwriting
+ * something the user wrote. */
+bool store_exists(char const *rel);
+
 /* Build "folder/name" into buf (for store_read/store_write). */
 int store_join(char *buf, int size, char const *folder, char const *name);
 

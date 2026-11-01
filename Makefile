@@ -34,6 +34,15 @@ build/tests:
 build/tests/%: tests/%.c $(CORE_SRC) $(CORE_HDR) tests/test_util.h | build/tests
 	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -o $@ $< $(CORE_SRC) $(LDLIBS)
 
+# The bundled demo is generated data, not a core module: this one test links the
+# table in as well as src/core.  demo-check runs first, so a stale table fails
+# with the generator's message rather than a diff of two literal dumps.
+build/tests/test_demo_data: tests/test_demo_data.c src/apps/demo_data.c \
+                            src/apps/demo_data.h $(CORE_SRC) $(CORE_HDR) \
+                            tests/test_util.h demo-check | build/tests
+	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -Isrc/apps -o $@ $< src/apps/demo_data.c \
+	      $(CORE_SRC) $(LDLIBS)
+
 test: version-check $(TEST_BIN) check-screens
 	@echo
 	@echo "== native core tests =="
@@ -62,6 +71,25 @@ version-check:
 coderabbit-check:
 	@$(PYTHON) tools/check_coderabbit.py
 
+# The demo travels inside the .g3a (src/apps/demo_data.c, written by
+# tools/gen_demo.py from demo/ and docs/samples/formulas).  `make demo-check`
+# fails when the generated file no longer matches those sources, so editing a
+# demo note without regenerating cannot reach a release.
+demo-gen:
+	@$(PYTHON) tools/gen_demo.py
+
+demo-check: version-check
+	@$(PYTHON) tools/gen_demo.py --check
+
+# The separate download for the same demo (dist/Bench-demo-<version>.zip).  Not
+# part of `make test`: the file is renamed on every version bump, so the check
+# lives in the release job, after the bump.
+demo-zip:
+	@$(PYTHON) tools/make_demo_zip.py
+
+demo-zip-check:
+	@$(PYTHON) tools/make_demo_zip.py --check
+
 # The spike add-in as one patch file (see docs/spike.md).
 spike-patch:
 	@$(PYTHON) tools/gen_spike_patch.py
@@ -81,7 +109,7 @@ test-all: test py-test
 SIM_SRC := $(wildcard src/core/*.c) $(wildcard src/platform/*.c) \
            $(wildcard src/ui/*.c) $(wildcard src/apps/*.c) tools/sim/sim.c
 SIM_CFLAGS := -std=gnu11 -O1 -g -Wall -Wextra -Wno-missing-field-initializers \
-              -DBENCH_TRACE \
+              -DBENCH_TRACE -DBENCH_SIM \
               -Werror=implicit-function-declaration \
               -Wno-missing-braces \
               -Isrc -Isrc/ui -Isrc/core -Isrc/apps -Itools/sim/include

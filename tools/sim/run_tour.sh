@@ -43,9 +43,18 @@ for f in "$root"/docs/samples/*; do
 done
 mkdir -p "$out"
 
+# The add-in writes the bundled demo to any card that lacks it, and most steps
+# here are about the empty states and the sample files - so the tour turns the
+# demo off (BENCH_NO_DEMO, a PC-build switch in src/platform/demo.c).  A step
+# named 99_* runs with it on: that is the screen a first run really shows.
 for step in "$root"/tools/sim/tour/*.txt; do
     name=$(basename "$step" .txt)
-    BENCH_FS=$fs BENCH_KEYS=$step BENCH_SHOT=$out/$name.ppm "$sim"
+    case "$name" in
+        99_*) no_demo= ;;
+        *)    no_demo=1 ;;
+    esac
+    BENCH_NO_DEMO=$no_demo BENCH_FS=$fs BENCH_KEYS=$step \
+        BENCH_SHOT=$out/$name.ppm "$sim"
     echo "  $name"
 done
 

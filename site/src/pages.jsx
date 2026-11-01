@@ -5,7 +5,7 @@
 // Content rules: no invented screenshots, no invented numbers.  Every count
 // comes from src/stats.generated.json, src/tools.generated.json or the build
 // info, all generated at build time from the repository.
-import { BUILD, DOWNLOAD, REPO, SHA256, VERSION, tools } from "./data.js";
+import { BUILD, DEMO, DOWNLOAD, REPO, SHA256, VERSION, tools } from "./data.js";
 import stats from "./stats.generated.json";
 import changelog from "./changelog.generated.json";
 import Tools from "./components/Tools.jsx";
@@ -250,6 +250,42 @@ export function DownloadsPage() {
           </li>
         ))}
       </ul>
+
+      {DEMO && (
+        <section className="mt-10 border-3 border-ink bg-paper p-5">
+          <p className="font-mono text-xs uppercase tracking-widest text-ink/60">
+            Or the demo, as files
+          </p>
+          <h2 className="mt-2 text-xl font-black">
+            The same ten files, for a full card.
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink/75">
+            The notes, decks, study log and formula booklets already travel
+            inside the add-in: it writes the ones that are missing on the first
+            run, so a new install has something to read without copying
+            anything. This zip is for the cases that cannot use the built-in
+            copy - a card with no room left, a second card, or editing the notes
+            on a PC before they reach the calculator.
+          </p>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink/75">
+            It holds one <code className="font-mono text-xs">Bench</code> folder,
+            so extract it onto the drive root - <code className="font-mono text-xs">D:\</code>{" "}
+            in USB Flash mode - and not into{" "}
+            <code className="font-mono text-xs">@MainMem</code>, which the
+            calculator empties into <code className="font-mono text-xs">SAVE-F</code>.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <BruteButton href={`./${DEMO.file}`} download>
+              Download the demo <span className="font-mono text-xs">.zip</span>
+            </BruteButton>
+            <Chip tone="paper">{Math.round(DEMO.size / 1024)} KiB</Chip>
+            <Chip tone="paper">{DEMO.file}</Chip>
+          </div>
+          <p className="mt-4 break-all font-mono text-xs text-ink/60">
+            sha256 {DEMO.sha256}
+          </p>
+        </section>
+      )}
 
       <div className="mt-10 border-3 border-ink bg-ink p-5 text-paper">
         <p className="font-mono text-xs uppercase tracking-widest text-paper/60">

@@ -11,10 +11,48 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.2.5 - unreleased (source only)
+## 1.2.6 - 2026-11-01
 
-Numbers here describe the source in `main`. The newest build anyone can download
-is `Bench-1.2.3.g3a`.
+Numbers here describe the source in `main`. The release carries
+`Bench-1.2.6.g3a` built by CI from this commit, and **nobody has had it on a
+calculator yet**.
+
+- **The demo travels inside the add-in now**: a `.g3a` is one file, so a folder
+  cannot come with it, and "copy `demo/notes` into `Bench/notes`" was three steps
+  on a PC before a new install had anything to look at. The ten demo files - the
+  three notes, the three decks, the study log and the three formula booklets -
+  are compiled into the add-in as C literals and written to the card on the first
+  run, so a fresh install opens Notes, Cards, Study log and Formula book and
+  finds something in every one. Rules: only files that are **not there yet** are
+  written, so nothing you wrote is ever overwritten, and at most twelve files are
+  written per run. The text is generated from `demo/` and
+  `docs/samples/formulas/` by `tools/gen_demo.py`; `make demo-check` fails when
+  the generated table and the sources drift apart, and `tests/test_demo_data.c`
+  reads every entry back with the same checks (printable ASCII, `len` equal to
+  the joined length, no duplicate, source file unchanged). One booklet is over
+  the 4095 bytes ISO C promises for a string literal, so each file is a list of
+  chunks the add-in joins before writing - the generator refuses anything over
+  6144 bytes, the size `store_write()` takes. **Unverified on device.**
+- **The same demo is a separate download too**: `Bench-demo-1.2.6.zip` holds
+  `Bench/notes`, `Bench/cards`, `Bench/study` and `Bench/formulas`, so it
+  extracts onto `D:\` in USB Flash mode and lands exactly where the add-in
+  writes. It is for a full card, a second card, or editing the notes on a PC
+  before they ever reach the calculator. Built by `tools/make_demo_zip.py`,
+  reproducible (sorted entries, fixed timestamps), checked in CI against the same
+  sources, attached to the release and kept in `dist/`.
+- **`store_exists()`**: the seeding needed a way to ask whether a file is there
+  without reading it, so `src/platform/store.{h,c}` gained one (a `BFile_Open`
+  in a world switch, closed immediately, no read). `src/platform/demo.c` is the
+  only caller and never touches anything else.
+- **What this does not do**: it does not touch a file that already exists, does
+  not run anywhere but start-up, and does not write anything outside
+  `\fls0\Bench`. A card that is full or write-protected still gets a working
+  add-in, just without the demo - `demo_install()` ignores the failure.
+
+## 1.2.5 - 2026-11-01
+
+Shipped inside 1.2.6 rather than as its own tag, so the numbers below describe
+the source in `main`, not a separate download.
 
 - **"No notes yet" while the notes sat one folder away**: the calculator moves
   anything it will not keep in main memory to `SAVE-F` (fx-CG 50 manual, 13-6:
