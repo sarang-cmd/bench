@@ -1,0 +1,12 @@
+# tour step: 81_math_page_two
+# starts at the home screen; see tools/sim/run_tour.sh
+# Six keypresses move to the last tool on page one; one more wraps onto page
+# two, where the pill reads "2 / 2" and the left arrow appears.
+f2
+right
+right
+right
+right
+right
+right
+right

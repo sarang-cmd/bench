@@ -4,7 +4,8 @@
  *
  * Layout: a title bar, a content area, a softkey strip.  The content area is
  * divided into a category dashboard (Study only) and a 3 x 2 grid of tiles;
- * a category with more than six tools gets pages, shown as dots.
+ * a category with more than six tools gets pages, marked by a bordered
+ * "1 / 2" pill with an arrow at each end.
  *
  * Colour rules, and the bug they exist for: an icon drawn in the same colour
  * as its tile disappears.  So an unselected tile is paper with ink text and an
@@ -22,6 +23,7 @@
 #include <string.h>
 
 #include "core/color.h"
+#include "core/pageind.h"
 #include "platform/screen.h"
 #include "platform/store.h"
 #include "registry.h"
@@ -131,20 +133,37 @@ static void draw_tile(tool_t const *tool, int x, int y, int w, int h, bool on)
 
 /* ---- pages -------------------------------------------------------------- */
 
-static void draw_dots(int pages, int page, int y)
+/* The page pill.  It replaces the row of 4 px dots, which was reported as too
+ * subtle: a bordered box with a number in it cannot be missed, and the arrows
+ * say which way there is more.  Ink on paper, shade for the arrow that has
+ * nowhere to go, so the pill never looks disabled. */
+static void draw_pager(int pages, int page, int y)
 {
-    int const gap = 8;
-    int const w = pages * gap - (gap - 4);
-    int const x0 = (SCR_W - w) / 2;
+    char label[16];
+    int const h = 15;
+    int const pad = 4;
+    int const arrow_w = scr_text_w("<");
+    int w;
+    int x;
 
-    for (int i = 0; i < pages; i++)
-    {
-        int const x = x0 + i * gap;
+    if (pages < 2 || pageind_label(page, pages, label, (int)sizeof label) < 0)
+        return;
 
-        scr_fill(x, y, 4, 4, TH_INK);
-        if (i != page)
-            scr_fill(x + 1, y + 1, 2, 2, TH_PAPER);
-    }
+    w = 2 * (pad + arrow_w + pad) + scr_text_w(label) + 2;
+    x = (SCR_W - w) / 2;
+
+    scr_fill(x + TH_SHADOW, y + TH_SHADOW, w, h, TH_SHADE);
+    scr_fill(x, y, w, h, TH_PAPER);
+    scr_frame(x, y, w, h, TH_INK, TH_BORDER);
+
+    /* Only the arrows that lead somewhere are drawn.  A greyed-out one would be
+     * shade on paper - 1.3:1, which the screen checker rejects, and rightly:
+     * at that contrast it is a smudge, not a hint. */
+    if (pageind_left(page))
+        scr_text(x + pad, y + 3, "<", TH_RED);
+    if (pageind_right(page, pages))
+        scr_text(x + w - pad - arrow_w, y + 3, ">", TH_RED);
+    scr_text_center(x, w, y + 3, label, TH_INK);
 }
 
 /* ---- drawing ------------------------------------------------------------ */
@@ -179,7 +198,10 @@ void app_menu_draw(void)
     int const size = tool_category_size(category);
     int const page = sel / TILES_PER_PAGE;
     int top = TH_CONTENT_Y + TH_PAD;
-    int dots_y = SCR_H - TH_SOFT_H - 9;
+    /* Only a category with pages gives up space for the pill; the rest keep the
+     * full grid. */
+    int const pages = tool_category_pages(category);
+    int dots_y = SCR_H - TH_SOFT_H - (pages > 1 ? 22 : 9);
     int grid_h;
     int grid_y;
     int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
@@ -200,10 +222,18 @@ void app_menu_draw(void)
     grid_h = dots_y - top - 4;
     tile_h = (grid_h - TH_GAP) / 2;
     grid_y = top;
-    /* A category with one row of tools sits in the middle of the grid rather
-     * than leaving a hole at the bottom of an otherwise empty page. */
+    /* A page with one row of tools sits in the middle of the grid rather than
+     * leaving a hole at the bottom of an otherwise empty page.
+     *
+     * The count is what is on *this* page, not in the category.  Counting the
+     * whole category is a bug the Math category had: seven tools meant three
+     * rows of two-page height, so the centring offset went negative and the
+     * first row was drawn over the title bar, which is why the Math screen
+     * arrived with no title at all. */
     {
-        int const rows = (size + TILE_COLS - 1) / TILE_COLS;
+        int const left = size - page * TILES_PER_PAGE;
+        int const shown = left > TILES_PER_PAGE ? TILES_PER_PAGE : left;
+        int const rows = shown > 0 ? (shown + TILE_COLS - 1) / TILE_COLS : 0;
 
         if (rows > 0)
             grid_y = top + (grid_h - (rows * tile_h + (rows - 1) * TH_GAP)) / 2;
@@ -230,8 +260,8 @@ void app_menu_draw(void)
                   "This category fills up as tools ship.");
     }
 
-    if (tool_category_pages(category) > 1)
-        draw_dots(tool_category_pages(category), page, dots_y);
+    if (pages > 1)
+        draw_pager(pages, page, SCR_H - TH_SOFT_H - 21);
 
     /* First run: say what the four category keys and F5 do, once.  The line
      * goes away for good the first time help is opened (app_cfg()->tour_done). */
