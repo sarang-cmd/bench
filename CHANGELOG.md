@@ -11,10 +11,11 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## 1.1.0 - unreleased
+## 1.1.0 - 2026-11-01
 
-The two bugs from the first hardware session, and the machinery that stops the
-next one.
+The two bugs from the first hardware session, the V2 tools, and the machinery
+that stops the next one. **Not run on a device yet**: the 1.0.0 rows in
+`docs/HARDWARE.md` are the only hardware results that exist.
 
 - **A hardware report you can fill in on the calculator (V2, workstream J)**:
   Settings gained **F3**, which opens a screen listing the eight assumptions
