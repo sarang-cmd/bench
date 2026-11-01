@@ -1,9 +1,13 @@
 {
   "releases": [
     {
-      "version": "Unreleased",
-      "date": "",
+      "version": "1.2.0",
+      "date": "unreleased (source only)",
       "entries": [
+        {
+          "title": "A version number that moves with the work, and a check that it did",
+          "body": "the tree said 1.1.0 through fourteen merged pull requests, so the About screen, the `.g3a` name and the website would have disagreed with the changelog the moment anything shipped. The rule is now that every change bumps the version in the same commit - patch for a fix or a doc, minor for a feature, major only for a storage-layout change - and the version of record is 1.2.0. `tools/ bump_version.py` rewrites `version.txt`, the `src/version.h` fallback and the example file name in `CMakeLists.txt` in one command (`make bump-minor`, `make bump-patch`), and `--check` compares those against the changelog heading and the README badge, naming each file that disagrees. `make test` runs it, and so does CI, so a forgotten bump fails a build instead of shipping. 21 Python tests cover the arithmetic and the rewriting, including that a bad version is refused before any file is touched. The README's version badge now links to the releases page rather than to `releases/tag/v<version>`, because between a bump and a release there is no such tag and a badge pointing at a 404 is a lie about a page. **Unverified on device.**"
+        },
         {
           "title": "Percentages tool",
           "body": "the four questions a paper asks - percentage change, add or take a percentage, reverse percentage, compound growth or depreciation - on one Math screen, with the working written out under the answer. The point of the reverse question is that it divides (`34 / (1 - 15/100) = 40`), which is what people get wrong by adding 15% of 34 back on. `src/core/percent.c` with 41 checks covers the vectors (500 at 4.5% for 7 years is 680.43; a car at 12% for 5 years keeps 52.8%), zero years, a negative rate, and the three questions with no answer - a change from zero, a 100% discount, a period count outside 0..200 - each of which is a sentence on screen rather than a 0 or an inf. One bug caught by the tests before the screen existed: the fast exponentiation gave up on an overflow by returning the *principal*, so a question with an unshowable answer said \"no growth\". **Unverified on device.**"

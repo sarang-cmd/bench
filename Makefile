@@ -34,7 +34,7 @@ build/tests:
 build/tests/%: tests/%.c $(CORE_SRC) $(CORE_HDR) tests/test_util.h | build/tests
 	$(CC) $(CFLAGS) $(WARN) $(CPPFLAGS) -o $@ $< $(CORE_SRC) $(LDLIBS)
 
-test: $(TEST_BIN) check-screens
+test: version-check $(TEST_BIN) check-screens
 	@echo
 	@echo "== native core tests =="
 	@fail=0; for t in $(TEST_BIN); do ./$$t || fail=1; done; \
@@ -44,6 +44,17 @@ test: $(TEST_BIN) check-screens
 # Rewrite the README's generated badge and stats blocks (CI checks them).
 stats:
 	@$(PYTHON) tools/gen_readme_stats.py
+	@cd site && node scripts/gen-stats.mjs && node scripts/gen-changelog.mjs
+
+# Every change bumps the version (docs/VERSIONING.md).  `make bump-patch` for a
+# fix, `bump-minor` for a feature, `bump-major` only for a storage-layout change.
+bump-patch bump-minor bump-major:
+	@$(PYTHON) tools/bump_version.py $(patsubst bump-%,%,$@)
+
+# Fails when version.txt, version.h, CMakeLists.txt, the changelog and the
+# README badge disagree.  Part of `make test`, so a forgotten bump fails a build.
+version-check:
+	@$(PYTHON) tools/bump_version.py --check
 
 # The spike add-in as one patch file (see docs/spike.md).
 spike-patch:

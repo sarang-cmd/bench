@@ -11,9 +11,29 @@ milestones, not releases. Only `v0.0.1`, `v0.0.2` and `v1.0.0` are tags. Storage
 The add-in version lives in `version.txt`; `Bench-<version>.g3a` is named from
 it, so the file, the About screen and the tag always agree.
 
-## Unreleased
+## 1.2.0 - unreleased (source only)
 
-Numbers here describe the source in `main`, not a build on a calculator.
+Numbers here describe the source in `main`, not a build on a calculator. The
+version is bumped with the change, not at release time (docs/VERSIONING.md);
+1.2.0 is what the tree says and 1.1.0 is still the newest `.g3a` anyone can
+download.
+
+- **A version number that moves with the work, and a check that it did**: the
+  tree said 1.1.0 through fourteen merged pull requests, so the About screen, the
+  `.g3a` name and the website would have disagreed with the changelog the moment
+  anything shipped. The rule is now that every change bumps the version in the
+  same commit - patch for a fix or a doc, minor for a feature, major only for a
+  storage-layout change - and the version of record is 1.2.0. `tools/
+  bump_version.py` rewrites `version.txt`, the `src/version.h` fallback and the
+  example file name in `CMakeLists.txt` in one command (`make bump-minor`,
+  `make bump-patch`), and `--check` compares those against the changelog heading
+  and the README badge, naming each file that disagrees. `make test` runs it, and
+  so does CI, so a forgotten bump fails a build instead of shipping. 21 Python
+  tests cover the arithmetic and the rewriting, including that a bad version is
+  refused before any file is touched. The README's version badge now links to the
+  releases page rather than to `releases/tag/v<version>`, because between a bump
+  and a release there is no such tag and a badge pointing at a 404 is a lie about
+  a page. **Unverified on device.**
 
 - **Percentages tool**: the four questions a paper asks - percentage change,
   add or take a percentage, reverse percentage, compound growth or depreciation -
