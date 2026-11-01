@@ -54,3 +54,12 @@ and in CI, so a forgotten bump fails a build instead of shipping.
 A bump does not mean a release, and it does not mean anything was tested on a
 calculator. The changelog section says which build the numbers came from; until
 there is one, it says "source only".
+
+## The one thing that does not bump
+
+A release's own bookkeeping: the commit that names the built file in the README
+and `docs/STATUS.md` (size, SHA-256, commit) after CI has produced it. The
+version has just been released; bumping it in the same breath would make the
+tree claim a version that has no build, which is the confusion this document
+exists to stop. `make version-check` still has to pass, so the README badge, the
+changelog heading and `version.txt` stay on the released number.

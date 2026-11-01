@@ -23,10 +23,10 @@ Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
 Live page: <https://bench-gdc.vercel.app> (source in `site/`). The page
-serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.1.0.g3a>.
+serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.2.3.g3a>.
 
 ```
-Bench-1.1.0.g3a     <- copy this to the calculator's storage root
+Bench-1.2.3.g3a     <- copy this to the calculator's storage root
 ```
 
 | | |
@@ -34,7 +34,7 @@ Bench-1.1.0.g3a     <- copy this to the calculator's storage root
 | Target | Casio fx-CG50 (fx-CG 20 runs it too), OS 3.81 |
 | Screen | 384x216 visible window, 396x224 framebuffer |
 | Built with | fxSDK + gint 2.10, C11 |
-| Version | 1.2.0 in the tree; the newest build anyone can download is 1.1.0 |
+| Version | 1.2.3 - the newest build is this one; the downloads page serves it |
 | Licence | MIT (see `LICENSE`) |
 
 <!-- STATS:BEGIN -->
@@ -492,14 +492,14 @@ check anything before you rely on it in an exam.
 
 ## Install
 
-`Bench-1.1.0.g3a` is in five places. Take whichever works from where you are:
+`Bench-1.2.3.g3a` is in five places. Take whichever works from where you are:
 
 | Where | How |
 |---|---|
-| This site | <https://bench-gdc.vercel.app/Bench-1.1.0.g3a> - one click, no account |
+| This site | <https://bench-gdc.vercel.app/Bench-1.2.3.g3a> - one click, no account |
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
-| `dist/` in the repo | [`dist/Bench-1.1.0.g3a`](dist/Bench-1.1.0.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
+| `dist/` in the repo | [`dist/Bench-1.2.3.g3a`](dist/Bench-1.2.3.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |
 | `builds` branch | `git fetch origin builds && git show origin/builds:Bench-1.0.0.g3a > Bench-1.0.0.g3a` - plain git, for when release downloads are blocked |
 
 The copy in `dist/` is the one to use when GitHub's release assets and artifacts
@@ -587,10 +587,10 @@ compiler and could not reach `git.planet-casio.com`. The workflow in
 GitHub runner; `docs/STATUS.md` lists the ten questions only a calculator can
 answer (file API behaviour, float printing, font coverage, redraw time, heap).
 
-The V2 tools landed after the last release, so the newest `.g3a` on the
-downloads page is 1.1.0 and does **not** contain prime factors, percentages, the
-Pi game or the formula book. Everything in `main` builds and passes its tests;
-none of it has been on a calculator, and each changelog entry says so.
+The newest `.g3a`, `Bench-1.2.3.g3a`, is built by CI from `62e63aa` and
+contains the V2 tools: prime factors, percentages, the formula book and the pi
+game. Everything in `main` builds and passes its tests; only 1.0.0 has been on a
+calculator, and each changelog entry says so.
 
 ## Releasing
 

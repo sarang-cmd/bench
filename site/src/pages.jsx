@@ -316,7 +316,7 @@ const nots = [
   "Not a CAS. It does the arithmetic a paper asks for, and shows the working.",
   "Not a cloud service. No account, no sync, no network call from the calculator.",
   "Not a replacement for a textbook. The demo content is small on purpose.",
-  "Not finished. Nothing in 1.1.0 has been on a calculator yet: docs/HARDWARE.md lists what the next session has to run.",
+  "Not finished. Nothing after 1.0.0 has been on a calculator yet: docs/HARDWARE.md lists what the next session has to run.",
 ];
 
 export function AboutPage() {
