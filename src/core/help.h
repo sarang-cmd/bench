@@ -26,6 +26,26 @@ int help_line(char const *text, int index, char *out, int size);
  * line of the text is always on screen. */
 int help_scroll_pos(char const *text, int first, int fit, int delta);
 
+/* ---- word wrapping ------------------------------------------------------
+ *
+ * Help text is stored pre-wrapped at the width it was written for.  When the
+ * reader raises the text size, fewer columns fit, so the same text has to be
+ * wrapped again at draw time.  These four functions do that in core, where the
+ * vectors are cheap: a logical line becomes one or more display lines, broken
+ * at the last space that fits, and hard-broken when a word is longer than the
+ * line.  `cols` is a character count, so no font is involved. */
+
+/* Display lines when every logical line is wrapped at `cols` characters. */
+int help_wrap_count(char const *text, int cols);
+
+/* Copy display line `index` into `out` (NUL terminated, cut to `size`).
+ * Returns the bytes written; an index past the end writes "". */
+int help_wrap_line(char const *text, int cols, int index, char *out, int size);
+
+/* help_scroll_pos() and help_needs_scroll() for wrapped text. */
+int help_wrap_scroll(char const *text, int cols, int first, int fit, int delta);
+int help_wrap_needs_scroll(char const *text, int cols, int fit);
+
 /* True when `text` needs more than `fit` lines. */
 int help_needs_scroll(char const *text, int fit);
 

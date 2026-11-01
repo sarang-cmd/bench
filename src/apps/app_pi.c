@@ -181,7 +181,7 @@ void app_pi_draw(void)
         strcpy(field, entry);
         if (!field[0])
             strcpy(field, "_");
-        w_field(TH_PAD, y, w, 20, ">", field, 1);
+        w_field(TH_PAD, y, w, w_field_h(), ">", field, 1);
         y += 24;
 
         if (gained > 0)

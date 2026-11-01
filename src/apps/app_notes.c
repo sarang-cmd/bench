@@ -45,7 +45,9 @@ static int file_count;
 static int file_sel;
 static int file_top;
 
-static char *text;
+static char *text;         /* what is drawn: prepared for Markdown */
+static char *prepared_note; /* the other buffer, freed with `text_owner` */
+static char *text_owner;    /* the one mem_alloc() returned */
 static int text_len;
 static bool is_markdown;
 static md_display_line_t *lines;
@@ -172,6 +174,10 @@ static void find_headings(void)
     }
 }
 
+/* Room for a prepared note: a table grows (padding) and math shrinks, so the
+ * worst case is about twice the source for a note made of short table cells. */
+#define NOTE_PREP_MAX (BENCH_NOTE_MAX * 2)
+
 static bool load_note(void)
 {
     char path[STORE_NAME_MAX + 8];
@@ -179,7 +185,7 @@ static bool load_note(void)
     md_metrics_t metrics = { metric_width, metric_has, NULL };
     md_layout_stats_t stats;
 
-    text = mem_alloc(BENCH_NOTE_MAX);
+    text = mem_alloc(NOTE_PREP_MAX);
     lines = mem_alloc(sizeof(md_display_line_t) * NOTE_LINES);
     spans = mem_alloc(sizeof(md_display_span_t) * NOTE_SPANS);
     if (!text || !lines || !spans)
@@ -188,11 +194,11 @@ static bool load_note(void)
         return false;
     }
 
-    if (store_join(path, (int)sizeof path, "notes", files[file_sel].name) !=
-        STORE_OK)
-        return false;
-
-    int rc = store_read(path, text, BENCH_NOTE_MAX, &len);
+    (void)path;
+    /* Read from the place the list came from (Bench, SAVE-F or the card root),
+     * so a note found in SAVE-F actually opens instead of failing to read. */
+    int rc = store_read_at(files[file_sel].at, "notes", files[file_sel].name,
+                           text, BENCH_NOTE_MAX, &len);
     if (rc == STORE_ERR_TOO_BIG)
     {
         strcpy(message, "Note is larger than 32 KiB");
@@ -202,6 +208,36 @@ static bool load_note(void)
     {
         strcpy(message, "Could not read that note");
         return false;
+    }
+
+    /* Markdown is prepared before layout: maths is flattened to characters the
+     * font has, and a pipe table is expanded into aligned rows with a rule
+     * under its header.  The layout then measures what will be drawn. */
+    {
+        char *raw = text;
+        char *prepared = mem_alloc(NOTE_PREP_MAX);
+
+        if (prepared)
+        {
+            int n = md_prepare(raw, len, prepared, NOTE_PREP_MAX,
+                               scr_text_cols(content_px()));
+
+            if (n >= 0)
+            {
+                text = prepared;
+                len = n;
+                /* `raw` stays allocated: free_note() frees both. */
+                prepared_note = raw;
+                text_owner = prepared;
+            }
+            else
+            {
+                mem_free(prepared);
+                text_owner = raw;
+            }
+        }
+        else
+            text_owner = raw;
     }
 
     text_len = len;
@@ -240,9 +276,14 @@ static bool load_note(void)
 
 static void free_note(void)
 {
-    mem_free(text);
+    if (prepared_note)
+        mem_free(prepared_note);
+    if (text_owner)
+        mem_free(text_owner);
     mem_free(lines);
     mem_free(spans);
+    prepared_note = NULL;
+    text_owner = NULL;
     text = NULL;
     lines = NULL;
     spans = NULL;
@@ -308,7 +349,7 @@ static void draw_list(void)
         return;
     }
 
-    scr_text(TH_PAD, y, "Notes in Bench/notes", TH_INK);
+    w_source_line("Notes", (int)files[0].at, "Bench/notes");
     y += TH_LINE + 2;
     file_top = w_scroll_follow(file_sel, file_top, rows);
     for (int i = 0; i < rows && file_top + i < file_count; i++)
@@ -365,6 +406,8 @@ static int span_color(uint8_t kind, uint8_t style, uint8_t level)
         return TH_MD_BOLD;
     if (style == MD_SPAN_ITALIC)
         return TH_MD_ITALIC;
+    if (style == MD_SPAN_MATH)
+        return TH_MD_MATH;
     if (kind == MD_BLOCK_HEADING)
         return level == 1 ? TH_MD_H1 : level == 2 ? TH_MD_H2 : TH_MD_H3;
     return TH_MD_INK;
@@ -563,9 +606,7 @@ static void draw_heads(void)
         w_row(TH_PAD, y + i * TH_LINE, SCR_W - 2 * TH_PAD, label, num,
               i == head_sel);
     }
-    w_strip(NULL, NULL);
-    scr_text_center(0, SCR_W, SCR_H - TH_SOFT_H - TH_LINE - 2,
-                    "UP/DOWN pick   EXE jump   EXIT back", TH_INK);
+    w_strip("UP/DOWN pick", "EXE jump");
 }
 
 void app_notes_draw(void)

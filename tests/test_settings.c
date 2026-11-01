@@ -33,23 +33,32 @@ static void test_format_round_trip(void)
     T_TRUE(n > 0);
     T_STR(buf, "# Bench settings v1\nuncert_sig 1\npacer_checkpoint 10\n"
                "angle_unit 0\ntour_done 0\nnotes_wrap 0\n"
-               "startup_cat 0\nshow_hint 1\npacer_warn 5\n");
+               "startup_cat 0\nshow_hint 1\npacer_warn 5\nfont_scale 1\n");
 
     settings_defaults(&out);
     out.uncert_sig = 2;
-    T_TRUE(settings_parse(buf, n, &out, &ignored) == 8);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 9);
     T_INT(ignored, 0);
     T_INT(out.uncert_sig, 1);
     T_TRUE(settings_equal(&s, &out));
+
+    /* The font setting: 2 is Large, anything else clamps back to 1..2. */
+    T_INT(s.font_scale, 1);
+    T_STR(settings_font_text(1), "Standard");
+    T_STR(settings_font_text(2), "Large");
+    T_INT(settings_clamp_font(0), 1);
+    T_INT(settings_clamp_font(3), 2);
+    s.font_scale = 2;
 
     /* Non-default values survive a round trip. */
     s.uncert_sig = 2;
     s.pacer_checkpoint = 25;
     s.notes_wrap = 75;
+    s.font_scale = 2;
     n = settings_format(&s, buf, sizeof buf);
     T_TRUE(n > 0);
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, NULL) == 8);
+    T_TRUE(settings_parse(buf, n, &out, NULL) == 9);
     T_TRUE(settings_equal(&s, &out));
 
     /* Every checkpoint value in range formats and parses back. */
@@ -196,7 +205,7 @@ static void test_angles_and_hint(void)
     T_TRUE(strstr(buf, "angle_unit 1\n") != NULL);
     T_TRUE(strstr(buf, "tour_done 1\n") != NULL);
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, &ignored) == 8);
+    T_TRUE(settings_parse(buf, n, &out, &ignored) == 9);
     T_INT(ignored, 0);
     T_INT(out.angle_unit, SETTINGS_ANGLE_RAD);
     T_INT(out.tour_done, 1);
@@ -282,7 +291,7 @@ static void test_startup_hint_warn(void)
     T_TRUE(strstr(buf, "pacer_warn 12\n") != NULL);
 
     settings_defaults(&out);
-    T_TRUE(settings_parse(buf, n, &out, NULL) == 8);
+    T_TRUE(settings_parse(buf, n, &out, NULL) == 9);
     T_INT(out.startup_cat, 2);
     T_INT(out.show_hint, 0);
     T_INT(out.pacer_warn, 12);

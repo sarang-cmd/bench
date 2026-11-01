@@ -197,11 +197,26 @@ int app_menu_timeout(void)
     return 0;
 }
 
+/* Tiles across.  Large text needs wider tiles, so the grid drops to two
+ * columns and the tiles get a third of the screen each; the icon, the title and
+ * the second line then fit without an ellipsis. */
+static int grid_cols(void)
+{
+    return scr_text_scale() >= 2 ? 2 : TILE_COLS;
+}
+
+static int page_size(void)
+{
+    return grid_cols() * TILE_ROWS;
+}
+
 void app_menu_draw(void)
 {
     int const size = tool_category_size(category);
-    int const page = sel / TILES_PER_PAGE;
-    int const left = tool_category_size(category) - page * TILES_PER_PAGE;
+    int const cols = grid_cols();
+    int const per_page = page_size();
+    int const page = sel / per_page;
+    int const left = tool_category_size(category) - page * per_page;
     int top = TH_CONTENT_Y + TH_PAD;
     /* Only a category with pages gives up space for the pill; the rest keep the
      * full grid. */
@@ -216,10 +231,18 @@ void app_menu_draw(void)
     int dots_y = SCR_H - TH_SOFT_H - hint_h - (pages > 1 ? 22 : 9);
     int grid_h;
     int grid_y;
-    int tile_w = (SCR_W - 2 * TH_PAD - 2 * TH_GAP) / 3;
+    int tile_w = (SCR_W - 2 * TH_PAD - (cols - 1) * TH_GAP) / cols;
     int tile_h;
+    /* Large text gets four letters per cell at most (a cell is a sixth of the
+     * screen); the same words shortened beat an ellipsis in every cell. */
     char const *const soft[6] = {
-        "Study", "Math", "Science", "Tools", "Help", "Settings",
+        scr_text_scale() >= 2
+            ? "Stud" : "Study",
+        "Math",
+        scr_text_scale() >= 2 ? "Sci" : "Science",
+        scr_text_scale() >= 2 ? "Tool" : "Tools",
+        "Help",
+        scr_text_scale() >= 2 ? "Set" : "Settings",
     };
 
     scr_clear(TH_PAPER);
@@ -243,23 +266,23 @@ void app_menu_draw(void)
      * first row was drawn over the title bar, which is why the Math screen
      * arrived with no title at all. */
     {
-        int const shown = left > TILES_PER_PAGE ? TILES_PER_PAGE : left;
-        int const rows = shown > 0 ? (shown + TILE_COLS - 1) / TILE_COLS : 0;
+        int const shown = left > per_page ? per_page : left;
+        int const rows = shown > 0 ? (shown + cols - 1) / cols : 0;
 
         if (rows > 0)
             grid_y = top + (grid_h - (rows * tile_h + (rows - 1) * TH_GAP)) / 2;
     }
 
-    for (int i = 0; i < TILES_PER_PAGE; i++)
+    for (int i = 0; i < per_page; i++)
     {
-        int const index = page * TILES_PER_PAGE + i;
+        int const index = page * per_page + i;
         tool_t const *tool = tool_category_at(category, index);
-        int const row = i / TILE_COLS;
-        int const col = i % TILE_COLS;
+        int const row = i / cols;
+        int const col = i % cols;
         /* A short row is centred under the one above it.  Tools holds two
          * tiles, and drawing them hard against the left margin left a third of
          * the screen empty beside them. */
-        int const in_row = layout_row_count(i - col, left, TILE_COLS);
+        int const in_row = layout_row_count(i - col, left, cols);
         int const x0 = layout_centre_row(in_row, tile_w, TH_GAP,
                                          SCR_W - 2 * TH_PAD) + TH_PAD;
 
@@ -314,7 +337,7 @@ app_result_t app_menu_key(bench_event_t ev)
     {
     case BK_LEFT:
         /* Left at the start of a page turns back to the previous page. */
-        if (sel % TILES_PER_PAGE == 0 && sel >= TILES_PER_PAGE)
+        if (sel % page_size() == 0 && sel >= page_size())
             sel -= 1;
         else if (sel > 0)
             sel--;
@@ -324,12 +347,12 @@ app_result_t app_menu_key(bench_event_t ev)
             sel++;
         break;
     case BK_UP:
-        if (sel >= TILE_COLS)
-            sel -= TILE_COLS;
+        if (sel >= grid_cols())
+            sel -= grid_cols();
         break;
     case BK_DOWN:
-        if (sel + TILE_COLS < tool_category_size(category))
-            sel += TILE_COLS;
+        if (sel + grid_cols() < tool_category_size(category))
+            sel += grid_cols();
         break;
     case BK_MENU:
         return APP_QUIT;

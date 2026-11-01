@@ -105,9 +105,7 @@ static bool load_deck(void)
     issue_count = 0;
     issue_lines = 0;
 
-    if (store_join(path, (int)sizeof path, "cards", decks[deck_sel].name) !=
-        STORE_OK)
-        return false;
+    (void)path;
 
     text = mem_alloc(DECK_FILE_MAX);
     if (!text)
@@ -116,7 +114,8 @@ static bool load_deck(void)
         return false;
     }
 
-    n = store_read(path, text, DECK_FILE_MAX - 1, &len);
+    n = store_read_at(decks[deck_sel].at, "cards", decks[deck_sel].name, text,
+                      DECK_FILE_MAX - 1, &len);
     if (n != STORE_OK)
     {
         mem_free(text);
@@ -220,7 +219,7 @@ static void draw_list(void)
         return;
     }
 
-    scr_text(TH_PAD, y, "Decks in Bench/cards", TH_INK);
+    w_source_line("Decks", (int)decks[0].at, "Bench/cards");
     y += TH_LINE + 2;
     deck_top = w_scroll_follow(deck_sel, deck_top, rows);
     for (int i = 0; i < rows && deck_top + i < deck_count; i++)

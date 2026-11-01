@@ -102,7 +102,7 @@ static void draw_box(int i, int x, int y, int w, char const *label)
 {
     /* An empty box stays empty: writing 0 there would claim a value the
      * user never gave. */
-    w_field(x, y, w, 20, label, field[i], i == sel);
+    w_field(x, y, w, w_field_h(), label, field[i], i == sel);
 }
 
 void app_cplx_draw(void)

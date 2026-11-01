@@ -94,12 +94,46 @@ static void test_skip_title(void)
     T_INT(help_skip_title("Pac\nmore", "Pacer"), 0);
 }
 
+static void test_wrap(void)
+{
+    char buf[16];
+    char const *w = "aaa bbb ccc\nshort\nsupercalifragilistic";
+
+    T_SECTION("wrapping a long line");
+
+    /* 7 columns: "aaa bbb" then "ccc". */
+    T_INT(help_wrap_count(w, 7), 6);
+    T_INT(help_wrap_line(w, 7, 0, buf, (int)sizeof buf), 7);
+    T_CHECK(strcmp(buf, "aaa bbb") == 0, "segment 0 is '%s'", buf);
+    T_INT(help_wrap_line(w, 7, 1, buf, (int)sizeof buf), 3);
+    T_CHECK(strcmp(buf, "ccc") == 0, "segment 1 is '%s'", buf);
+
+    /* A word longer than the line is hard-broken, not dropped. */
+    T_INT(help_wrap_count("supercalifragilistic", 5), 4);
+    T_INT(help_wrap_line("supercalifragilistic", 5, 0, buf, 6), 5);
+    T_CHECK(strcmp(buf, "super") == 0, "hard break gave '%s'", buf);
+
+    /* Narrower text never needs fewer lines. */
+    T_TRUE(help_wrap_count(w, 20) <= help_wrap_count(w, 7));
+
+    /* The scroll clamp works on wrapped lines. */
+    T_INT(help_wrap_scroll(w, 7, 0, 2, 10), 4);   /* 6 lines, 2 fit */
+    T_INT(help_wrap_scroll(w, 7, 0, 2, -1), 0);
+    T_TRUE(help_wrap_needs_scroll(w, 7, 2));
+    T_FALSE(help_wrap_needs_scroll("abc", 7, 2));
+
+    /* One column is legal and does not loop. */
+    T_INT(help_wrap_count("ab", 1), 2);
+    T_INT(help_wrap_count("", 1), 1);
+}
+
 static void run_tests(void)
 {
     test_count();
     test_line();
     test_scroll();
     test_skip_title();
+    test_wrap();
 }
 
 T_MAIN("test_help")
