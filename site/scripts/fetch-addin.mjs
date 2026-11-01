@@ -14,7 +14,15 @@
 // The version is read from version.txt, not from the page, so the file name and
 // the version on the page cannot disagree.
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -55,6 +63,8 @@ mkdirSync(dirname(infoPath), { recursive: true });
 
 let bytes;
 let source;
+let dirFile = name;      /* the file the page will name, when that is not `name` */
+let publicPath = target; /* where the bytes ended up */
 
 if (existsSync(target)) {
   bytes = readFileSync(target);
@@ -73,7 +83,15 @@ if (existsSync(target)) {
 
   for (const url of urls) {
     console.log(`download: fetching ${url}`);
-    const response = await fetch(url, { redirect: "follow" });
+    /* A network the build cannot reach is a source that is not there, not a
+     * reason to fail: the next source may still work. */
+    let response;
+    try {
+      response = await fetch(url, { redirect: "follow" });
+    } catch (err) {
+      console.log(`download: ${url} unreachable (${err.cause?.code ?? err.message})`);
+      continue;
+    }
     if (!response.ok) {
       console.log(`download: ${response.status} from ${url}`);
       continue;
@@ -89,6 +107,35 @@ if (existsSync(target)) {
     break;
   }
 
+  /* 5. the newest build that is already in dist/, whatever version it is.
+   *    This is what keeps a deployment working in the window between a version
+   *    bump and the first tagged build for it: the page then names the version
+   *    of the file it is actually handing out, not the one in version.txt. */
+  if (!bytes) {
+    const older = existsSync(distDir)
+      ? readdirSync(distDir)
+          .filter((f) => /^Bench-.+\.g3a$/.test(f))
+          .map((f) => ({ f, mtime: statSync(join(distDir, f)).mtimeMs }))
+          .sort((a, b) => b.mtime - a.mtime)
+      : [];
+
+    for (const { f } of older) {
+      const candidate = readFileSync(join(distDir, f));
+      if (!looksLikeAddin(candidate)) continue;
+      bytes = candidate;
+      dirFile = f;
+      source = "dist-newest";
+      mkdirSync(join(root, "public"), { recursive: true });
+      copyFileSync(join(distDir, f), join(root, "public", f));
+      publicPath = join(root, "public", f);
+      console.log(
+        `download: no build for ${repoVersion} yet, using ${f} from dist/ ` +
+          `(the page will name ${f.replace(/^Bench-|\.g3a$/g, "")})`,
+      );
+      break;
+    }
+  }
+
   if (!bytes) {
     fail(`could not fetch ${name}`,
          "Build the release first, or drop the file into site/public/ or dist/.");
@@ -98,10 +145,12 @@ if (existsSync(target)) {
 if (!looksLikeAddin(bytes)) fail(`${name} does not look like an add-in (${bytes.length} bytes)`);
 
 const build = provenance();
+const fileVersion = dirFile === name ? repoVersion : dirFile.replace(/^Bench-/, "").replace(/\.g3a$/, "");
 const info = {
-  file: name,
-  version: repoVersion,
-  size: statSync(target).size,
+  file: dirFile,
+  version: fileVersion,
+  expected: repoVersion,
+  size: statSync(publicPath).size,
   sha256: createHash("sha256").update(bytes).digest("hex"),
   commit: build.commit || null,
   date: build.built || null,
@@ -110,7 +159,7 @@ const info = {
 writeFileSync(infoPath, JSON.stringify(info, null, 2) + "\n");
 
 console.log(
-  `download: ${name}, ${Math.round(info.size / 1024)} KiB, sha256 ${info.sha256.slice(0, 12)}...` +
+  `download: ${dirFile}, ${Math.round(info.size / 1024)} KiB, sha256 ${info.sha256.slice(0, 12)}...` +
     (info.commit ? `, commit ${info.commit.slice(0, 7)}` : "") +
     (info.date ? `, built ${info.date}` : ""),
 );
