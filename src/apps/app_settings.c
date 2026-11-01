@@ -74,49 +74,72 @@ void app_cfg_save(void)
 
 #define SETTINGS_ROWS 9
 
+/* The row order, in one place: draw_row() and change() both switch on these,
+ * so a new row cannot end up drawn in one position and edited in another. */
+enum {
+    ROW_UNCERT = 0,
+    ROW_FONT,
+    ROW_CHECKPOINT,
+    ROW_WRAP,
+    ROW_ANGLE,
+    ROW_HINT,
+    ROW_STARTUP,
+    ROW_HINT_LINE,
+    ROW_WARN,
+};
+
 static void change(int delta)
 {
     bench_settings_t *cfg = app_cfg();
 
-    if (row == 8)
+    switch (row)
     {
+    case ROW_UNCERT:
+        cfg->uncert_sig = settings_clamp_uncert_sig(cfg->uncert_sig + delta);
+        break;
+    case ROW_FONT:
         cfg->font_scale = settings_clamp_font(cfg->font_scale + delta);
         /* Take effect at once: the reader can see the result on this screen. */
         scr_set_text_scale((int)cfg->font_scale);
+        break;
+    case ROW_CHECKPOINT:
+        cfg->pacer_checkpoint =
+            settings_clamp_checkpoint(cfg->pacer_checkpoint + delta);
+        break;
+    case ROW_WRAP:
+    {
+        int v = cfg->notes_wrap + (delta > 0 ? 25 : -25);
+
+        cfg->notes_wrap = settings_clamp_wrap(v);
+        if (v > 0 && cfg->notes_wrap == 0)
+            cfg->notes_wrap = 50;   /* never land on "auto" by accident */
+        break;
     }
-    else if (row == 5)
+    case ROW_ANGLE:
+        cfg->angle_unit = settings_clamp_angle(
+            cfg->angle_unit == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_DEG
+                                                  : SETTINGS_ANGLE_RAD);
+        break;
+    case ROW_HINT:
+        cfg->tour_done = settings_clamp_flag(cfg->tour_done + delta);
+        break;
+    case ROW_STARTUP:
         cfg->startup_cat = settings_clamp_startup_cat(
             delta > 0 ? (cfg->startup_cat + 1) % SETTINGS_CATEGORY_COUNT
                       : (cfg->startup_cat + SETTINGS_CATEGORY_COUNT - 1) %
                             SETTINGS_CATEGORY_COUNT);
-    else if (row == 6)
+        break;
+    case ROW_HINT_LINE:
         cfg->show_hint = settings_clamp_flag(cfg->show_hint ? 0 : 1);
-    else if (row == 7)
+        break;
+    case ROW_WARN:
         cfg->pacer_warn = settings_clamp_warn(
             delta > 0 ? (cfg->pacer_warn + 1) % (SETTINGS_WARN_MAX + 1)
-                      : (cfg->pacer_warn + SETTINGS_WARN_MAX) % (SETTINGS_WARN_MAX + 1));
-    else if (row == 0)
-        cfg->uncert_sig = settings_clamp_uncert_sig(cfg->uncert_sig + delta);
-    else if (row == 1)
-        cfg->pacer_checkpoint =
-            settings_clamp_checkpoint(cfg->pacer_checkpoint + delta);
-    else if (row == 3)
-        cfg->angle_unit = settings_clamp_angle(
-            cfg->angle_unit == SETTINGS_ANGLE_RAD ? SETTINGS_ANGLE_DEG
-                                                  : SETTINGS_ANGLE_RAD);
-    else if (row == 4)
-        cfg->tour_done = settings_clamp_flag(cfg->tour_done + delta);
-    else
-    {
-        int v = cfg->notes_wrap;
-
-        if (delta > 0)
-            v += 25;
-        else
-            v -= 25;
-        cfg->notes_wrap = settings_clamp_wrap(v);
-        if (v > 0 && cfg->notes_wrap == 0)
-            cfg->notes_wrap = 50;   /* never land on "auto" by accident */
+                      : (cfg->pacer_warn + SETTINGS_WARN_MAX) %
+                            (SETTINGS_WARN_MAX + 1));
+        break;
+    default:
+        break;
     }
     app_cfg_save();
 }
@@ -172,15 +195,18 @@ static void draw_row(int index, int y, int w, bench_settings_t *cfg, char *num)
 
     switch (index)
     {
-    case 0:
+    case ROW_UNCERT:
         w_row(TH_PAD, y, w, "Uncertainty figures",
               cfg->uncert_sig == 2 ? "1 or 2" : "1", sel);
         break;
-    case 1:
+    case ROW_FONT:
+        w_row(TH_PAD, y, w, "Font", settings_font_text(cfg->font_scale), sel);
+        break;
+    case ROW_CHECKPOINT:
         nt_u64(cfg->pacer_checkpoint, num, (int)sizeof num);
         w_row(TH_PAD, y, w, "Pacer checkpoint", num, sel);
         break;
-    case 2:
+    case ROW_WRAP:
         if (cfg->notes_wrap == 0)
             strcpy(num, "auto");
         else
@@ -190,28 +216,25 @@ static void draw_row(int index, int y, int w, bench_settings_t *cfg, char *num)
         }
         w_row(TH_PAD, y, w, "Note width", num, sel);
         break;
-    case 3:
+    case ROW_ANGLE:
         w_row(TH_PAD, y, w, "Angles default",
               settings_angle_text(cfg->angle_unit), sel);
         break;
-    case 4:
+    case ROW_HINT:
         w_row(TH_PAD, y, w, "First-run hint",
               cfg->tour_done ? "read" : "showing", sel);
         break;
-    case 5:
+    case ROW_STARTUP:
         w_row(TH_PAD, y, w, "Opens on",
               tool_category_name((tool_category_t)cfg->startup_cat), sel);
         break;
-    case 6:
+    case ROW_HINT_LINE:
         w_row(TH_PAD, y, w, "Show hint line", cfg->show_hint ? "yes" : "no",
               sel);
         break;
-    case 7:
+    case ROW_WARN:
         w_row(TH_PAD, y, w, "Pacer clock red at",
               settings_warn_text(cfg->pacer_warn, num, (int)sizeof num), sel);
-        break;
-    case 8:
-        w_row(TH_PAD, y, w, "Font", settings_font_text(cfg->font_scale), sel);
         break;
     default:
         break;

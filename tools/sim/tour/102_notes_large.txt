@@ -1,0 +1,12 @@
+# tour step: 102_notes_large
+# The notes viewer at large text: the same note as 18_notes_markdown, one size
+# up, showing the table rows staying inside the window.
+tool:settings
+down
+right
+exit
+exit
+right
+right
+exe
+exe
