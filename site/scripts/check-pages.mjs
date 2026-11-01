@@ -9,6 +9,7 @@
 import { createServer } from "vite";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -54,6 +55,11 @@ const server = await createServer({ server: { middlewareMode: true }, appType: "
 let failures = 0;
 
 try {
+  /* Copies spike.diff (and any built Bench-spike-*.g3a) into public/ and
+   * rewrites spike.generated.json, so the routes below render and check the same
+   * state the build hands to Vite rather than whatever was left in the tree. */
+  execFileSync(process.execPath, [join(root, "scripts", "fetch-spike.mjs")], { stdio: "pipe" });
+
   const { default: App } = await server.ssrLoadModule("/src/App.jsx");
 
   for (const [path, phrases] of ROUTES) {
