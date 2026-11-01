@@ -29,3 +29,13 @@ site/public/images/
 
 # The release build, fetched at deploy time (scripts/fetch-addin.mjs)
 site/public/Bench-*.g3a
+
+# Intermediates of the WebAssembly build. The two files that matter are copied
+# into site/public/sim (see below).
+/build-wasm/
+
+# The WebAssembly build IS committed, on purpose (unlike the .g3a above): it is
+# ~300 KiB, and Vercel has no C compiler, so the deployed simulator needs the
+# bytes in the repository.  tools/wasm/build.sh rewrites it; the worker and the
+# WASI shim next to it are hand-written or vendored and always come from
+# tools/wasm/.

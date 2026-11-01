@@ -490,28 +490,42 @@ jobs:
           fi
 
   wasm:
-    name: WebAssembly simulator (optional)
+    name: WebAssembly simulator
     runs-on: ubuntu-22.04
-    # The repository is complete without this job: the site's simulator page
-    # shows the screenshot gallery whenever no binary is deployed. A failure
-    # here is a missing extra, not a broken build, so it does not fail the run.
-    continue-on-error: true
+    # The binary is committed (site/public/sim/bench.wasm) because Vercel has no
+    # C compiler, so this job is what proves that copy is current: it rebuilds
+    # from the same sources the screenshots come from, runs the module in Node,
+    # and fails when the committed file no longer matches the C.  zig carries
+    # clang, wasm-ld and wasi-libc, so one pip install is the whole toolchain.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: actions/setup-python@v6
         with:
-          version: 3.1.61
+          python-version: "3.12"
+
+      - name: Install zig
+        run: pip install --user ziglang
 
       - name: Build bench.wasm from the same sources as the screenshots
-        run: sh tools/wasm/build.sh
+        run: |
+          export ZIG="$(python3 -c 'import os, ziglang; print(os.path.join(os.path.dirname(ziglang.__file__), "zig"))')"
+          sh tools/wasm/build.sh
+          # Keys in, frames out: the build is only a build if the module runs.
+          node tools/wasm/smoke.mjs "down,exe"
+          node tools/wasm/worker-smoke.mjs "down,exe,f2"
+
+      - name: The committed binary is this build
+        run: |
+          node site/scripts/copy-wasm.mjs
+          git diff --exit-code site/public/sim/bench.wasm site/public/sim/demo.json \
+            || { echo "::error title=bench.wasm::the committed WebAssembly build is stale - run tools/wasm/build.sh and commit site/public/sim"; exit 1; }
 
       - name: Keep the binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bench-wasm
           path: |
-            build-wasm/bench.js
             build-wasm/bench.wasm
-            build-wasm/bench.data
+            build-wasm/demo.json
           if-no-files-found: warn

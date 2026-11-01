@@ -18,11 +18,13 @@
 
 #include <gint/gint.h>
 
-#ifdef __EMSCRIPTEN__
-/* The browser build of this same file.  Emscripten compiles the add-in and this
- * stand-in exactly as the desktop build does; the only difference is where keys
- * come from and where the frame goes.  See tools/wasm/build.sh. */
-#include <emscripten.h>
+#ifdef BENCH_WASM
+/* The browser build of this same file: the add-in and this stand-in, compiled
+ * to WebAssembly by tools/wasm/build.sh, with keys arriving from the page
+ * instead of a script and the frame pulled out as RGBA.  Nothing here needs
+ * emscripten's Asyncify: the page runs the module inside a Web Worker and the
+ * worker blocks on a shared buffer, so getkey() may simply block. */
+#include "bench_wasm.h"
 #endif
 
 #include <dirent.h>
@@ -605,27 +607,6 @@ static key_event_t finish(void)
     exit(0);
 }
 
-#ifdef __EMSCRIPTEN__
-/* ---- browser keys -------------------------------------------------------
- *
- * JS pushes keys with bench_wasm_key(); getkey() blocks (Asyncify turns the
- * sleep into a return to the browser) until one arrives.  No key script, no
- * screenshot target: the frame is pulled by bench_wasm_frame(). */
-
-static int wasm_queue[16];
-static int wasm_head, wasm_tail;
-
-EMSCRIPTEN_KEEPALIVE void bench_wasm_key(int key)
-{
-    int next = (wasm_tail + 1) % (int)(sizeof wasm_queue / sizeof wasm_queue[0]);
-
-    if (next == wasm_head)
-        return;                     /* the queue is full; drop the press */
-    wasm_queue[wasm_tail] = key;
-    wasm_tail = next;
-}
-#endif
-
 static key_event_t next_event(void)
 {
     for (;;)
@@ -633,16 +614,13 @@ static key_event_t next_event(void)
         char const *tok;
         int k;
 
-#ifdef __EMSCRIPTEN__
-        /* A key from the page, else wait for one.  The key script is empty in
-         * the browser, so this is the only path. */
-        while (wasm_head == wasm_tail)
-            emscripten_sleep(16);
+#ifdef BENCH_WASM
+        /* One key from the page.  The call blocks inside the worker, which is
+         * the whole point: no key script, no busyloop, no Asyncify. */
         {
             key_event_t e;
 
-            k = wasm_queue[wasm_head];
-            wasm_head = (wasm_head + 1) % (int)(sizeof wasm_queue / sizeof wasm_queue[0]);
+            k = bench_wasm_wait_key();
             memset(&e, 0, sizeof e);
             e.type = KEYEV_DOWN;
             e.key = (sim_uint)k;
@@ -1150,10 +1128,10 @@ static void load_script(char const *path)
     fclose(f);
 }
 
-#ifdef __EMSCRIPTEN__
+#ifdef BENCH_WASM
 /* Called once from the page.  bench_main() never returns: it is the add-in's
  * own event loop, parked inside getkey(). */
-EMSCRIPTEN_KEEPALIVE int bench_wasm_run(void)
+BENCH_WASM_EXPORT int bench_wasm_run(void)
 {
     snprintf(root, sizeof root, "%s", "/benchfs");
     script_len = 0;
@@ -1163,8 +1141,10 @@ EMSCRIPTEN_KEEPALIVE int bench_wasm_run(void)
     return 0;
 }
 
-/* The framebuffer as RGBA, one byte per channel, top row first. */
-EMSCRIPTEN_KEEPALIVE void bench_wasm_frame(unsigned char *out)
+/* The framebuffer as RGBA, one byte per channel, top row first.  The page
+ * calls this from inside bench_wasm_wait_key(), before it blocks, so the frame
+ * on screen is always the one the last key produced. */
+BENCH_WASM_EXPORT void bench_wasm_frame(unsigned char *out)
 {
     for (int y = 0; y < DHEIGHT; y++)
         for (int x = 0; x < DWIDTH; x++)
@@ -1179,18 +1159,19 @@ EMSCRIPTEN_KEEPALIVE void bench_wasm_frame(unsigned char *out)
         }
 }
 
-EMSCRIPTEN_KEEPALIVE int bench_wasm_width(void)
+BENCH_WASM_EXPORT int bench_wasm_width(void)
 {
     return DWIDTH;
 }
 
-EMSCRIPTEN_KEEPALIVE int bench_wasm_height(void)
+BENCH_WASM_EXPORT int bench_wasm_height(void)
 {
     return DHEIGHT;
 }
 
-#endif /* __EMSCRIPTEN__ */
+#endif /* BENCH_WASM */
 
+#ifndef BENCH_WASM
 int main(void)
 {
     char const *fs = getenv("BENCH_FS");
@@ -1206,3 +1187,4 @@ int main(void)
     finish();
     return 0;
 }
+#endif /* !BENCH_WASM */

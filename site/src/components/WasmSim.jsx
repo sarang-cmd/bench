@@ -2,12 +2,17 @@
 //
 // Nothing here re-implements a screen: the C in src/ is the same C the
 // calculator runs, tools/sim/sim.c is the same stand-in the screenshots come
-// from, and emscripten only replaces "keys from a script" with "keys from a
-// button" and "write a PPM" with "hand back the framebuffer".
+// from, and tools/wasm/build.sh only changes where keys come from and where the
+// frame goes.  See tools/wasm/worker.js for the other half.
+//
+// The module runs in a Web Worker (its getkey() blocks, which a worker may do),
+// and the two directions are a SharedArrayBuffer: the page writes a key code and
+// wakes the worker, the worker writes the framebuffer and bumps a counter the
+// page's animation frame reads.  No Asyncify, no compiler on the visitor's
+// machine.
 //
 // If the binary is not deployed, this component says so in one line and the
-// simulator page carries on with the real screenshots.  That is the normal case
-// in a clone: build-wasm/ is not in git.
+// simulator page carries on with the real screenshots.
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // The gint key codes tools/sim/include/gint/gint.h defines, so a press here is
@@ -51,48 +56,60 @@ const PAD = [
   [["DOWN", "down"]],
 ];
 
-function loadScript(url) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${url}"]`);
-    if (existing) {
-      if (window.BenchSim) resolve(window.BenchSim);
-      else existing.addEventListener("load", () => resolve(window.BenchSim));
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = url;
-    script.async = true;
-    script.onload = () => resolve(window.BenchSim);
-    script.onerror = () => reject(new Error(`could not load ${url}`));
-    document.head.appendChild(script);
-  });
-}
+// header: keySeq, key, frameSeq, width, height (Int32), then the pixels.
+const HEADER_BYTES = 32;
+const WIDTH = 396;
+const HEIGHT = 224;
 
 export default function WasmSim() {
   const [state, setState] = useState("loading");
   const canvasRef = useRef(null);
-  const moduleRef = useRef(null);
+  const headerRef = useRef(null);
+  const pixelsRef = useRef(null);
+  const workerRef = useRef(null);
   const frameRef = useRef(0);
+  const drawnRef = useRef(-1);
+  // Presses the worker has not taken yet.  One key at a time: the add-in's
+  // getkey() consumes one, and the frame it publishes is the signal that it is
+  // ready for the next, so a fast double-press cannot land on top of itself.
+  const queueRef = useRef([]);
+  const busyRef = useRef(false);
 
-  // One rAF loop copies the framebuffer to the canvas while the add-in is idle.
+  const send = useCallback((name) => {
+    const header = headerRef.current;
+    if (!header || KEYS[name] === undefined) return;
+    Atomics.store(header, 1, KEYS[name]);
+    busyRef.current = true;
+    Atomics.add(header, 0, 1);
+    Atomics.notify(header, 0);
+  }, []);
+
+  // One rAF loop: copy the shared framebuffer to the canvas whenever the worker
+  // says it has written a new one.
   const pump = useCallback(() => {
-    const module = moduleRef.current;
+    const header = headerRef.current;
+    const pixels = pixelsRef.current;
     const canvas = canvasRef.current;
 
-    if (module && canvas) {
-      const width = module._bench_wasm_width();
-      const height = module._bench_wasm_height();
-      const bytes = width * height * 4;
-      const ptr = module._malloc(bytes);
+    if (header && pixels && canvas) {
+      const seq = Atomics.load(header, 2);
+      if (seq !== drawnRef.current) {
+        drawnRef.current = seq;
+        const context = canvas.getContext("2d");
+        const image = context.createImageData(WIDTH, HEIGHT);
+        image.data.set(pixels);
+        context.putImageData(image, 0, 0);
 
-      module._bench_wasm_frame(ptr);
-      const pixels = new Uint8ClampedArray(module.HEAPU8.buffer, ptr, bytes);
-      const context = canvas.getContext("2d");
-      const image = context.createImageData(width, height);
-
-      image.data.set(pixels);
-      context.putImageData(image, 0, 0);
-      module._free(ptr);
+        // The worker drew the frame for the last key, so it is waiting again.
+        busyRef.current = false;
+        const next = queueRef.current.shift();
+        if (next !== undefined) {
+          Atomics.store(header, 1, KEYS[next]);
+          busyRef.current = true;
+          Atomics.add(header, 0, 1);
+          Atomics.notify(header, 0);
+        }
+      }
     }
     frameRef.current = requestAnimationFrame(pump);
   }, []);
@@ -101,20 +118,49 @@ export default function WasmSim() {
     let cancelled = false;
     const base = new URL("sim/", document.baseURI).href;
 
-    fetch(new URL("bench.js", base).href, { method: "HEAD" })
+    // A SharedArrayBuffer needs a cross-origin isolated page (see the headers in
+    // site/vercel.json); without it the module cannot talk to the page.
+    if (typeof SharedArrayBuffer === "undefined") {
+      setState("no-shared-memory");
+      return undefined;
+    }
+
+    fetch(new URL("bench.wasm", base).href, { method: "HEAD" })
       .then((response) => {
         if (!response.ok) throw new Error("no build");
-        return loadScript(new URL("bench.js", base).href);
+        if (!response.headers.get("content-length")) return;
       })
-      .then((factory) => factory({ locateFile: (name) => new URL(name, base).href }))
-      .then((module) => {
+      .then(() => {
         if (cancelled) return;
-        moduleRef.current = module;
-        // The add-in's event loop parks inside getkey(); with Asyncify this
-        // call returns to the browser and resumes on the next key press.
-        module.ccall("bench_wasm_run", "number", [], []);
-        setState("ready");
-        frameRef.current = requestAnimationFrame(pump);
+        const sab = new SharedArrayBuffer(HEADER_BYTES + WIDTH * HEIGHT * 4);
+        headerRef.current = new Int32Array(sab, 0, 8);
+        headerRef.current[3] = WIDTH;
+        headerRef.current[4] = HEIGHT;
+        pixelsRef.current = new Uint8ClampedArray(sab, HEADER_BYTES, WIDTH * HEIGHT * 4);
+
+        const worker = new Worker(new URL("worker.js", base).href, { type: "module" });
+        workerRef.current = worker;
+        worker.onmessage = (event) => {
+          if (cancelled) return;
+          if (event.data?.type === "ready") {
+            setState("ready");
+            frameRef.current = requestAnimationFrame(pump);
+          } else if (event.data?.type === "failed") {
+            setState("absent");
+          }
+        };
+        worker.onerror = () => {
+          if (!cancelled) setState("absent");
+        };
+        worker.postMessage({
+          type: "start",
+          sab,
+          wasm: new URL("bench.wasm", base).href,
+          demo: new URL("demo.json", base).href,
+          shim: new URL("browser_wasi_shim/index.js", base).href,
+          width: WIDTH,
+          height: HEIGHT,
+        });
       })
       .catch(() => {
         if (!cancelled) setState("absent");
@@ -123,26 +169,32 @@ export default function WasmSim() {
     return () => {
       cancelled = true;
       cancelAnimationFrame(frameRef.current);
+      workerRef.current?.terminate();
+      workerRef.current = null;
     };
-  }, [pump]);
+  }, [pump, send]);
 
   const press = (name) => {
-    const module = moduleRef.current;
-
-    if (module && KEYS[name] !== undefined)
-      module.ccall("bench_wasm_key", "number", ["number"], [KEYS[name]]);
+    if (KEYS[name] === undefined) return;
+    if (busyRef.current) {
+      // Keep the last few, in order; anything beyond that is a held key.
+      if (queueRef.current.length < 4) queueRef.current.push(name);
+      return;
+    }
+    send(name);
   };
 
-  if (state === "absent") {
+  if (state === "absent" || state === "no-shared-memory") {
     return (
       <div className="mt-8 border-3 border-ink bg-paper p-5">
         <p className="font-mono text-xs uppercase tracking-widest text-ink/60">
           Interactive build
         </p>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed">
-          Not deployed in this build. The WebAssembly binary is produced by{" "}
-          <code>tools/wasm/build.sh</code> (emscripten), or by the optional CI job, and it is
-          deliberately not in git. Everything below is still real output from the same sources.
+          {state === "no-shared-memory"
+            ? "This page needs cross-origin isolation for the shared buffer the add-in runs on, and the deployment did not send those headers."
+            : "Not deployed in this build."}{" "}
+          Everything below is still real output from the same C sources.
         </p>
       </div>
     );
@@ -153,8 +205,8 @@ export default function WasmSim() {
       <div className="inline-block border-3 border-ink bg-ink p-1 shadow-brute">
         <canvas
           ref={canvasRef}
-          width={396}
-          height={224}
+          width={WIDTH}
+          height={HEIGHT}
           aria-label="The Bench add-in running in the browser"
           className="block h-auto w-full max-w-[396px]"
           style={{ imageRendering: "pixelated" }}
@@ -179,7 +231,9 @@ export default function WasmSim() {
       </div>
 
       <p className="mt-3 max-w-[420px] font-mono text-[11px] uppercase tracking-widest text-ink/60">
-        {state === "ready" ? "Same C as the calculator - keys go straight into the add-in" : "Loading the add-in..."}
+        {state === "ready"
+          ? "Same C as the calculator - keys go straight into the add-in"
+          : "Loading the add-in..."}
       </p>
     </div>
   );

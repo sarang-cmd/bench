@@ -29,14 +29,23 @@ export default function Hero({ version }) {
             <Chip>MIT</Chip>
           </div>
 
-          {/* leading-[0.95] made the highlight of "in one" taller than its own
-              line box, so it painted over the line above and under the line
-              below. 1.25 keeps the yellow band inside its line: no vertical
-              padding is used, so the band is the glyph box and the line box
-              has the spare height. */}
-          <h1 className="text-balance text-[2rem] font-black leading-[1.25] tracking-tighter sm:text-5xl lg:text-[3.25rem] xl:text-6xl">
+          {/* The yellow band is exactly the words it sits behind, and nothing
+              about the heading's settings may push it onto its neighbours:
+
+              - tracking-normal inside the band. The heading is tracked tight
+                (-0.025em), so each glyph paints a little past its own advance;
+                a band laid out with tight tracking therefore starts life a few
+                pixels left of the words it is meant to cover, and at heading
+                sizes that is enough for it to sit on the end of the word
+                before it.
+              - no vertical padding, and leading 1.3. The band is the glyph
+                box, and the line box has the spare height, so it cannot reach
+                into the line above or below.
+              - padding only to the sides, which the words inside the band can
+                never collide with. */}
+          <h1 className="text-balance text-[2rem] font-black leading-[1.3] tracking-tight sm:text-5xl lg:text-[3.25rem] xl:text-6xl">
             {TOOL_COUNT_WORD} tools{" "}
-            <span className="whitespace-nowrap bg-yellow px-1.5 [box-decoration-break:clone]">
+            <span className="whitespace-nowrap bg-yellow px-2 tracking-normal [box-decoration-break:clone]">
               in one
             </span>{" "}
             add-in.
