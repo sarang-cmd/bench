@@ -15,6 +15,16 @@ it, so the file, the About screen and the tag always agree.
 
 Numbers here describe the source in `main`, not a build on a calculator.
 
+- **The browser simulator has the calculator's keypad**: it was a flat 5-column
+  grid that followed no physical keyboard - DEL next to 9, ALPHA where x² is,
+  arrows spread over two rows. It is now the fx-CG 50 layout: six function keys
+  with the case's own captions, the SHIFT/OPTN/VARS/MENU and ALPHA blocks, the
+  four-way pad on the right where the real one sits, and 7-8-9-DEL-AC /
+  4-5-6-×-÷ / 1-2-3-+-(−) / 0-.-×10ˣ-(−)-EXE. Keys Bench does not read are drawn
+  as muted hardware rather than pretending to work; every live key is a real
+  button with an aria-label. Checked at 320, 390 and 1280px: no horizontal
+  scroll, smallest key 26px.
+
 - **The diagnostic add-in is on the site and in `dist/`**: `Bench-spike-0.0.2.g3a`
   is now published beside Bench's own `.g3a` - in `dist/` with a `SPIKE.txt`
   manifest, and on the downloads page under "The diagnostic add-in" - instead of
