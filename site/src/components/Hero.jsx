@@ -14,7 +14,9 @@ export default function Hero({ version }) {
       {/* Flat blocks, no gradients: the house style. They sit behind everything
           and only appear once there is room for them, so they never cross the
           text on a phone. */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
+      {/* The block is wider than the page on purpose; overflow-hidden keeps it
+          inside, so it never puts a scrollbar on the window. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden lg:block">
         <div className="absolute -right-24 -top-28 h-72 w-72 rotate-12 border-3 border-ink bg-yellow/60" />
       </div>
 
