@@ -37,6 +37,12 @@ void w_title(char const *title, char const *hint)
 void w_softkeys(char const *const labels[6], int active)
 {
     int y = SCR_H - TH_SOFT_H;
+    /* A label never comes closer than this to the separator beside it.  The
+     * bar is 64 pixels a slot and the widest label here ("Settings") is 48, so
+     * nothing is cut today; the clamp is for the next long label, which would
+     * otherwise run into the slot next door instead of being ellipsised. */
+    int const room = TH_SOFT_W - 2 - 2 * TH_SOFT_PAD;
+    int const text_y = y + (TH_SOFT_H - scr_text_h()) / 2;
 
     scr_fill(0, y, SCR_W, TH_SOFT_H, TH_SHADE);
     scr_hline(0, y, SCR_W, TH_INK);
@@ -44,9 +50,13 @@ void w_softkeys(char const *const labels[6], int active)
     {
         int x = i * TH_SOFT_W;
         char const *label = labels[i];
+        int const w = label ? scr_text_w(label) : 0;
+        int const label_x = x + 1 + (TH_SOFT_W - 1 - w) / 2;
 
+        /* Separators stop short of the top and bottom edge, so the bar reads as
+         * six slots with air around them rather than six boxes touching. */
         if (i > 0)
-            scr_vline(x, y + 1, TH_SOFT_H - 1, TH_PAPER);
+            scr_vline(x, y + 4, TH_SOFT_H - 8, TH_PAPER);
         if (active == i)
             scr_fill(x + 1, y + 1, TH_SOFT_W - 1, TH_SOFT_H - 1, TH_INK);
         /* F5 is help on every screen (main.c routes it), so an empty F5 slot
@@ -56,10 +66,11 @@ void w_softkeys(char const *const labels[6], int active)
             label = "Help";
         if (!label || !*label)
             continue;
-        scr_text_as(SCR_TR_SOFTKEY,
-                    x + 1 + (TH_SOFT_W - 2 - scr_text_w(label)) / 2,
-                    y + (TH_SOFT_H - scr_text_h()) / 2, label,
-                    active == i ? TH_PAPER : TH_INK);
+        scr_text_ellipsis_as(SCR_TR_SOFTKEY,
+                             label_x < x + 1 + TH_SOFT_PAD ? x + 1 + TH_SOFT_PAD
+                                                            : label_x,
+                             text_y, label,
+                             active == i ? TH_PAPER : TH_INK, room);
     }
 }
 
