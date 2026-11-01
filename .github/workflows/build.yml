@@ -497,9 +497,9 @@ jobs:
     # here is a missing extra, not a broken build, so it does not fail the run.
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: mymindstorm/setup-emsdk@v16
         with:
           version: 3.1.61
 
@@ -507,7 +507,7 @@ jobs:
         run: sh tools/wasm/build.sh
 
       - name: Keep the binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bench-wasm
           path: |
