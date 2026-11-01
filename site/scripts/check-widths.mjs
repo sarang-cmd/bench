@@ -27,7 +27,12 @@ const HEIGHT = 900;
 const arg = process.argv.indexOf("--url");
 const base = arg > 0 ? process.argv[arg + 1] : "http://localhost:4173";
 
-const browser = await chromium.launch();
+// CHROME points it at a browser binary when Playwright's own download is out of
+// reach (a sandbox with no CDN access); CI leaves it unset.
+const browser = await chromium.launch({
+  executablePath: process.env.CHROME || undefined,
+  args: ["--no-sandbox"],
+});
 let failures = 0;
 
 for (const width of WIDTHS) {

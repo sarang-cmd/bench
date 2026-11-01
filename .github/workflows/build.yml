@@ -488,6 +488,15 @@ jobs:
             done
             exit 1
           fi
+          # A bounding-box sweep cannot see the hero band bug: the boxes never
+          # touched, the glyph just overflowed its box. This one counts the
+          # neighbour ink the yellow would hide.
+          if ! node scripts/check-band.mjs --url http://localhost:4173 2>&1 | tee "$log"; then
+            tail -n 20 "$log" | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do
+              echo "::error title=hero band::${line:-<blank>}"
+            done
+            exit 1
+          fi
 
   wasm:
     name: WebAssembly simulator
