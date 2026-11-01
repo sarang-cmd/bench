@@ -6,8 +6,8 @@
 [![version](https://img.shields.io/badge/version-1.0.0-2f2d2e)](https://github.com/sarang-cmd/bench/releases/tag/v1.0.0)
 [![build](https://github.com/sarang-cmd/bench/actions/workflows/build.yml/badge.svg)](https://github.com/sarang-cmd/bench/actions/workflows/build.yml)
 [![licence](https://img.shields.io/badge/licence-MIT-2f5fd0)](https://github.com/sarang-cmd/bench/blob/main/LICENSE)
-[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app%2Fbadge-tools.json)](docs/tools.json)
-[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app%2Fbadge-screens.json)](docs/images)
+[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-tools.json)](docs/tools.json)
+[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app%2Fbadge-screens.json)](docs/images)
 <!-- BADGES:END -->
 
 **Eighteen tools in one add-in for the Casio fx-CG 50.** Pacer times a practice
@@ -22,8 +22,8 @@ minutes you actually spent. One
 Bauhaus palette, neobrutalist edges: flat blocks of colour, heavy black
 outlines, hard offset shadows, geometric shapes, no gradients and no animation.
 
-Live page: <https://bench-sarang-dev.vercel.app> (source in `site/`). The page
-serves the add-in itself: <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a>.
+Live page: <https://bench-gdc.vercel.app> (source in `site/`). The page
+serves the add-in itself: <https://bench-gdc.vercel.app/Bench-1.0.0.g3a>.
 
 ```
 Bench-1.0.0.g3a     <- copy this to the calculator's storage root
@@ -41,10 +41,10 @@ Bench-1.0.0.g3a     <- copy this to the calculator's storage root
 | | |
 |---|---|
 | Tools | 18 in 3 categories |
-| Screens captured | 75 |
-| Tour scripts | 75 |
-| Native test programs | 29 |
-| C source | 21,580 lines in 100 files |
+| Screens captured | 77 |
+| Tour scripts | 77 |
+| Native test programs | 32 |
+| C source | 22,204 lines in 107 files |
 | Version | 1.0.0 |
 <!-- STATS:END -->
 
@@ -382,6 +382,7 @@ you leave the screen, never in a loop.
 | F2 | Complex numbers | the operation: +, -, x, /, ^ |
 | F3 / F4 | Complex numbers | argument in degrees / radians |
 | F2 / F3 | Root finder | next method / solve |
+| F4 | Root finder | the last eight answers |
 | EXE | Root finder | edit f, or solve from a number field |
 | UP/DOWN | Root finder | move between fields, then scroll the table |
 | F2 | Polynomials, roots | one more coefficient |
@@ -389,6 +390,7 @@ you leave the screen, never in a loop.
 | F4 / F3 | Sig figs | next / previous mode |
 | UP/DOWN | Settings | pick a row |
 | LEFT/RIGHT | Settings | change the selected row |
+| F3 | Settings | the hardware report: mark what the device does, F2 writes `state/hwreport.txt` |
 | EXE | Home screen | open the selected tile |
 | F5 | Home screen | explain the selected tile; the hint line goes away |
 | LEFT/RIGHT | Sig figs | the n of the rounding modes |
@@ -445,7 +447,7 @@ check anything before you rely on it in an exam.
 
 | Where | How |
 |---|---|
-| This site | <https://bench-sarang-dev.vercel.app/Bench-1.0.0.g3a> - one click, no account |
+| This site | <https://bench-gdc.vercel.app/Bench-1.0.0.g3a> - one click, no account |
 | Release | [releases page](../../releases) - the same bytes, attached by CI |
 | Newest build | release [`auto`](../../releases/tag/auto) - rebuilt from `main` every few days, replaces itself |
 | `dist/` in the repo | [`dist/Bench-1.0.0.g3a`](dist/Bench-1.0.0.g3a), with [`dist/BUILD.txt`](dist/BUILD.txt) naming the commit, size and SHA-256 |

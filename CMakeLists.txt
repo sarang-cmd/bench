@@ -47,6 +47,9 @@ set(SOURCES
   src/core/md_parse.c
   src/core/numfmt.c
   src/core/numparse.c
+  src/core/numedit.c
+  src/core/history.c
+  src/core/hwreport.c
   src/core/numtheory.c
   src/core/poly.c
   src/core/roots.c
@@ -88,6 +91,7 @@ set(SOURCES
   src/apps/app_stats.c
   src/apps/app_settings.c
   src/apps/app_sigfig.c
+  src/apps/app_hwreport.c
   src/apps/app_suvat.c
   src/apps/app_triangle.c
   src/apps/app_uncert.c

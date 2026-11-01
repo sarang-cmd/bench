@@ -6,7 +6,7 @@
 // changes, so a shared link and a search result say the right thing.
 import { useEffect, useState } from "react";
 
-export const SITE = "https://bench-sarang-dev.vercel.app";
+export const SITE = "https://bench-gdc.vercel.app";
 
 export const ROUTES = [
   {

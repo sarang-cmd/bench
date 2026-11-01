@@ -66,9 +66,9 @@ def badges(c):
         # Live badges: the numbers come from the site's shields endpoint files,
         # which gen-stats.mjs writes from the repository, so a stale badge is
         # impossible rather than merely unlikely.
-        "[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app"
+        "[![tools](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app"
         "%2Fbadge-tools.json)](docs/tools.json)",
-        "[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-sarang-dev.vercel.app"
+        "[![screens](https://img.shields.io/endpoint?url=https%3A%2F%2Fbench-gdc.vercel.app"
         "%2Fbadge-screens.json)](docs/images)",
         BADGES_END,
     ])

@@ -23,9 +23,11 @@
 #include "app.h"
 #include "app_help.h"
 
+#include <stdio.h>
 #include <string.h>
 
 #include "core/expr.h"
+#include "core/history.h"
 #include "core/numfmt.h"
 #include "core/numparse.h"
 #include "core/roots.h"
@@ -51,6 +53,12 @@ static root_result_t res;
 static bool solved;
 static char note[48];
 
+static void draw_history(int y);
+/* The last few solves, so a root does not disappear when the fields are
+ * cleared.  F4 shows them; nothing here is written to storage. */
+static history_t hist;
+static bool show_hist;
+
 void app_roots_init(void)
 {
     strcpy(fn, "x^2-2");
@@ -58,6 +66,7 @@ void app_roots_init(void)
     strcpy(pb, "2");
     method = M_BISECT;
     sel = 0;
+    show_hist = false;
     top = 0;
     solved = false;
     note[0] = 0;
@@ -146,6 +155,16 @@ static void solve(void)
 
     if (res.status == ROOT_ERR_EXPR)
         strcpy(note, "check the expression");
+
+    if (solved)
+    {
+        char line[HISTORY_LINE_MAX + 1];
+        char num[24];
+
+        nt_fixed(res.root, 6, num, (int)sizeof num);
+        snprintf(line, sizeof line, "%.20s = %.10s", fn, num);
+        history_push(&hist, line);
+    }
 }
 
 /* ---- the plot ----------------------------------------------------------- */
@@ -355,13 +374,41 @@ void app_roots_draw(void)
     }
     y += TH_LINE + 2;
 
-    draw_table(TH_PAD, y, 200);
-    draw_plot(TH_PAD + 200 + TH_GAP, y, SCR_W - 2 * TH_PAD - 200 - TH_GAP,
-              SCR_H - TH_SOFT_H - y - 4);
+    if (show_hist)
+        draw_history(y);
+    else
+    {
+        draw_table(TH_PAD, y, 200);
+        draw_plot(TH_PAD + 200 + TH_GAP, y, SCR_W - 2 * TH_PAD - 200 - TH_GAP,
+                  SCR_H - TH_SOFT_H - y - 4);
+    }
 
-    w_softkeys((char const *const[6]){ "Clear", "Method", "Solve", "", "", "" },
+    w_softkeys((char const *const[6]){ "Clear", "Method", "Solve", "History",
+                                       "", "" },
                -1);
     scr_present();
+}
+
+/* The last answers, newest first.  An empty list says so rather than showing an
+ * empty panel. */
+static void draw_history(int y)
+{
+    int h = SCR_H - TH_SOFT_H - y - 4;
+    int rows = (h - TH_LINE - 6) / TH_LINE;
+    int count = history_count(&hist);
+
+    w_panel(TH_PAD, y, SCR_W - 2 * TH_PAD, h);
+    scr_text(TH_PAD + 6, y + 4, "Recent answers", TH_INK);
+    if (count == 0)
+    {
+        scr_text(TH_PAD + 6, y + 20, "Nothing solved yet in this visit.", TH_INK);
+        return;
+    }
+    if (rows > count)
+        rows = count;
+    for (int i = 0; i < rows; i++)
+        scr_text_ellipsis(TH_PAD + 6, y + 20 + i * TH_LINE, history_at(&hist, i),
+                          TH_INK, SCR_W - 2 * TH_PAD - 12);
 }
 
 /* ---- keys --------------------------------------------------------------- */
@@ -436,6 +483,9 @@ app_result_t app_roots_key(bench_event_t ev)
             sel = 0;
         res.count = 0;
         note[0] = 0;
+        break;
+    case BK_F4:
+        show_hist = !show_hist;
         break;
     case BK_F3:
         solve();

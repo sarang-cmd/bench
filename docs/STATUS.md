@@ -185,8 +185,8 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | A2 tool registry | **done**: `src/apps/registry.c` is the only list (21 rows: 19 tools plus Settings and About); `docs/tools.json` is generated from it and CI diffs it; the site reads it too, through `site/scripts/gen-tools.mjs` |
 | A3 home categories and pages | **done in source**, unverified on device: F1..F4 categories, 3 x 2 grid, page dots, Study dashboard (deck and note counts) |
 | A4 design system | **done**: `docs/design.md`, `theme.h`, shapes, icons, tile anatomy; the site's ink was brought back to `#2f2d2e` to match |
-| A5 shared services | **partly**: help screen and paging done; `core/expr.c` is the expression engine (123 checks, shunting-yard, column-numbered errors); `core/mathfn.c` gives core sqrt, exp, ln and trigonometry without libm. Number entry as a shared widget, working lines, result history and settings v2 are **not** started |
-| B overlap hunt | **done**: 75 tour scripts, 0 findings, worst cases included; `site/scripts/check-widths.mjs` sweeps all eight routes at 320, 390, 768, 1024 and 1440 px in CI (horizontal scroll, right-edge crossings, over-wide boxes). Chromium could not be downloaded in this environment, so that sweep has run only in CI |
+| A5 shared services | **done for what the plan names**: help screen and paging, `core/expr.c` (shunting-yard, column-numbered errors), `core/mathfn.c` (no libm), `core/numedit.c` as the one numeric-field editor (54 checks, adopted by the moles screen), `core/history.c` with the Root finder's F4 panel (33 checks), and settings v2 |
+| B overlap hunt | **done**: 77 tour scripts, 0 findings, worst cases included; `site/scripts/check-widths.mjs` sweeps all eight routes at 320, 390, 768, 1024 and 1440 px in CI (horizontal scroll, right-edge crossings, over-wide boxes). Chromium could not be downloaded in this environment, so that sweep has run only in CI |
 | C fifteen tools | **15 of 15**: F1 Function table, F2 Triangle, F3 Polynomials, F4 Root finder, F5 Sequences, F6 Complex numbers, F7 Statistics, F8 Lab graph, F9 Sig figs, F10 SUVAT, F11 Moles, F12 Base and bits, F13 Study log, F14 Notes v2 (word count), F15 Cards v2 (mixed order) |
 | D demo content | **done**: `demo/` = 3 notes (headings, bold, lists, quotes, code fences), 3 decks (26 cards) and a 16-session study log, all in my own words and marked **needs human proofreading**; `tests/test_demo_files.c` parses every file with the add-in's parsers (108 checks). Copy instructions are in `demo/README.md` |
 | E settings v2 | **done**: five rows (uncertainty figures, pacer checkpoint, note width, angles default, first-run hint); `angle_unit` seeds the Triangle tool's unit and `tour_done` retires the home-screen hint; 687 native checks in `tests/test_settings.c`; files from 1.0.0 still load. Unverified on device |
@@ -194,6 +194,7 @@ answers change anything, TASK-M2's file layer plus the eight assumptions above.
 | G WebAssembly simulator | **built, not verified**: `tools/sim/sim.c` has an `__EMSCRIPTEN__` path (keys from the page, RGBA frame out), `tools/wasm/build.sh` builds it with Asyncify from the same sources as the screenshots, `/simulator` loads it when deployed and falls back to the gallery when not, and an optional CI job produces the artifact. **No emscripten here, so it has never been compiled, let alone run** |
 | H website v2 | **done**: eight routes (`/`, `/features`, `/simulator`, `/tutorial`, `/install`, `/downloads`, `/changelog`, `/about`), a 120-line router with real links, per-route title/description/canonical/OG tags, eight generated Open Graph cards, About statistics and the SHA-256 from the build, changelog generated from `CHANGELOG.md`, `check-pages.mjs` rendering all eight routes in CI, `vercel.json` rewriting deep links, sitemap with all eight. The browser-width sweep (320..1440 px) is still **not** run: there is no browser here |
 | I README and metadata | **done**: badges and a generated stats block in the README (`make stats`, `tools/gen_readme_stats.py`, checked in CI), `CONTRIBUTING.md` with the check list and the generated-file table, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`, an issue template and an issue template config |
+| J hardware report | **done**: `docs/HARDWARE.md` is the checklist, and Settings has an **F3 hardware report** screen: the eight assumptions, marked on the device, written to `state/hwreport.txt` by F2 (`core/hwreport.c`, 63 checks). What is missing is the run itself |
 | J spike docs | **done**: `docs/spike.md` says what the spike is and why it is not released, `spike/spike.diff` rebuilds it, CI ships it in its own `bench-spike` artifact. A hardware report template and the Settings "Hardware report" screen are **not** done |
 | K CI and release | **partly**: screen checks run in `make test`; the rolling `auto` release rebuilds every three days and replaces itself; the add-in is committed in `dist/`; the spike is out of the release; `build.yml` now also checks the README's numbers, the site's generated data and that all eight routes render; `dependabot.yml`, a pull request template and `docs/HARDWARE.md` as the release checklist are in. No badge JSON, no size report, no changelog-driven release body. Version stays 1.0.0 until 1.1.0 is cut |
 
@@ -266,7 +267,7 @@ the title-bar cut have been looked at in the host preview only.
 | Workstream | State |
 |---|---|
 | A design system, tile bug, registry | done |
-| A5 shared services | partly: help, paging and the expression engine are in; the shared number-entry widget and result history are not |
+| A5 shared services | done: the shared numeric field editor (`core/numedit.c`) and the result history (`core/history.c`, F4 in the Root finder) are in |
 | B overlap and width sweeps | done, the width sweep in CI |
 | C fifteen tools | done |
 | D demo content | done, **needs human proofreading** |
@@ -284,7 +285,5 @@ What is left is not code in this repository. It is:
    `docs/HARDWARE.md`. Until then those features stay "unverified on device".
 2. **An emscripten build of the simulator**, first compile included. The glue is
    written and the CI job is there; nothing has run it.
-3. **The shared number-entry widget and result history** (A5), which are the only
-   parts of the V2 brief with no code at all.
-4. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
+3. **Cutting 1.1.0**: bump `version.txt`, let the tagged build refresh `dist/`,
    then update the badges that name the version.

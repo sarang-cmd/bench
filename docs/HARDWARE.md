@@ -39,7 +39,7 @@ Both are fixed and covered by native tests (see `CHANGELOG.md`).
 ## V2: unverified on device
 
 Everything after 1.0.0 is marked **unverified on device** in the CHANGELOG. The
-core arithmetic has native tests (29 test programs, `make test`) and every screen
+core arithmetic has native tests (32 test programs, `make test`) and every screen
 is rendered by the PC simulator and checked for overlaps (`make check-screens`),
 but neither is the calculator.
 
@@ -57,7 +57,9 @@ Not yet run on hardware:
 | Moles | The three calculation screens |
 | Base and bits | Bases 2, 8, 10, 16; the operator list; shifts and masks |
 | Lab graph | Points typed in, the plot, the gradient |
+| Complex numbers | The four operations, the polar line, DEG/RAD, division by zero |
 | Settings v2 | The five rows, and that `settings.cfg` keeps its shape |
+| Hardware report | F3 in Settings, marking a row, F2 writing `state/hwreport.txt` |
 | First-run hint | It appears once and goes away after F5 |
 | Demo content | `demo/` copied to the three folders and read by every tool |
 | Study log | F1 adds a session, F2 removes the last, EXIT writes once |
@@ -102,3 +104,27 @@ Study log        pass/fail
 
 Anything else:
 ```
+
+## The report screen
+
+Settings has an **F3: hardware report**. It lists the eight assumptions in
+`docs/STATUS.md`, one per row, and each row starts as `not tried`. After
+running the matching test above, mark it `works` or `fails` with LEFT/RIGHT.
+F2 writes `state/hwreport.txt`; nothing is written at any other time.
+
+The file is the report: copy it off the calculator (USB Flash mode, the same
+way the `.g3a` got there), and paste it under this heading with the build it
+came from. One row per line, so a diff shows what changed between builds.
+
+```
+Bench hardware report
+version <the version on the About screen>
+
+<the eight lines, each followed by "works", "fails" or "not tried">
+
+All eight marked.        # or: Some rows are still not tried.
+```
+
+The screen keeps its marks only while it is open. That is deliberate: the
+report is the artefact, and a half-marked list left in flash would look like a
+result it is not.

@@ -16,6 +16,27 @@ it, so the file, the About screen and the tag always agree.
 The two bugs from the first hardware session, and the machinery that stops the
 next one.
 
+- **A hardware report you can fill in on the calculator (V2, workstream J)**:
+  Settings gained **F3**, which opens a screen listing the eight assumptions
+  Bench makes about the CASIO filesystem, the font, ALPHA, the clock and the
+  frame time. Each row starts at `not tried`; LEFT/RIGHT marks it `works` or
+  `fails` after the matching test in `docs/HARDWARE.md`. F2 writes
+  `state/hwreport.txt` in plain text, so the result comes off the calculator by
+  copy rather than by retyping, and nothing is written at any other moment.
+  The formatter is `src/core/hwreport.c` (63 native checks, including a buffer
+  that is one byte too small), and `docs/HARDWARE.md` says how the file slots
+  into the report.
+
+- **A shared number field and a history of answers (V2, workstream A5)**:
+  `src/core/numedit.c` is the one place that decides what a numeric field
+  accepts - digits, at most one dot, a lone zero replaced rather than stacked, a
+  leading dot turned into `0.` - with `numedit_valid()` for "would numparse read
+  this?" (54 checks). The moles screen was carrying its own copy, which is how
+  `1.2.3` got in; it now uses the shared one. `src/core/history.c` keeps the last
+  eight formatted results (33 checks) and the Root finder pushes every solve onto
+  it, with F4 to show the list - a panel, not a file, so nothing is written to
+  flash.
+
 - **WebAssembly build, and the loader that copes without it (V2, workstream
   G)**: `tools/sim/sim.c` gains an `__EMSCRIPTEN__` path - keys from the page,
   the framebuffer handed back as RGBA - and `tools/wasm/build.sh` compiles the
@@ -51,7 +72,7 @@ next one.
   `scripts/check-pages.mjs` renders all eight routes in Node and fails the build
   if one throws. Eight 1200x630 Open Graph cards come from
   `tools/brand/make_brand.py`. The canonical URL is now
-  `bench-sarang-dev.vercel.app` everywhere; `sitemap.xml` lists all eight
+  `bench-gdc.vercel.app` everywhere; `sitemap.xml` lists all eight
   routes.
 
 - **The simulator page is honest about the simulator**: the interactive

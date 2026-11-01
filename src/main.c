@@ -43,6 +43,7 @@ typedef enum {
     VIEW_GRAPH,
     VIEW_LOG,
     VIEW_SIGFIG,
+    VIEW_HWREPORT,
     VIEW_COUNT,
 } view_t;
 
@@ -103,6 +104,8 @@ static app_entry_t const apps[VIEW_COUNT] = {
                    app_log_timeout },
     [VIEW_SIGFIG] = { app_sigfig_init, app_sigfig_draw, app_sigfig_key,
                       app_sigfig_timeout },
+    [VIEW_HWREPORT] = { app_hwreport_init, app_hwreport_draw, app_hwreport_key,
+                        app_hwreport_timeout },
 };
 
 bench_settings_t *app_cfg(void)
@@ -144,6 +147,7 @@ void app_open(app_screen_t screen)
     case APP_SCREEN_GRAPH: set_view(VIEW_GRAPH); break;
     case APP_SCREEN_LOG: set_view(VIEW_LOG); break;
     case APP_SCREEN_SIGFIG: set_view(VIEW_SIGFIG); break;
+    case APP_SCREEN_HWREPORT: set_view(VIEW_HWREPORT); break;
     default: set_view(VIEW_MENU); break;
     }
 }

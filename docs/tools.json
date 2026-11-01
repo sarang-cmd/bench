@@ -78,7 +78,7 @@
     "category": "Math",
     "screen": 12,
     "needs_file": false,
-    "help": "Root finder\nSolves f(x) = 0 one step at a time,\nso the convergence is visible.\n\nF2 picks the method:\n  bisection needs a and b with a\n    sign change between them\n  Newton needs one guess x0\n  secant needs two guesses x0, x1\n\nF3 solves. The table lists n, x and\nf(x); the plot marks every iterate.\n\nRadians always, whatever the angle\nsetting says. Tolerance 1e-6, at most\n50 steps.\n\nKeys: EXE edits f or solves, F1 clears,\nF2 method, arrows move and scroll."
+    "help": "Root finder\nSolves f(x) = 0 one step at a time,\nso the convergence is visible.\n\nF2 picks the method:\n  bisection needs a and b with a\n    sign change between them\n  Newton needs one guess x0\n  secant needs two guesses x0, x1\n\nF3 solves. The table lists n, x and\nf(x); the plot marks every iterate.\n\nRadians always, whatever the angle\nsetting says. Tolerance 1e-6, at most\n50 steps.\n\nF4 lists the last eight answers, so a\nroot does not vanish when the fields\nchange. Nothing is written to storage.\n\nKeys: EXE edits f or solves, F1 clears,\nF2 method, F4 history, arrows move\nand scroll."
   },
   {
     "id": "triangle",
