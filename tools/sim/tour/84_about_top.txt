@@ -1,0 +1,5 @@
+# tour step: 84_about_top
+# starts at the home screen; see tools/sim/run_tour.sh
+# The About page now says who made it and how, not only the version: the first
+# screenful is the author and the start of the "how it was made" section.
+tool:about

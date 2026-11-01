@@ -5,6 +5,10 @@
       "date": "",
       "entries": [
         {
+          "title": "About says who made it",
+          "body": "the page was one screenful of version numbers. It now says whose work it is (Sarang, `github.com/sarang-cmd`), what it is, how it was made - maths in plain C tested without a calculator, screens a thin layer over gint, every doc picture a real simulator frame, builds from GitHub Actions - and keeps the build facts and the Exam Mode promise at the end. The page is longer than the screen, so it scrolls with the bar and `UP/DOWN`; scrolling reuses `core/help.c`'s tested rules. Tour 84 and 85 are its two ends. Also: `src/version.h`'s fallback said 1.0.0 while `version.txt` said 1.1.0, so the simulator's About screen was a release behind the add-in it was drawing - the fallback is 1.1.0 now. **Unverified on device.**"
+        },
+        {
           "title": "Three more settings, and three places they reach",
           "body": "Settings had five rows and two of them were read-only information. It has eight now, and each one does something: * **Opens on** - which category the home screen starts on, so someone who lives in Science does not press F3 every launch. * **Show hint line** - the first-run line on the home screen can be turned off for good without having to open Help first. * **Pacer clock red at** - minutes remaining when the Pacer's \"Left mm:ss\" line turns red, 0 to never. Default 5."
         },
