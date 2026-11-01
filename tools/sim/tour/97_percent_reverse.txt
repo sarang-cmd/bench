@@ -1,0 +1,14 @@
+# tour step: 97_percent_reverse
+# starts at the home screen; see tools/sim/run_tour.sh
+# The reverse question, undone properly: 34 after 15% off was 40, and the
+# working shows the division rather than a plausible-looking subtraction.
+tool:percent
+down
+down
+3
+4
+right
+minus
+1
+5
+exe

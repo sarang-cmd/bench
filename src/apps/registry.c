@@ -249,6 +249,31 @@ static char const help_factor[] =
     "Keys: digits, DEL, F1 clear, F2\n"
     "halve, EXE factor, EXIT back.";
 
+static char const help_percent[] =
+    "Percentages\n"
+    "Four questions, chosen with UP/DOWN.\n"
+    "\n"
+    "Change: from 40 to 46 is a rise\n"
+    "of 15%.\n"
+    "\n"
+    "Add or take: 40 with 15% added is\n"
+    "46, and the page shows the working.\n"
+    "\n"
+    "Reverse: something costs 34 after\n"
+    "15% off, so it was 40. Dividing by\n"
+    "0.85, not taking 15% back off.\n"
+    "\n"
+    "Compound: 500 at 4.5% for 7 years\n"
+    "is 680.43, with interest added each\n"
+    "year. A negative rate depreciates.\n"
+    "\n"
+    "A percentage change from zero, and\n"
+    "a 100% discount, have no answer and\n"
+    "the page says why.\n"
+    "\n"
+    "Keys: UP/DOWN question, LEFT/RIGHT\n"
+    "field, EXE work out, F1 clear.";
+
 static char const help_formula[] =
     "Formula book\n"
     "The IB formula and data booklets,\n"
@@ -784,6 +809,17 @@ static tool_t const tools[] = {
         .screen = APP_SCREEN_FORMULA,
         .needs_file = true,
         .help = help_formula,
+    },
+    {
+        .id = "percent",
+        .title = "Percentages",
+        .subtitle = "change, growth",
+        .category = TOOL_CAT_MATH,
+        .accent = TH_YELLOW,
+        .icon = icon_half_circle,
+        .screen = APP_SCREEN_PERCENT,
+        .needs_file = false,
+        .help = help_percent,
     },
     {
         .id = "stats",

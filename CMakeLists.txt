@@ -56,6 +56,7 @@ set(SOURCES
   src/core/hwreport.c
   src/core/numtheory.c
   src/core/pageind.c
+  src/core/percent.c
   src/core/pi.c
   src/core/poly.c
   src/core/roots.c
@@ -94,6 +95,7 @@ set(SOURCES
   src/apps/app_numtheory.c
   src/apps/app_factor.c
   src/apps/app_pacer.c
+  src/apps/app_percent.c
   src/apps/app_poly.c
   src/apps/app_roots.c
   src/apps/app_seq.c
